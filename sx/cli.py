@@ -11,3 +11,7 @@ def cli(ctx):
     SX CLI
     """
     pass
+
+# SUBSET
+from sx.subset_cli import sx_subset_cli
+cli.add_command(sx_subset_cli, name="subset")
