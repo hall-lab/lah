@@ -35,6 +35,7 @@ setup(
     install_requires=install_requires,
     entry_points='''
         [console_scripts]
+        lah=lah.cli:cli
         sx=sx.cli:cli
     ''',
     setup_requires=["pytest-runner"],
