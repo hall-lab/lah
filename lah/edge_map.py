@@ -18,6 +18,7 @@ def parse_chr_loc(loc):
 def parse_chr_pos(pos):
     tokens = pos.split("_")
     chr_and_pos = tokens.pop(0).split(":")
+    chr_and_pos[1] = int(chr_and_pos[1])
     return chr_and_pos + tokens
 
 #-- parse_chr_pos
