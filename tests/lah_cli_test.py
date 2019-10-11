@@ -7,7 +7,7 @@ class LahCliTest(unittest.TestCase):
     def tearDown(self):
         self.out.close()
 
-    def test1_sx(self):
+    def test1_lah(self):
         rv = subprocess.call(['lah'], stdout=self.out)
         self.assertEqual(rv, 0)
 
