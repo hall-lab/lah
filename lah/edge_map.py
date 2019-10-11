@@ -13,6 +13,8 @@ class EdgeMap():
 #ccs_1_4194529   @m54238_180901_011437/4194529/ccs   3   chr1:19248531_G_A_a;chr1:19255094_T_C_a
 def parse_edge_map(edge_map_str):
     (id, rid, hid, edge) = re.split(edge_splitter, edge_map_str)
+    if rid.startswith("@"):
+        rid = rid[1:]
     return EdgeMap([ hid, rid, parse_chr_loc(edge) ])
 
 #-- parse_edge_map

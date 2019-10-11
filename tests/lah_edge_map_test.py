@@ -22,7 +22,7 @@ class LahEdgeMapTest(unittest.TestCase):
     def test2_parse_edge_map(self):
         edge_map = lah.edge_map.parse_edge_map("ccs_1_4194529   @m54238_180901_011437/4194529/ccs   3   chr1:19248531_G_A_a;chr1:19255094_T_C_a")
         self.assertEqual(edge_map.hid, "3")
-        self.assertEqual(edge_map.rid, "@m54238_180901_011437/4194529/ccs")
+        self.assertEqual(edge_map.rid, "m54238_180901_011437/4194529/ccs")
         self.assertEqual(edge_map.start, self.start)
         self.assertEqual(edge_map.stop, self.stop)
 

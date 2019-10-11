@@ -14,7 +14,7 @@ class LahHaplotypeTest(unittest.TestCase):
                 edges.append(lah.edge_map.parse_edge_map(line))
         hap = lah.haplotype.Haplotype(edges=edges)
         self.assertEqual(hap.id, "3")
-        rds = ['@m54238_180914_183539/11207193/ccs', '@m54238_180914_183539/11665587/ccs', '@m54238_180914_183539/17171007/ccs']
+        rds = ['m54238_180914_183539/11207193/ccs', 'm54238_180914_183539/11665587/ccs', 'm54238_180914_183539/17171007/ccs']
         self.assertEqual(hap.reads(), rds)
         self.assertEqual(hap.chr, "chr1")
         self.assertEqual(hap.start, 19338752)
