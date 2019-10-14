@@ -12,6 +12,10 @@ def cli(ctx):
     """
     pass
 
+# DEDUP
+from sx.dedup_cli import sx_dedup_cli
+cli.add_command(sx_dedup_cli, name="dedup")
+
 # SUBSET
 from sx.subset_cli import sx_subset_cli
 cli.add_command(sx_subset_cli, name="subset")
