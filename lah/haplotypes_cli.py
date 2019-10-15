@@ -40,18 +40,17 @@ def lah_hap_reads(haplotype_id, source):
     """
     Show Reads for a Haplotype
     """
-    # FIXME dont go through whole file
-    with open(source, "r") as f:
-        edges = []
-        for line in f.readlines():
-            line = line.rstrip()
-            edge = lah.edge_map.parse_edge_map(line)
-            if edge.hid == haplotype_id:
-                edges.append(edge)
+    # FIXME dont go through whole source
+    haplotype = None
+    try:
+        for haplotype in lah.haplotype.HaplotypeIterator(edge_map_fn=source):
+            if haplotype_id == haplotype.id:
+                break
+    except StopIteration:
+        pass
 
-        if not edges:
-            raise Exception("Failed to find haploptype id {} in {}.".format(haplotype_id, source))
+    if haplotype is None:
+        raise Exception("No haplotype found for id {}".format(haplotype_id))
 
-        hap = lah.haplotype.Haplotype(edges=edges)
-        print("\n".join(hap.reads()))
+    print("\n".join(haplotype.reads()))
 lah_hap_cli.add_command(lah_hap_reads, name="reads")
