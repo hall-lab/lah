@@ -28,7 +28,7 @@ class LahHaplotypeTest(unittest.TestCase):
         self.assertEqual(hap.chr, self.chr)
         self.assertEqual(hap.start, self.start)
         self.assertEqual(hap.stop, self.stop)
-        self.assertEqual(hap.length, (self.stop - self.start))
+        self.assertEqual(len(hap), (self.stop - self.start))
         self.assertEqual(hap.reads(), self.rids)
 
     def test3_haplotype_reader(self):
@@ -56,7 +56,6 @@ class LahHaplotypeTest(unittest.TestCase):
         self.assertEqual(haplotypes[1].start, 5618623)
         self.assertEqual(haplotypes[1].stop, 5620212)
         self.assertEqual(len(haplotypes[1].rids), 2)
-
 
 # -- LahHaplotypeTest
 

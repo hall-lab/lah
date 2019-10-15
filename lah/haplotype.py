@@ -6,8 +6,10 @@ class Haplotype():
         self.chr = chr
         self.start = start
         self.stop = stop
-        self.length = self.stop - self.start
         self.rids = rids
+
+    def __len__(self):
+        return self.stop - self.start
 
     def from_edges(edges):
         hids = set()

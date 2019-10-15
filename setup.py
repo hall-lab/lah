@@ -18,6 +18,7 @@ tests_require = [
 install_requires=[
     "biopython",
     "click==7.0",
+    "Jinja2>=2.10.1",
     "natsort",
     "pyyaml==5.1",
     "tabulate",

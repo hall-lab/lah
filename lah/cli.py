@@ -13,6 +13,10 @@ def cli(ctx):
     """
     pass
 
+# [assembly]
+from lah.assembly_cli import lah_asm_cli
+cli.add_command(lah_asm_cli, name="assembly")
+
 # [haplotypes]
 from lah.haplotypes_cli import lah_hap_cli
 cli.add_command(lah_hap_cli, name="haplotypes")
