@@ -43,7 +43,7 @@ def lah_asm_prepare_cli(source, directory):
             asm_script_fn = os.path.join(haplotype_d, "asm.sh")
             with open(asm_script_fn, "w") as f:
                 f.write( asm_template.render({"PREFIX": haplotype.id, "DIRECTORY": haplotype_d,
-                    "SIZE": "{}k".format(int(len(haplotype)/1000)), "FASTQ": os.path.join(haplotype_d, "hap.{}.fastq".format(haplotype.id))}) )
+                    "SIZE": "{}k".format(int(len(haplotype)/1000)), "FASTQ": os.path.join(haplotype_d, "haplotype.fastq")}) )
 
             # reads
             with open(os.path.join(haplotype_d, "reads"), "w") as f:
@@ -52,5 +52,7 @@ def lah_asm_prepare_cli(source, directory):
 
     except StopIteration:
         pass
+    except:
+        raise
 
 lah_asm_cli.add_command(lah_asm_prepare_cli, name="prepare")

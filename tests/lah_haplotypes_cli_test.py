@@ -24,12 +24,21 @@ class LahHaplotypesCliTest(unittest.TestCase):
         self.assertEqual(rv, 0)
         rv = subprocess.call(["lah", "haplotypes", "list", "--help"], stdout=self.out)
 
-    def test3_lah_haplotypes_list(self):
+    def test3_lah_haplotypes_reads(self):
         rv = subprocess.call(["lah", "haplotypes", "reads"], stdout=self.out, stderr=self.err)
         self.assertEqual(rv, 2)
         rv = subprocess.call(["lah", "haplotypes", "reads", "-h"], stdout=self.out)
         self.assertEqual(rv, 0)
         rv = subprocess.call(["lah", "haplotypes", "reads", "--help"], stdout=self.out)
+        self.assertEqual(rv, 0)
+
+    def test3_lah_haplotypes_generate_fastq(self):
+        rv = subprocess.call(["lah", "haplotypes", "generate-fastq"], stdout=self.out, stderr=self.err)
+        self.assertEqual(rv, 2)
+        rv = subprocess.call(["lah", "haplotypes", "generate-fastq", "-h"], stdout=self.out)
+        self.assertEqual(rv, 0)
+        rv = subprocess.call(["lah", "haplotypes", "generate-fastq", "--help"], stdout=self.out)
+        self.assertEqual(rv, 0)
 
 # -- LahHaplotypesCliTest
 
