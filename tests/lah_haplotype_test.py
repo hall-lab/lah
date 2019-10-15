@@ -31,6 +31,33 @@ class LahHaplotypeTest(unittest.TestCase):
         self.assertEqual(hap.length, (self.stop - self.start))
         self.assertEqual(hap.reads(), self.rids)
 
+    def test3_haplotype_reader(self):
+        edge_map_fn = os.path.join(os.path.dirname(__file__), "data", "lah_haplotype", "haps.edge-map.tsv")
+        haplotype_iter = lah.haplotype.HaplotypeIterator(edge_map_fn)
+        self.assertIsNotNone(haplotype_iter)
+
+        haplotypes = []
+        try:
+            for h in haplotype_iter:
+                haplotypes.append(h)
+        except StopIteration:
+            pass
+
+        self.assertEqual(len(haplotypes), 2)
+
+        self.assertEqual(haplotypes[0].id, "3")
+        self.assertEqual(haplotypes[0].chr, "chr1")
+        self.assertEqual(haplotypes[0].start, 19338752)
+        self.assertEqual(haplotypes[0].stop, 19342523)
+        self.assertEqual(len(haplotypes[0].reads()), 2)
+
+        self.assertEqual(haplotypes[1].chr, "chr2")
+        self.assertEqual(haplotypes[1].id, "111")
+        self.assertEqual(haplotypes[1].start, 5618623)
+        self.assertEqual(haplotypes[1].stop, 5620212)
+        self.assertEqual(len(haplotypes[1].rids), 2)
+
+
 # -- LahHaplotypeTest
 
 if __name__ == '__main__':
