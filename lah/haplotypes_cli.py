@@ -22,29 +22,14 @@ def lah_hap_list(source):
 
     Sources: Edge map file. Sorry, only one we know.
     """
-    haps = list()
-    with open(source, "r") as f:
-        line = f.readline()
-        line = line.rstrip()
-        edge = lah.edge_map.parse_edge_map(line)
-        hid = edge.hid
-        edges = [edge]
-        for line in f.readlines():
-            line = line.rstrip()
-            edge = lah.edge_map.parse_edge_map(line)
-            if edge.hid != hid:
-                haps.append( lah.haplotype.Haplotype(edges=edges) )
-                hid = edge.hid
-                edges = [edge]
-            else:
-                edges.append(edge)
-
-        if len(edges) > 0:
-            haps.append( lah.haplotype.Haplotype(edges=edges) )
-
     rows = []
-    for hap in natsort.natsorted(haps, reverse=True, key=lambda h: h.length):
-        rows += [[ hap.id, hap.chr, hap.length, len(hap.rids) ]]
+    try:
+        for hap in lah.haplotype.HaplotypeIterator(edge_map_fn=source):
+            rows += [[ hap.id, hap.chr, hap.length, len(hap.rids) ]]
+    except StopIteration:
+        pass
+
+    rows = natsort.natsorted(rows, reverse=True, key=lambda x:x[3])
     sys.stdout.write( tabulate.tabulate(rows, ["HAP", "CHR", "LENGTH", "READS"], tablefmt="simple") + "\n")
 lah_hap_cli.add_command(lah_hap_list, name="list")
 
