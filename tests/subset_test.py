@@ -13,8 +13,8 @@ class SxSubsetCliTest(unittest.TestCase):
 
     def test1_sx_subset_by_name(self):
         i = os.path.join(self.data_d, "by-name.in.fastq")
-        reads_fn = os.path.join(self.data_d, "by-name.reads.txt")
-        sx.subset.by_name(input=i, output=self.out, reads_fn=reads_fn)
+        names_fn = os.path.join(self.data_d, "by-name.reads.txt")
+        sx.subset.by_name(input=i, output=self.out, names_fn=names_fn)
 
         expected_fn = os.path.join(self.data_d, "by-name.out.fastq")
         self.out.flush()
