@@ -1,0 +1,6 @@
+.git
+.gitignore
+.pytest*
+*pyc
+.eggs
+*egg-info*
