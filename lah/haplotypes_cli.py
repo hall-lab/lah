@@ -57,12 +57,12 @@ def lah_hap_list(source):
     rows = []
     try:
         for hap in lah.haplotype.HaplotypeIterator(edge_map_fn=source):
-            rows += [[ hap.id, hap.chr, hap.length, len(hap.rids) ]]
+            rows += [[ hap.id, len(hap.rids) ]]
     except StopIteration:
         pass
 
-    rows = natsort.natsorted(rows, reverse=True, key=lambda x:x[3])
-    sys.stdout.write( tabulate.tabulate(rows, ["HAP", "CHR", "LENGTH", "READS"], tablefmt="simple") + "\n")
+    rows = natsort.natsorted(rows, key=lambda x:x[1])
+    sys.stdout.write( tabulate.tabulate(rows, ["HAP", "READS"], tablefmt="simple") + "\n")
 lah_hap_cli.add_command(lah_hap_list, name="list")
 
 @click.command(short_help="list haplotype reads")

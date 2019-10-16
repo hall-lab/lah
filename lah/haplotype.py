@@ -1,32 +1,22 @@
 import lah.edge_map
 
 class Haplotype():
-    def __init__(self, id, chr, start, stop, rids):
+    def __init__(self, id, rids):
         self.id = id
-        self.chr = chr
-        self.start = start
-        self.stop = stop
         self.rids = rids
 
     def __len__(self):
-        return self.stop - self.start
+        raise Exception("FIXME")
 
     def from_edges(edges):
         hids = set()
-        chr = edges[0].start[0]
-        start = edges[0].start[1]
-        stop = edges[0].stop[1]
         rids = set()
         for edge in edges:
             hids.add(edge.hid)
             rids.add(edge.rid)
-            if edge.start[1] < start:
-                start = edge.start[1]
-            if edge.stop[1] > stop:
-                stop = edge.stop[1]
         if len(hids) != 1:
             raise Exception("Multiple haplotypes in edges! {}".format(hids))
-        return Haplotype(id=hids.pop(), chr=chr, start=start, stop=stop, rids=rids)
+        return Haplotype(id=hids.pop(), rids=rids)
 
     def reads(self):
         rds = list(self.rids)
@@ -59,7 +49,6 @@ class HaplotypeIterator():
             line = self.edge_map_f.readline()
             if not line: # EOF
                 break
-            line = line.rstrip()
             edge = lah.edge_map.parse_edge_map(line)
             if edge.hid != hid: # new haplotype, save edge, break to return haplotype
                 self.prev_edge = edge

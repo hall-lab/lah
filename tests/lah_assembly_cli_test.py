@@ -29,14 +29,15 @@ class LahAssemblyCliTest(unittest.TestCase):
 
         tempdir = tempfile.TemporaryDirectory()
         self.tempdir = tempdir
-        data_d = os.path.join(os.path.dirname(__file__), "data", "lah_assembly")
-        edge_map_fn = os.path.join(data_d, "hap3.edge-map.tsv")
-        rv = subprocess.call(["lah", "assembly", "prepare", "--directory", str(tempdir), "--source", edge_map_fn], stdout=self.out)
+        data_d = os.path.join(os.path.dirname(__file__), "data", "haplotype")
+        hid = "402_0_2_0"
+        edge_map_fn = os.path.join(data_d, "{}.edge-map.tsv".format(hid))
+        rv = subprocess.call(["lah", "assembly", "prepare", "--directory", tempdir.name, "--source", edge_map_fn], stdout=self.out)
         self.assertEqual(rv, 0)
 
-        haplotype_d = os.path.join(str(tempdir), "hap3")
+        haplotype_d = os.path.join(tempdir.name, hid)
         self.assertTrue(os.path.exists(os.path.join(haplotype_d, "asm.sh")))
-        self.assertTrue(filecmp.cmp(os.path.join(haplotype_d, "reads"), os.path.join(data_d, "reads")))
+        self.assertTrue(filecmp.cmp(os.path.join(haplotype_d, "reads"), os.path.join(data_d, "{}.reads".format(hid))))
 
 # -- LahAssemblyCliTest
 

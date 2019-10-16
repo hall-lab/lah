@@ -35,15 +35,16 @@ def lah_asm_prepare_cli(source, directory):
 
     try:
         for haplotype in lah.haplotype.HaplotypeIterator(edge_map_fn=source):
-            haplotype_d = os.path.join(directory, "hap{}".format(haplotype.id))
+            haplotype_d = os.path.abspath(os.path.join(directory, str(haplotype.id)))
             if not os.path.exists(haplotype_d):
                 os.makedirs(haplotype_d)
 
             # asm script
             asm_script_fn = os.path.join(haplotype_d, "asm.sh")
+            fastq_fn = os.path.join(haplotype_d, "haplotype.fastq")
             with open(asm_script_fn, "w") as f:
                 f.write( asm_template.render({"PREFIX": haplotype.id, "DIRECTORY": haplotype_d,
-                    "SIZE": "{}k".format(int(len(haplotype)/1000)), "FASTQ": os.path.join(haplotype_d, "haplotype.fastq")}) )
+                    "SIZE": "{}k".format(50000), "FASTQ": fastq_fn}) )
 
             # reads
             with open(os.path.join(haplotype_d, "reads"), "w") as f:

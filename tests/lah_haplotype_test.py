@@ -4,35 +4,16 @@ from .context import lah
 import lah.edge_map, lah.haplotype
 
 class LahHaplotypeTest(unittest.TestCase):
-    def setUp(self):
-        self.id = "3"
-        self.chr = "chr1"
-        self.start = 19338752
-        self.stop = 19391199
-        self.rids = ['m54238_180914_183539/11207193/ccs', 'm54238_180914_183539/11665587/ccs', 'm54238_180914_183539/17171007/ccs']
-
     def test1_haplotype(self):
-        haplotype = lah.haplotype.Haplotype(id=self.id, chr=self.chr, start=self.start, stop=self.stop, rids=self.rids)
+        haplotype = lah.haplotype.Haplotype(id="3", rids=set(['m54238_180914_183539/11207193/ccs', 'm54238_180914_183539/11665587/ccs', 'm54238_180914_183539/17171007/ccs']))
         self.assertIsNotNone(haplotype)
+        self.assertEqual(haplotype.id, "3")
+        expected_reads = list(haplotype.rids)
+        expected_reads.sort()
+        self.assertEqual(haplotype.reads(), expected_reads)
 
-    def test2_haplotype_from_edges(self):
-        edges = []
-        edge_map_fn = os.path.join(os.path.dirname(__file__), "data", "lah_haplotype", "hap3.edge-map.tsv")
-        with open(edge_map_fn, "r") as f:
-            for line in f.readlines():
-                line = line.rstrip()
-                edges.append(lah.edge_map.parse_edge_map(line))
-        hap = lah.haplotype.Haplotype.from_edges(edges=edges)
-
-        self.assertEqual(hap.id, self.id)
-        self.assertEqual(hap.chr, self.chr)
-        self.assertEqual(hap.start, self.start)
-        self.assertEqual(hap.stop, self.stop)
-        self.assertEqual(len(hap), (self.stop - self.start))
-        self.assertEqual(hap.reads(), self.rids)
-
-    def test3_haplotype_reader(self):
-        edge_map_fn = os.path.join(os.path.dirname(__file__), "data", "lah_haplotype", "haps.edge-map.tsv")
+    def test2_haplotype_iterator(self):
+        edge_map_fn = os.path.join(os.path.dirname(__file__), "data", "haplotype", "chr20.edge-map.tsv")
         haplotype_iter = lah.haplotype.HaplotypeIterator(edge_map_fn)
         self.assertIsNotNone(haplotype_iter)
 
@@ -43,19 +24,20 @@ class LahHaplotypeTest(unittest.TestCase):
         except StopIteration:
             pass
 
-        self.assertEqual(len(haplotypes), 2)
+        self.assertEqual(len(haplotypes), 4)
 
-        self.assertEqual(haplotypes[0].id, "3")
-        self.assertEqual(haplotypes[0].chr, "chr1")
-        self.assertEqual(haplotypes[0].start, 19338752)
-        self.assertEqual(haplotypes[0].stop, 19342523)
-        self.assertEqual(len(haplotypes[0].reads()), 2)
-
-        self.assertEqual(haplotypes[1].chr, "chr2")
-        self.assertEqual(haplotypes[1].id, "111")
-        self.assertEqual(haplotypes[1].start, 5618623)
-        self.assertEqual(haplotypes[1].stop, 5620212)
+        self.assertEqual(haplotypes[0].id, "401_0_1_0")
+        self.assertEqual(len(haplotypes[0].rids), 1)
+        self.assertEqual(len(haplotypes[0].reads()), 1)
+        self.assertEqual(haplotypes[1].id, "401_0_2_0")
         self.assertEqual(len(haplotypes[1].rids), 2)
+        self.assertEqual(len(haplotypes[1].reads()), 2)
+        self.assertEqual(haplotypes[2].id, "402_0_1_0")
+        self.assertEqual(len(haplotypes[2].rids), 8)
+        self.assertEqual(len(haplotypes[2].reads()), 8)
+        self.assertEqual(haplotypes[3].id, "402_0_2_0")
+        self.assertEqual(len(haplotypes[3].rids), 14)
+        self.assertEqual(len(haplotypes[3].reads()), 14)
 
 # -- LahHaplotypeTest
 
