@@ -1,4 +1,8 @@
+<<<<<<< HEAD
 import click, jinja2, os, yaml
+=======
+import click, jinja2, os
+>>>>>>> origin/master
 from Bio import SeqIO
 
 from lah.version import __version__
