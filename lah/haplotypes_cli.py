@@ -39,7 +39,6 @@ def lah_hap_generate_fastq(haplotype, fastqs):
                 cmd = ["sx", "subset", "by-name", fastq_fn, haplotype_fastq_fn, "--names", rds_fn]
                 print("RUNNING: {}".format(" ".join(cmd)))
                 subprocess.call(cmd)
-
     except:
         os.remove(haplotype_fastq_fn)
         raise
@@ -55,11 +54,8 @@ def lah_hap_list(source):
     Sources: Edge map file. Sorry, only one we know.
     """
     rows = []
-    try:
-        for hap in lah.haplotype.HaplotypeIterator(edge_map_fn=source):
-            rows += [[ hap.id, len(hap.rids) ]]
-    except StopIteration:
-        pass
+    for hap in lah.haplotype.HaplotypeIterator(edge_map_fn=source):
+        rows += [[ hap.id, len(hap.rids) ]]
 
     rows = natsort.natsorted(rows, key=lambda x:x[1])
     sys.stdout.write( tabulate.tabulate(rows, ["HAP", "READS"], tablefmt="simple") + "\n")
@@ -72,14 +68,10 @@ def lah_hap_reads(haplotype_id, source):
     """
     Show Reads for a Haplotype
     """
-    # FIXME dont go through whole source
     haplotype = None
-    try:
-        for haplotype in lah.haplotype.HaplotypeIterator(edge_map_fn=source):
-            if haplotype_id == haplotype.id:
-                break
-    except StopIteration:
-        pass
+    for haplotype in lah.haplotype.HaplotypeIterator(edge_map_fn=source):
+        if haplotype_id == haplotype.id:
+            break
 
     if haplotype is None:
         raise Exception("No haplotype found for id {}".format(haplotype_id))
