@@ -27,6 +27,8 @@ class SxReader():
     def __next__(parser):
         try:
             return next(parser)
-        except:
+        except StopIteration:
             pass
+        except:
+            raise
 #-- SxReader
