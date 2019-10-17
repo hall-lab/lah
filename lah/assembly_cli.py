@@ -52,7 +52,7 @@ def lah_asm_merge_cli(source, directory, output):
                 metrics["skipped one read"] += 1
                 continue
 
-            haplotype_d = os.path.abspath(os.path.join(directory, str(haplotype.id)))
+            haplotype_d = os.path.abspath(os.path.join(directory, haplotype.id))
             assembly_fa = os.path.join(haplotype_d, ".".join([haplotype.id, "contigs", "fasta"]))
             if not os.path.exists(assembly_fa):
                 metrics["skipped no assembly"] += 1
@@ -95,7 +95,7 @@ def lah_asm_prepare_cli(source, directory):
 
     try:
         for haplotype in lah.haplotype.HaplotypeIterator(edge_map_fn=source):
-            haplotype_d = os.path.abspath(os.path.join(directory, str(haplotype.id)))
+            haplotype_d = os.path.abspath(os.path.join(directory, haplotype.id))
             if not os.path.exists(haplotype_d):
                 os.makedirs(haplotype_d)
 

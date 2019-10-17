@@ -2,7 +2,7 @@ import lah.edge_map
 
 class Haplotype():
     def __init__(self, id, rids):
-        self.id = id
+        self.id = str(id)
         self.rids = rids
 
     def __len__(self):
