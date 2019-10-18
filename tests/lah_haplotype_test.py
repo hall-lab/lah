@@ -18,14 +18,10 @@ class LahHaplotypeTest(unittest.TestCase):
         self.assertIsNotNone(haplotype_iter)
 
         haplotypes = []
-        try:
-            for h in haplotype_iter:
-                haplotypes.append(h)
-        except StopIteration:
-            pass
+        for h in haplotype_iter:
+            haplotypes.append(h)
 
         self.assertEqual(len(haplotypes), 4)
-
         self.assertEqual(haplotypes[0].id, "401_0_1_0")
         self.assertEqual(len(haplotypes[0].rids), 1)
         self.assertEqual(len(haplotypes[0].reads()), 1)
