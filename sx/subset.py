@@ -1,15 +1,15 @@
 import os, sys
-
 from Bio import SeqIO
+import sx.io
 
 def by_name(input, output, names_fn):
-    fastq_i = SeqIO.index(input, "fastq")
+    reader = sx.io.SxReader(input)
+    reader.create_index()
     with open(names_fn, "r") as names_f:
-        for read_name in names_f.readlines():
-            read_name = read_name.rstrip()
-            if read_name in fastq_i:
-                seq = fastq_i[read_name]
+        for name in names_f.readlines():
+            name = name.rstrip()
+            seq = reader.getseq(name)
+            if seq:
                 SeqIO.write(seq, output, "fastq")
-    fastq_i.close()
 
 #-- by_name
