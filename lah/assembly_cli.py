@@ -1,10 +1,9 @@
 import click, jinja2, os, yaml
-from Bio import SeqIO
-
 from lah.version import __version__
-import lah.edge_map, lah.haplotype
+import lah.edge_map, lah.haplotype, sx.io
 
 # ASSEBMLY: [hap]
+# - merge
 # - prepare
 
 @click.group()
@@ -45,28 +44,24 @@ def lah_asm_merge_cli(source, directory, output):
         "skipped no assembly": 0,
         "count": 0,
     }
-    output_f = open(output, "w")
-    try:
-        for haplotype in lah.haplotype.HaplotypeIterator(edge_map_fn=source):
-            if len(haplotype.rids) < 2:
-                metrics["skipped one read"] += 1
-                continue
+    writer = sx.io.SxWriter(seq_fn=output)
+    for haplotype in lah.haplotype.HaplotypeIterator(edge_map_fn=source):
+        if len(haplotype.rids) < 2:
+            metrics["skipped one read"] += 1
+            continue
 
-            haplotype_d = os.path.abspath(os.path.join(directory, haplotype.id))
-            assembly_fa = os.path.join(haplotype_d, ".".join([haplotype.id, "contigs", "fasta"]))
-            if not os.path.exists(assembly_fa):
-                metrics["skipped no assembly"] += 1
-                continue
-            cnt = 1
-            metrics["count"] += 1
-            for seq in SeqIO.parse(assembly_fa, "fasta"):
-                seq.id = ".".join([haplotype.id, str(cnt)])
-                SeqIO.write(seq, output_f, "fasta")
-                cnt += 1
-    except:
-        raise
-    finally:
-        output_f.close()
+        haplotype_d = os.path.abspath(os.path.join(directory, haplotype.id))
+        assembly_fa = os.path.join(haplotype_d, ".".join([haplotype.id, "contigs", "fasta"]))
+        if not os.path.exists(assembly_fa):
+            metrics["skipped no assembly"] += 1
+            continue
+
+        cnt = 1
+        metrics["count"] += 1
+        for seq in sx.io.SxReader(seq_fn=assembly_fa):
+            seq.id = ".".join([haplotype.id, str(cnt)])
+            writer.write(seq)
+            cnt += 1
     print("Haplotype metrics:\n{}".format(yaml.dump(metrics, sort_keys=True, indent=4)))
 lah_asm_cli.add_command(lah_asm_merge_cli, name="merge")
 
