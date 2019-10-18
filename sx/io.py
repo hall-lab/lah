@@ -21,6 +21,11 @@ class SxReader():
             seq_type = type_for_file(seq_fn)
         self.seq_type = seq_type
 
+    def __del__(self):
+        if hasattr(self, "index"):
+            self.index.close()
+
+    # Iter Functions
     def __iter__(self):
         return SeqIO.parse(self.seq_fn, self.seq_type)
 
@@ -31,4 +36,13 @@ class SxReader():
             pass
         except:
             raise
+
+    # Index Funcitons
+    def create_index(self):
+        self.index = SeqIO.index(self.seq_fn, self.seq_type)
+
+    def getseq(self, seq_id):
+        if seq_id in self.index:
+            return self.index[seq_id]
+
 #-- SxReader

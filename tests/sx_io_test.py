@@ -26,10 +26,18 @@ class SxIoTest(unittest.TestCase):
         in_fastq_fn = os.path.join(os.path.dirname(__file__), "data", "io", "in.fastq")
         reader = sx.io.SxReader(seq_fn=in_fastq_fn)
         self.assertEqual(reader.seq_type, "fastq")
-        cnt = 0
+        seqs = []
         for seq in reader:
-            cnt += 1
-        self.assertEqual(cnt, 4)
+            seqs.append(seq)
+        self.assertEqual(len(seqs), 4)
+
+        reader.create_index()
+        self.assertIsNotNone(reader.index)
+        seq_from_index = reader.getseq(seqs[1].id)
+        self.assertEqual(seq_from_index.seq, seqs[1].seq)
+
+        seq_from_index = reader.getseq("blah")
+        self.assertIsNone(seq_from_index)
 
 # -- SxIoTest
 
