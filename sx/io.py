@@ -46,3 +46,22 @@ class SxReader():
             return self.index[seq_id]
 
 #-- SxReader
+
+class SxWriter():
+    def __init__(self, seq_fn, seq_type=None):
+        self.seq_fn = seq_fn
+        self.seq_f = open(seq_fn, "a+") # TODO mode?
+        if not seq_type:
+            seq_type = type_for_file(seq_fn)
+        self.seq_type = seq_type
+
+    def __del__(self):
+        self.seq_f.close()
+
+    def write(self, seqs):
+        SeqIO.write(seqs, self.seq_f, self.seq_type)
+
+    def flush(self):
+        self.seq_f.flush()
+
+#-- SxWriter

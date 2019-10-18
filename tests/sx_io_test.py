@@ -1,15 +1,15 @@
-import filecmp, os, subprocess, tempfile, unittest
+import filecmp, os, shutil, tempfile, unittest
 
 from .context import sx
 import sx.io
 
 class SxIoTest(unittest.TestCase):
-    #def setUp(self):
-    #    self.data_d = os.path.join( os.path.dirname(__file__), "data", "dedup")
-    #    self.out = tempfile.NamedTemporaryFile(mode="r+")
+    def setUp(self):
+        self.data_d = os.path.join( os.path.dirname(__file__), "data", "io")
 
-    #def tearDown(self):
-    #    self.out.close()
+    def tearDown(self):
+        if hasattr(self, "temp_d"):
+            self.temp_d.cleanup()
 
     def test1_type_for_file(self):
         with self.assertRaisesRegex(Exception, "Cannot determine sequence type from file: blah"):
@@ -21,9 +21,8 @@ class SxIoTest(unittest.TestCase):
         for ext in (".fasta", ".fna", ".fa"):
             self.assertEqual(sx.io.type_for_file("file"+ext), "fasta")
 
-    def test2_reader(self):
-        self.assertTrue(True)
-        in_fastq_fn = os.path.join(os.path.dirname(__file__), "data", "io", "in.fastq")
+    def test2_reader_writer(self):
+        in_fastq_fn = os.path.join(self.data_d, "in.fastq")
         reader = sx.io.SxReader(seq_fn=in_fastq_fn)
         self.assertEqual(reader.seq_type, "fastq")
         seqs = []
@@ -38,6 +37,15 @@ class SxIoTest(unittest.TestCase):
 
         seq_from_index = reader.getseq("blah")
         self.assertIsNone(seq_from_index)
+
+        self.temp_d = tempfile.TemporaryDirectory()
+        out_fasta_fn = os.path.join(self.temp_d.name, "out.fasta")
+        writer = sx.io.SxWriter(seq_fn=out_fasta_fn)
+        self.assertEqual(writer.seq_type, "fasta")
+        writer.write(seqs=seqs[1::2])
+        writer.flush()
+        expected_fasta_fn = os.path.join(self.data_d, "out.fasta")
+        self.assertTrue(filecmp.cmp(out_fasta_fn, expected_fasta_fn))
 
 # -- SxIoTest
 
