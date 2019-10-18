@@ -1,6 +1,4 @@
 import click, natsort, os, subprocess, sys, tabulate
-
-from lah.version import __version__
 import lah.edge_map, lah.haplotype
 
 # HAPLOTYPE [hap]
