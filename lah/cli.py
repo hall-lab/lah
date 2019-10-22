@@ -15,6 +15,10 @@ def cli(ctx):
 from lah.cli_assembly import lah_asm_cli
 cli.add_command(lah_asm_cli, name="assembly")
 
+# [db]
+from lah.cli_db import lah_db_cli
+cli.add_command(lah_db_cli, name="db")
+
 # [haplotypes]
 from lah.cli_haplotypes import lah_hap_cli
 cli.add_command(lah_hap_cli, name="haplotypes")
