@@ -12,14 +12,16 @@ class LahDbTest(unittest.TestCase):
         self.dbfile.close()
 
     def test1_lah_db_create(self):
-        lah.db.create(self.dbfile.name)
+        db = lah.db.LahDb(self.dbfile.name)
+        db.create()
         self.assertTrue(os.path.exists(self.dbfile.name))
         self.assertTrue(os.path.getsize(self.dbfile.name), 61440)
 
     def test2_lah_db_connect(self):
-        lah.db.create(self.dbfile.name)
+        db = lah.db.LahDb(self.dbfile.name)
+        db.create()
         self.assertTrue(os.path.exists(self.dbfile.name))
-        session = lah.db.connect(self.dbfile.name)
+        session = db.connect()
         self.assertIsNotNone(session)
 
 # -- LahDbTest

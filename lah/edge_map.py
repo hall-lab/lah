@@ -34,6 +34,7 @@ class HaplotypeIterator():
                 rids.append(edge["rid"])
 
         if len(rids) > 0:
+            rids.sort()
             return {"hid": hid, "rids": rids}
         else:
             raise StopIteration()

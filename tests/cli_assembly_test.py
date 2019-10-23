@@ -2,14 +2,15 @@ import filecmp, os, subprocess, tempfile, unittest
 
 class LahAssemblyCliTest(unittest.TestCase):
     def setUp(self):
-        self.out = tempfile.TemporaryFile()
-        self.err = tempfile.TemporaryFile()
+        self.data_d = os.path.join(os.path.dirname(__file__), "data", "assembly")
+        self.temp_d = tempfile.TemporaryDirectory()
+        self.out = tempfile.NamedTemporaryFile()
+        self.err = tempfile.NamedTemporaryFile()
 
     def tearDown(self):
         self.out.close()
         self.err.close()
-        if hasattr(self, "tempdir"):
-            self.tempdir.cleanup()
+        self.temp_d.cleanup()
 
     def test1_lah_assembly(self):
         rv = subprocess.call(["lah", "assembly"], stdout=self.out)
@@ -19,7 +20,21 @@ class LahAssemblyCliTest(unittest.TestCase):
         rv = subprocess.call(["lah", "assembly", "--help"], stdout=self.out)
         self.assertEqual(rv, 0)
 
-    def test2_lah_assembly_merge(self):
+    def test2_lah_assembly_ingest(self):
+        rv = subprocess.call(["lah", "assembly", "ingest"], stdout=self.out, stderr=self.err)
+        self.assertEqual(rv, 2)
+        rv = subprocess.call(["lah", "assembly", "ingest", "-h"], stdout=self.out)
+        self.assertEqual(rv, 0)
+        rv = subprocess.call(["lah", "assembly", "ingest", "--help"], stdout=self.out)
+        self.assertEqual(rv, 0)
+
+        dbfile = os.path.join(self.temp_d.name, "test.db")
+        haplotypes_fn = os.path.join(self.data_d, "edge-map.tsv")
+        rv = subprocess.call(["lah", "assembly", "ingest", "--asm-dir", self.temp_d.name, "--dbfile", dbfile, "--haplotypes", haplotypes_fn], stdout=self.out)
+        self.assertEqual(rv, 0)
+        self.assertTrue(os.path.exists(dbfile))
+
+    def test3_lah_assembly_merge(self):
         rv = subprocess.call(["lah", "assembly", "merge"], stdout=self.out, stderr=self.err)
         self.assertEqual(rv, 2)
         rv = subprocess.call(["lah", "assembly", "merge", "-h"], stdout=self.out)
@@ -29,8 +44,7 @@ class LahAssemblyCliTest(unittest.TestCase):
 
         data_d = os.path.join(os.path.dirname(__file__), "data", "assembly")
         edge_map_fn = os.path.join(data_d, "edge-map.tsv")
-        self.tempdir = tempfile.TemporaryDirectory()
-        assembly_fa = os.path.join(self.tempdir.name, "assembly.fasta")
+        assembly_fa = os.path.join(self.temp_d.name, "assembly.fasta")
 
         rv = subprocess.call(["lah", "assembly", "merge", "--directory", data_d, "--source", edge_map_fn, "--output", assembly_fa], stdout=self.out)
         self.assertEqual(rv, 0)
@@ -38,7 +52,7 @@ class LahAssemblyCliTest(unittest.TestCase):
         self.assertTrue(os.path.exists(assembly_fa))
         self.assertTrue(filecmp.cmp(assembly_fa, os.path.join(data_d, "expected.assembly.fasta")))
 
-    def test3_lah_assembly_prepare(self):
+    def test4_lah_assembly_prepare(self):
         rv = subprocess.call(["lah", "assembly", "prepare"], stdout=self.out, stderr=self.err)
         self.assertEqual(rv, 2)
         rv = subprocess.call(["lah", "assembly", "prepare", "-h"], stdout=self.out)
@@ -46,15 +60,13 @@ class LahAssemblyCliTest(unittest.TestCase):
         rv = subprocess.call(["lah", "assembly", "prepare", "--help"], stdout=self.out)
         self.assertEqual(rv, 0)
 
-        tempdir = tempfile.TemporaryDirectory()
-        self.tempdir = tempdir
         data_d = os.path.join(os.path.dirname(__file__), "data", "haplotype")
         hid = "402_0_2_0"
         edge_map_fn = os.path.join(data_d, "{}.edge-map.tsv".format(hid))
-        rv = subprocess.call(["lah", "assembly", "prepare", "--directory", tempdir.name, "--source", edge_map_fn], stdout=self.out)
+        rv = subprocess.call(["lah", "assembly", "prepare", "--directory", self.temp_d.name, "--source", edge_map_fn], stdout=self.out)
         self.assertEqual(rv, 0)
 
-        haplotype_d = os.path.join(tempdir.name, hid)
+        haplotype_d = os.path.join(self.temp_d.name, hid)
         self.assertTrue(os.path.exists(os.path.join(haplotype_d, "asm.sh")))
         self.assertTrue(filecmp.cmp(os.path.join(haplotype_d, "reads"), os.path.join(data_d, "{}.reads".format(hid))))
 

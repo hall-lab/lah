@@ -7,6 +7,10 @@ def lah_asm_cli():
     """
     pass
 
+# INGEST
+from lah.cli_assembly_ingest import lah_asm_ingest_cmd
+lah_asm_cli.add_command(lah_asm_ingest_cmd, name="ingest")
+
 # MERGE
 from lah.cli_assembly_merge import lah_asm_merge_cmd
 lah_asm_cli.add_command(lah_asm_merge_cmd, name="merge")

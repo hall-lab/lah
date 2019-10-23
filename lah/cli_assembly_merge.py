@@ -1,6 +1,6 @@
-import click, jinja2, os, yaml
-from lah.version import __version__
-import lah.edge_map, lah.haplotype, sx.io
+import click, os, yaml
+from lah.edge_map import HaplotypeIterator
+from sx.io import SxReader, SxWriter
 
 @click.command(short_help="merge haplotype assembly fastas")
 @click.option("--directory", required=True, type=click.STRING, help="Base directory to create subdirs of halpotypes for assembly.")
@@ -33,22 +33,22 @@ def lah_asm_merge_cmd(source, directory, output):
         "skipped no assembly": 0,
         "count": 0,
     }
-    writer = sx.io.SxWriter(seq_fn=output)
-    for haplotype in lah.haplotype.HaplotypeIterator(edge_map_fn=source):
-        if len(haplotype.rids) < 2:
+    writer = SxWriter(seq_fn=output)
+    for haplotype in HaplotypeIterator(edge_map_fn=source):
+        if len(haplotype["rids"]) < 2:
             metrics["skipped one read"] += 1
             continue
 
-        haplotype_d = os.path.abspath(os.path.join(directory, haplotype.id))
-        assembly_fa = os.path.join(haplotype_d, ".".join([haplotype.id, "contigs", "fasta"]))
+        haplotype_d = os.path.abspath(os.path.join(directory, haplotype["hid"]))
+        assembly_fa = os.path.join(haplotype_d, ".".join([haplotype["hid"], "contigs", "fasta"]))
         if not os.path.exists(assembly_fa):
             metrics["skipped no assembly"] += 1
             continue
 
         cnt = 1
         metrics["count"] += 1
-        for seq in sx.io.SxReader(seq_fn=assembly_fa):
-            seq.id = ".".join([haplotype.id, str(cnt)])
+        for seq in SxReader(seq_fn=assembly_fa):
+            seq.id = ".".join([haplotype["hid"], str(cnt)])
             writer.write(seq)
             cnt += 1
     print("Haplotype metrics:\n{}".format(yaml.dump(metrics, sort_keys=True, indent=4)))
