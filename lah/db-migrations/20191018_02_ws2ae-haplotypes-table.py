@@ -8,7 +8,7 @@ __depends__ = {'20191018_01_JkemK-assemblies-table'}
 
 steps = [
     step(
-        "CREATE TABLE IF NOT EXISTS haplotypes (id INT, name VARCHAR(16), assembly_id INT, length INT, reads_cnt INT, PRIMARY KEY (id), FOREIGN KEY (assembly_id) REFERENCES assemblies(id))",
+        "CREATE TABLE IF NOT EXISTS haplotypes (id INTEGER PRIMARY KEY, name VARCHAR(16), assembly_id INT, length INT, reads_cnt INT, FOREIGN KEY (assembly_id) REFERENCES assemblies(id))",
         "DROP TABLE haplotypes",
     ),
     step("CREATE INDEX IF NOT EXISTS asmid_idx ON haplotypes (assembly_id)", "DROP INDEX asmid_idx"),

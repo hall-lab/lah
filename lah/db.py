@@ -3,7 +3,20 @@ from sqlalchemy import create_engine
 from sqlalchemy.ext.automap import automap_base
 from sqlalchemy.orm import sessionmaker
 
+#from lah.db.assembly import Assembly
+#from lah.db.haplotype import Haplotype
+
 Base = automap_base()
+
+def connect(database_file):
+    db_url = "sqlite:///" + database_file
+    engine = create_engine(db_url)
+    Base.metadata.create_all(engine)
+    Base.prepare(engine, reflect=True)
+    sm = sessionmaker(bind=engine)
+    return sm()
+
+#-- connect
 
 def create(database_file):
     db_url = "sqlite:///" + database_file
