@@ -5,14 +5,11 @@ from lah.edge_map import HaplotypeIterator
 class Assembly(db.Base):
     __tablename__ = 'assemblies'
 
+    def ingest(self, session, haplotypes_fn):
+        for raw in HaplotypeIterator(edge_map_fn=haplotypes_fn):
+            haplotype = Haplotype(name=raw["hid"], assembly_id=self.id, reads_cnt=len(raw["rids"]))
+            session.add(haplotype)
+
+    #-- ingest
+
 #-- Assembly
-
-def ingest(session, haplotypes_fn, asm_dir):
-    assembly = Assembly(directory=asm_dir)
-    session.add(assembly)
-
-    for raw in HaplotypeIterator(edge_map_fn=haplotypes_fn):
-        haplotype = Haplotype(name=raw["hid"], assembly_id=assembly.id, reads_cnt=len(raw["rids"]))
-        session.add(haplotype)
-
-#-- create_db

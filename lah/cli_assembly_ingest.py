@@ -1,5 +1,5 @@
 import click, os
-import lah.assembly
+from lah.assembly import Assembly
 from lah.db import LahDb
 
 @click.command(short_help="create and ingest haplotypes into a database")
@@ -11,26 +11,31 @@ def lah_asm_ingest_cmd(asm_dir, dbfile, haplotypes):
     Create Haplotypes Database
 
     ** REQUIRED PARAMETERS **
-    directory:  The base directory location of haplotypes
+    dbfile: The database file to ingest haplotypes. The directory location will be used as the assembly directory.
     haplotypes: A file of haplotypes. Supported formats: edge map
 
     ** OPTIONAL PARAMETERS **
-    asm-dir: The top level directroy for the  assemvbly, if not the database file's directory.
+    asm-dir: The top level directory location of haplotypes, if different from dbfile directory name.
 
     """
     if not os.path.exists(haplotypes):
         raise Exception("Haplotype file {} does not exist!".format(haplotypes))
     if not asm_dir:
-        asm_dir = os.path.dirname(haplotypes)
+        asm_dir = os.path.dirname(dbfile)
     print("Create DB...")
     print("Assembly directory: {}".format(asm_dir))
     print("Haplotypes: {}".format(haplotypes))
     db = LahDb(dbfile=dbfile)
     if not os.path.exists(dbfile):
         db.create()
+
     sessionmaker = db.connect()
     session = sessionmaker()
-    lah.assembly.ingest(asm_dir=asm_dir, session=session, haplotypes_fn=haplotypes)
+
+    assembly = Assembly(directory=asm_dir)
+    session.add(assembly)
+    assembly.ingest(session=session, haplotypes_fn=haplotypes)
+    session.commit()
     # TODO fetch and print assembly stats
 
 #-- lah_asm_ingest_cmd
