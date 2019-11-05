@@ -31,6 +31,8 @@ class LahAssemblyTests(unittest.TestCase):
         asm = session.query(Assembly).first()
         self.assertEqual(asm.id, 1)
 
+        self.assertEqual(asm.merged_fasta(), "/blah/assembly.fasta")
+
 # -- LahAssemblyTests
 
 if __name__ == '__main__':

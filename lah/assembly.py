@@ -2,9 +2,13 @@ import jinja2, os
 import lah.db as db
 from lah.haplotype import Haplotype
 from lah.edge_map import HaplotypeIterator
+from sx.io import SxReader, SxWriter
 
 class Assembly(db.Base):
     __tablename__ = 'assemblies'
+
+    def merged_fasta(self):
+        return os.path.join(self.directory, ".".join(["assembly", "fasta"]))
 
     def ingest(self, session, haplotypes_fn):
         for raw in HaplotypeIterator(edge_map_fn=haplotypes_fn):
@@ -34,5 +38,33 @@ class Assembly(db.Base):
                         "SIZE": "{}".format(1000), "FASTQ": fastq_fn}) )
     
     #-- prepare
+
+    def merge(self, session):
+        metrics = {
+            "skipped one read": 0,
+            "skipped no assembly": 0,
+            "count": 0,
+        }
+        writer = SxWriter(seq_fn=self.merged_fasta())
+        for haplotype in session.query(Haplotype).all():
+            if haplotype.reads_cnt < 2:
+                metrics["skipped one read"] += 1
+                continue
+
+            haplotype_d = os.path.abspath(os.path.join(self.directory, haplotype.name))
+            assembly_fa = os.path.join(haplotype_d, ".".join([haplotype.name, "contigs", "fasta"]))
+            if not os.path.exists(assembly_fa):
+                metrics["skipped no assembly"] += 1
+                continue
+
+            cnt = 1
+            metrics["count"] += 1
+            for seq in SxReader(seq_fn=assembly_fa):
+                seq.id = ".".join([haplotype.name, str(cnt)])
+                writer.write(seq)
+                cnt += 1
+        return metrics
+
+    #-- merge
 
 #-- Assembly
