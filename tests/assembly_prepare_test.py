@@ -5,7 +5,7 @@ from lah.assembly import Assembly
 from lah.haplotype import Haplotype
 from lah.db import LahDb
 
-class LahAssemblyTests(unittest.TestCase):
+class LahAssemblyPrepareTests(unittest.TestCase):
     def setUp(self):
         self.data_d = os.path.join(os.path.dirname(__file__), "data", "assembly")
         self.temp_d = tempfile.TemporaryDirectory()
@@ -54,9 +54,10 @@ class LahAssemblyTests(unittest.TestCase):
 
         rv = subprocess.call(["lah", "assembly", "prepare", "--dbfile", self.dbfile], stdout=self.out, stderr=self.err)
         self.assertEqual(rv, 0)
+
         self.verify_assembly()
 
-# -- LahAssemblyTests
+# -- LahAssemblyPrepareTests
 
 if __name__ == '__main__':
     unittest.main(verbosity=2)

@@ -8,15 +8,14 @@ def lah_asm_prepare_cmd(dbfile):
     """
     Prepare Haplotypes for Local Assembly
     """
-    if not os.path.exists(dbfile):
-        raise Exception("Haplotype source {} does not exist!".format(source))
     print("Prepare haplotypes for assembly...")
     print("DB File: {}".format(dbfile))
+    if not os.path.exists(dbfile):
+        raise Exception("Haplotype source {} does not exist!".format(source))
     db = LahDb(dbfile=dbfile)
     sessionmaker = db.connect()
     session = sessionmaker()
     assembly = session.query(Assembly).first() # FIXME may be multiple asemblies
-    print("Directory: {}".format(assembly.directory))
     assembly.prepare(session)
 
 #-- lah_asm_prepare_cmd
