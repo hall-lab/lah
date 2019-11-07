@@ -21,7 +21,9 @@ install_requires=[
     "Jinja2>=2.10.1",
     "natsort",
     "pyyaml==5.1",
+    "SQLAlchemy>=1.3.10",
     "tabulate",
+    "yoyo-migrations>=6.1.0",
 ]
 
 setup(
