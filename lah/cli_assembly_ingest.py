@@ -12,7 +12,7 @@ def lah_asm_ingest_cmd(asm_dir, dbfile, read_groups):
 
     ** REQUIRED PARAMETERS **
     dbfile: The database file to ingest read groups. The directory location will be used as the assembly directory.
-    read groups: A file of read groups. Supported formats: edge map
+    read groups: A file of read groups.
 
     ** OPTIONAL PARAMETERS **
     asm-dir: The top level directory location of read groups, if different from dbfile directory name.

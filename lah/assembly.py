@@ -1,7 +1,7 @@
 import jinja2, os
 import lah.db as db
 from lah.read_group import ReadGroup
-from lah.edge_map import ReadGroupIterator
+from lah.read_group_iters import ReadGroupIterator
 from sx.io import SxReader, SxWriter
 
 class Assembly(db.Base):
@@ -11,8 +11,8 @@ class Assembly(db.Base):
         return os.path.join(self.directory, ".".join(["assembly", "fasta"]))
 
     def ingest(self, session, read_groups_fn):
-        for raw in ReadGroupIterator(edge_map_fn=read_groups_fn):
-            read_group = ReadGroup(name=raw["hid"], assembly_id=self.id, reads_cnt=len(raw["rids"]))
+        for raw in ReadGroupIterator(in_fn=read_groups_fn):
+            read_group = ReadGroup(name=raw["rg_id"], assembly_id=self.id, reads_cnt=len(raw["rids"]))
             session.add(read_group)
 
     #-- ingest

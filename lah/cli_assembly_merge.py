@@ -4,7 +4,7 @@ from lah.db import LahDb
 from sx.io import SxReader, SxWriter
 
 @click.command(short_help="merge read_group assembly fastas")
-@click.option("--dbfile", required=True, type=click.STRING, help="Source of read_groups. Currently supported: edge map.")
+@click.option("--dbfile", required=True, type=click.STRING, help="Source of read_groups.")
 def lah_asm_merge_cmd(dbfile):
     """
     Merge ReadGroup Assembly Fastas

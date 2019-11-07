@@ -1,5 +1,5 @@
 import click, natsort, os, subprocess, sys, tabulate
-import lah.edge_map, lah.read_group
+import lah.read_group_iters, lah.read_group
 
 # read_group [hap]
 # - generate-fastq
@@ -48,11 +48,9 @@ lah_hap_cli.add_command(lah_hap_generate_fastq, name="generate-fastq")
 def lah_hap_list(source):
     """
     List ReadGroups in Different Sources
-
-    Sources: Edge map file. Sorry, only one we know.
     """
     rows = []
-    for hap in lah.read_group.ReadGroupIterator(edge_map_fn=source):
+    for hap in lah.read_group.ReadGroupIterator(in_fn=source):
         rows += [[ hap.id, len(hap.rids) ]]
 
     rows = natsort.natsorted(rows, key=lambda x:x[1])
@@ -67,7 +65,7 @@ def lah_hap_reads(read_group_id, source):
     Show Reads for a ReadGroup
     """
     read_group = None
-    for read_group in lah.read_group.ReadGroupIterator(edge_map_fn=source):
+    for read_group in lah.read_group.ReadGroupIterator(in_fn=source):
         if read_group_id == read_group.id:
             break
 
