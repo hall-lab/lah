@@ -2,7 +2,7 @@ import re
 
 edge_splitter =re.compile("\s+")
 
-class HaplotypeIterator():
+class ReadGroupIterator():
     def __init__(self, edge_map_fn):
         self.edge_map_f = open(edge_map_fn, "r")
         line = self.edge_map_f.readline()
@@ -27,7 +27,7 @@ class HaplotypeIterator():
             if not line: # EOF
                 break
             edge = self.parse_edge_map(line)
-            if edge["hid"] != hid: # new haplotype, save edge, break to return haplotype
+            if edge["hid"] != hid: # save edge, break to return read_group
                 self.prev_edge = edge
                 break
             else:
@@ -47,4 +47,4 @@ class HaplotypeIterator():
             rid = rid[1:]
         return {"hid": str(hid), "rid": rid}
 
-#-- HaplotypeIterator
+#-- ReadGroupIterator

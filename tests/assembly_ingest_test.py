@@ -3,7 +3,7 @@ import filecmp, os, subprocess, tempfile, unittest
 from .context import lah
 from lah.assembly import Assembly
 from lah.db import LahDb
-from lah.haplotype import Haplotype
+from lah.read_group import ReadGroup
 
 class LahAssemblyIngestTests(unittest.TestCase):
     def setUp(self):
@@ -23,8 +23,8 @@ class LahAssemblyIngestTests(unittest.TestCase):
         self.assertEqual(len(assemblies), 1)
         self.assertEqual(assemblies[0].directory, self.temp_d.name)
 
-        haplotypes = session.query(Haplotype).all()
-        self.assertTrue(len(haplotypes), 4)
+        read_groups = session.query(ReadGroup).all()
+        self.assertTrue(len(read_groups), 4)
 
     def test_assembly_ingest(self):
         db = lah.db.LahDb(dbfile=self.dbfile)
@@ -32,10 +32,10 @@ class LahAssemblyIngestTests(unittest.TestCase):
         sessionmaker = db.connect()
         session = sessionmaker()
 
-        haplotypes_fn = os.path.join(self.data_d, "edge-map.tsv")
+        read_groups_fn = os.path.join(self.data_d, "edge-map.tsv")
         assembly = Assembly(directory=self.temp_d.name)
         session.add(assembly)
-        assembly.ingest(session=session, haplotypes_fn=haplotypes_fn)
+        assembly.ingest(session=session, read_groups_fn=read_groups_fn)
         session.commit()
 
         self.verify_assembly(session)
@@ -48,8 +48,8 @@ class LahAssemblyIngestTests(unittest.TestCase):
         rv = subprocess.call(["lah", "assembly", "ingest", "--help"], stdout=self.out)
         self.assertEqual(rv, 0)
 
-        haplotypes_fn = os.path.join(self.data_d, "edge-map.tsv")
-        rv = subprocess.call(["lah", "assembly", "ingest", "--asm-dir", self.temp_d.name, "--dbfile", self.dbfile, "--haplotypes", haplotypes_fn], stdout=self.out)
+        read_groups_fn = os.path.join(self.data_d, "edge-map.tsv")
+        rv = subprocess.call(["lah", "assembly", "ingest", "--asm-dir", self.temp_d.name, "--dbfile", self.dbfile, "--read-groups", read_groups_fn], stdout=self.out)
         self.assertEqual(rv, 0)
 
         db = LahDb(dbfile=self.dbfile)
