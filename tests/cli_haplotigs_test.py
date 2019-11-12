@@ -1,6 +1,6 @@
 import subprocess, tempfile, unittest
 
-class LahReadGroupsCliTest(unittest.TestCase):
+class LahHaplotigsCliTest(unittest.TestCase):
     def setUp(self):
         self.out = tempfile.TemporaryFile()
         self.err = tempfile.TemporaryFile()
@@ -9,7 +9,7 @@ class LahReadGroupsCliTest(unittest.TestCase):
         self.out.close()
         self.err.close()
 
-    def test1_lah_read_groups(self):
+    def test1_lah_haplotigs(self):
         rv = subprocess.call(["lah", "read-groups"], stdout=self.out)
         self.assertEqual(rv, 0)
         rv = subprocess.call(["lah", "read-groups", "-h"], stdout=self.out)
@@ -17,14 +17,14 @@ class LahReadGroupsCliTest(unittest.TestCase):
         rv = subprocess.call(["lah", "read-groups", "--help"], stdout=self.out)
         self.assertEqual(rv, 0)
 
-    def test2_lah_read_groups_list(self):
+    def test2_lah_haplotigs_list(self):
         rv = subprocess.call(["lah", "read-groups", "list"], stdout=self.out, stderr=self.err)
         self.assertEqual(rv, 2)
         rv = subprocess.call(["lah", "read-groups", "list", "-h"], stdout=self.out)
         self.assertEqual(rv, 0)
         rv = subprocess.call(["lah", "read-groups", "list", "--help"], stdout=self.out)
 
-    def test3_lah_read_groups_reads(self):
+    def test3_lah_haplotigs_reads(self):
         rv = subprocess.call(["lah", "read-groups", "reads"], stdout=self.out, stderr=self.err)
         self.assertEqual(rv, 2)
         rv = subprocess.call(["lah", "read-groups", "reads", "-h"], stdout=self.out)
@@ -32,7 +32,7 @@ class LahReadGroupsCliTest(unittest.TestCase):
         rv = subprocess.call(["lah", "read-groups", "reads", "--help"], stdout=self.out)
         self.assertEqual(rv, 0)
 
-    def test3_lah_read_groups_generate_fastq(self):
+    def test3_lah_haplotigs_generate_fastq(self):
         rv = subprocess.call(["lah", "read-groups", "generate-fastq"], stdout=self.out, stderr=self.err)
         self.assertEqual(rv, 2)
         rv = subprocess.call(["lah", "read-groups", "generate-fastq", "-h"], stdout=self.out)
@@ -40,7 +40,7 @@ class LahReadGroupsCliTest(unittest.TestCase):
         rv = subprocess.call(["lah", "read-groups", "generate-fastq", "--help"], stdout=self.out)
         self.assertEqual(rv, 0)
 
-# -- LahReadGroupsCliTest
+# -- LahHaplotigsCliTest
 
 if __name__ == '__main__':
     unittest.main(verbosity=2)

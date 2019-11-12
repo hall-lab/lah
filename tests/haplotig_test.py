@@ -1,39 +1,37 @@
 import os, tempfile, unittest
 
 from .context import lah
-from lah.assembly import Assembly
 from lah.haplotig import Haplotig
 import lah.db
 
-class LahAssemblyTests(unittest.TestCase):
+class LahHaplotigTest(unittest.TestCase):
     def setUp(self):
-        self.data_d = os.path.join(os.path.dirname(__file__), "data", "assembly")
         self.temp_d = tempfile.TemporaryDirectory()
         self.dbfile = os.path.join(self.temp_d.name, "test.db")
 
     def tearDown(self):
         self.temp_d.cleanup()
 
-    def test1_assembly(self):
+    def test1_haplotig_create_and_get(self):
         dbfile = self.dbfile
         db = lah.db.LahDb(dbfile=dbfile)
         db.create()
         sessionmaker = db.connect()
         session = sessionmaker()
 
-        asm = Assembly(directory="/blah")
-        self.assertIsNotNone(asm)
-        self.assertEqual(asm.directory, "/blah")
+        haplotig = Haplotig(name="402_0_2_0", reads_cnt=14, assembly_id=1)
+        self.assertIsNotNone(haplotig)
+        self.assertEqual(haplotig.name, "402_0_2_0")
+        self.assertEqual(haplotig.reads_cnt, 14)
 
-        session.add(asm)
+        session.add(haplotig)
         session.commit()
-        self.assertEqual(asm.id, 1)
-        asm = session.query(Assembly).first()
-        self.assertEqual(asm.id, 1)
 
-        self.assertEqual(asm.merged_fasta(), "/blah/assembly.fasta")
+        self.assertEqual(haplotig.id, 1)
+        haplotig = session.query(Haplotig).first()
+        self.assertEqual(haplotig.id, 1)
 
-# -- LahAssemblyTests
+# -- LahHaplotigTest
 
 if __name__ == '__main__':
     unittest.main(verbosity=2)

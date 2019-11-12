@@ -2,7 +2,7 @@ import filecmp, os, shutil, subprocess, tempfile, unittest
 
 from .context import lah
 from lah.assembly import Assembly
-from lah.read_group import ReadGroup
+from lah.haplotig import Haplotig
 from lah.db import LahDb
 
 class LahAssemblyMergeTests(unittest.TestCase):

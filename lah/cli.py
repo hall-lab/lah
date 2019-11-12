@@ -7,7 +7,7 @@ CONTEXT_SETTINGS = dict(help_option_names=['-h', '--help'])
 @click.pass_context
 def cli(ctx):
     """
-    Local Assembly of ReadGroups
+    Local Assembly of Haplotigs
     """
     pass
 
@@ -19,6 +19,6 @@ cli.add_command(lah_asm_cli, name="assembly")
 from lah.cli_db import lah_db_cli
 cli.add_command(lah_db_cli, name="db")
 
-# [read_groups]
-from lah.cli_read_groups import lah_hap_cli
-cli.add_command(lah_hap_cli, name="read-groups")
+# [haplotigs]
+from lah.cli_haplotigs import lah_hap_cli
+cli.add_command(lah_hap_cli, name="haplotigs")

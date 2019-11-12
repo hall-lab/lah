@@ -1,7 +1,7 @@
 import jinja2, os
 import lah.db as db
-from lah.read_group import ReadGroup
-from lah.read_group_iters import ReadGroupIterator
+from lah.haplotig import Haplotig
+from lah.haplotig_iters import HaplotigIterator
 from sx.io import SxReader, SxWriter
 
 class Assembly(db.Base):
@@ -10,31 +10,31 @@ class Assembly(db.Base):
     def merged_fasta(self):
         return os.path.join(self.directory, ".".join(["assembly", "fasta"]))
 
-    def ingest(self, session, read_groups_fn):
-        for raw in ReadGroupIterator(in_fn=read_groups_fn):
-            read_group = ReadGroup(name=raw["rg_id"], assembly_id=self.id, reads_cnt=len(raw["rids"]))
-            session.add(read_group)
+    def ingest(self, session, haplotigs_fn):
+        for raw in HaplotigIterator(in_fn=haplotigs_fn):
+            haplotig = Haplotig(name=raw["rg_id"], assembly_id=self.id, reads_cnt=len(raw["rids"]))
+            session.add(haplotig)
 
     #-- ingest
 
     def prepare(self, session):
-        read_groups_d = os.path.join(self.directory, "read_groups")
-        if not os.path.exists(read_groups_d):
-            os.makedirs(read_groups_d)
+        haplotigs_d = os.path.join(self.directory, "haplotigs")
+        if not os.path.exists(haplotigs_d):
+            os.makedirs(haplotigs_d)
     
         asm_template_str = 'canu -p {{ PREFIX }} -d {{ DIRECTORY }} genomeSize={{ SIZE }} correctedErrorRate=0.015 ovlMerThreshold=75 batOptions="-eg 0.01 -eM 0.01 -dg 6 -db 6 -dr 1 -ca 50 -cp 5" -pacbio-corrected {{ FASTQ }} useGrid=false'
         asm_template = jinja2.Template(asm_template_str)
     
-        for read_group in session.query(ReadGroup).all():
-            read_group_d = os.path.abspath(os.path.join(read_groups_d, read_group.name))
-            if not os.path.exists(read_group_d):
-                os.makedirs(read_group_d)
+        for haplotig in session.query(Haplotig).all():
+            haplotig_d = os.path.abspath(os.path.join(haplotigs_d, haplotig.name))
+            if not os.path.exists(haplotig_d):
+                os.makedirs(haplotig_d)
     
             # asm script
-            asm_script_fn = os.path.join(read_group_d, "asm.sh")
-            fastq_fn = os.path.join(read_group_d, "read_group.fastq")
+            asm_script_fn = os.path.join(haplotig_d, "asm.sh")
+            fastq_fn = os.path.join(haplotig_d, "haplotig.fastq")
             with open(asm_script_fn, "w") as f:
-                f.write( asm_template.render({"PREFIX": read_group.id, "DIRECTORY": read_group_d,
+                f.write( asm_template.render({"PREFIX": haplotig.id, "DIRECTORY": haplotig_d,
                         "SIZE": "{}".format(1000), "FASTQ": fastq_fn}) )
     
     #-- prepare
@@ -46,13 +46,13 @@ class Assembly(db.Base):
             "count": 0,
         }
         writer = SxWriter(seq_fn=self.merged_fasta())
-        for read_group in session.query(ReadGroup).all():
-            if read_group.reads_cnt < 2:
+        for haplotig in session.query(Haplotig).all():
+            if haplotig.reads_cnt < 2:
                 metrics["skipped one read"] += 1
                 continue
 
-            read_group_d = os.path.abspath(os.path.join(self.directory, read_group.name))
-            assembly_fa = os.path.join(read_group_d, ".".join([read_group.name, "contigs", "fasta"]))
+            haplotig_d = os.path.abspath(os.path.join(self.directory, haplotig.name))
+            assembly_fa = os.path.join(haplotig_d, ".".join([haplotig.name, "contigs", "fasta"]))
             if not os.path.exists(assembly_fa):
                 metrics["skipped no assembly"] += 1
                 continue
@@ -60,7 +60,7 @@ class Assembly(db.Base):
             cnt = 1
             metrics["count"] += 1
             for seq in SxReader(seq_fn=assembly_fa):
-                seq.id = ".".join([read_group.name, str(cnt)])
+                seq.id = ".".join([haplotig.name, str(cnt)])
                 writer.write(seq)
                 cnt += 1
         return metrics

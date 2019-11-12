@@ -2,7 +2,7 @@ import re
 
 edge_splitter = re.compile("\s+")
 
-class ReadGroupIterator():
+class HaplotigIterator():
     def __init__(self, in_fn):
         self.in_f = open(in_fn, "r")
         line = self.in_f.readline()
@@ -27,7 +27,7 @@ class ReadGroupIterator():
             if not line: # EOF
                 break
             rg = self.parse_line(line)
-            if rg["rg_id"] != rg_id: # save read group, break to return read_group
+            if rg["rg_id"] != rg_id: # save read group, break to return haplotig
                 self.prev = rg
                 break
             else:
@@ -47,4 +47,4 @@ class ReadGroupIterator():
             rid = rid[1:]
         return {"rg_id": str(rg_id), "rid": rid}
 
-#-- ReadGroupIterator
+#-- HaplotigIterator

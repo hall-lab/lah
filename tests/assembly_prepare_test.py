@@ -2,7 +2,7 @@ import filecmp, os, shutil, subprocess, tempfile, unittest
 
 from .context import lah
 from lah.assembly import Assembly
-from lah.read_group import ReadGroup
+from lah.haplotig import Haplotig
 from lah.db import LahDb
 
 class LahAssemblyPrepareTests(unittest.TestCase):
@@ -33,12 +33,12 @@ class LahAssemblyPrepareTests(unittest.TestCase):
 
     def verify_assembly(self):
         self.assertTrue(os.path.exists(self.dbfile))
-        read_groups_d = os.path.join(self.temp_d.name, "read_groups")
-        self.assertTrue(os.path.exists(read_groups_d))
-        for read_group in self.session.query(ReadGroup).all():
-            read_group_d = os.path.join(read_groups_d, read_group.name)
-            self.assertTrue(os.path.exists(read_group_d))
-            self.assertTrue(os.path.exists( os.path.join(read_group_d, "asm.sh") ))
+        haplotigs_d = os.path.join(self.temp_d.name, "haplotigs")
+        self.assertTrue(os.path.exists(haplotigs_d))
+        for haplotig in self.session.query(Haplotig).all():
+            haplotig_d = os.path.join(haplotigs_d, haplotig.name)
+            self.assertTrue(os.path.exists(haplotig_d))
+            self.assertTrue(os.path.exists( os.path.join(haplotig_d, "asm.sh") ))
 
     def test_assembly_prepare(self):
         self.assembly.prepare(self.session)
