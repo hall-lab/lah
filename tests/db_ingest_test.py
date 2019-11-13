@@ -4,6 +4,7 @@ from .context import lah
 from lah.db import LahDb
 from lah.haplotig import Haplotig
 from lah.sample import Sample
+from lah.haplotig_iters import HaplotigIterator
 
 class LahDbIngestTests(unittest.TestCase):
     def setUp(self):
@@ -36,7 +37,8 @@ class LahDbIngestTests(unittest.TestCase):
         sample = Sample(name="McTesterson", directory=self.temp_d.name)
         session.add(sample)
         session.commit()
-        sample.ingest(session=session, haplotigs_fn=haplotigs_fn)
+        haplotig_iter = HaplotigIterator(in_fn=haplotigs_fn, headers=["NA", "rg_id", "rid"])
+        sample.ingest(session=session, haplotig_iter=haplotig_iter)
         session.commit()
 
         self.verify_sample(session)
@@ -50,7 +52,7 @@ class LahDbIngestTests(unittest.TestCase):
         self.assertEqual(rv, 0)
 
         haplotigs_fn = os.path.join(self.data_d, "edge-map.tsv")
-        rv = subprocess.call(["lah", "db", "ingest", "--sample-name", "McTesterson", "--sample-dir", self.temp_d.name, "--dbfile", self.dbfile, "--haplotigs", haplotigs_fn], stdout=self.out)
+        rv = subprocess.call(["lah", "db", "ingest", "--sample-name", "McTesterson", "--sample-dir", self.temp_d.name, "--dbfile", self.dbfile, "--haplotigs", haplotigs_fn, "-g", "NA,rg_id,rid"], stdout=self.out)
         self.assertEqual(rv, 0)
 
         db = LahDb(dbfile=self.dbfile)

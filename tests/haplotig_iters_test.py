@@ -5,14 +5,17 @@ import lah.haplotig_iters
 
 class LahHaplotigItersTest(unittest.TestCase):
 
-    def test1_parse_line(self):
-        rg = lah.haplotig_iters.HaplotigIterator.parse_line("ccs_31_21627397 @m54329_180927_232921/21627397/ccs  401_0_1_0")
-        self.assertEqual(rg["rg_id"], "401_0_1_0")
-        self.assertEqual(rg["rid"], "m54329_180927_232921/21627397/ccs")
+    def test1_validate_headers(self):
+        with self.assertRaisesRegex(Exception, "Missing required headers: rid"):
+            lah.haplotig_iters.HaplotigIterator.validate_headers(["NA", "rg_id","READ"])
 
     def test2_haplotig_iterator(self):
         in_fn = os.path.join(os.path.dirname(__file__), "data", "haplotig", "chr20.edge-map.tsv")
-        haplotig_iter = lah.haplotig_iters.HaplotigIterator(in_fn)
+
+        with self.assertRaisesRegex(Exception, "Missing required headers: rid"):
+            lah.haplotig_iters.HaplotigIterator(headers=["NA", "rg_id","READ"], in_fn=in_fn)
+
+        haplotig_iter = lah.haplotig_iters.HaplotigIterator(headers=["NA", "rid", "rg_id"], in_fn=in_fn)
         self.assertIsNotNone(haplotig_iter)
 
         haplotigs = []

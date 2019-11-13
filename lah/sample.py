@@ -10,8 +10,8 @@ class Sample(db.Base):
     def merged_fasta(self):
         return os.path.join(self.directory, ".".join(["sample", "fasta"]))
 
-    def ingest(self, session, haplotigs_fn):
-        for raw in HaplotigIterator(in_fn=haplotigs_fn):
+    def ingest(self, session, haplotig_iter):
+        for raw in haplotig_iter:
             haplotig = Haplotig(name=raw["rg_id"], sample_id=self.id, reads_cnt=len(raw["rids"]))
             session.add(haplotig)
 
