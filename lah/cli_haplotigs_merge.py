@@ -1,16 +1,16 @@
 import click, os, yaml
-from lah.assembly import Assembly
+from lah.sample import Sample
 from lah.db import LahDb
 from sx.io import SxReader, SxWriter
 
-@click.command(short_help="merge haplotig assembly fastas")
+@click.command(short_help="merge haplotig haplotigs fastas")
 @click.option("--dbfile", required=True, type=click.STRING, help="Source of haplotigs.")
-def lah_asm_merge_cmd(dbfile):
+def lah_hap_merge_cmd(dbfile):
     """
-    Merge Haplotig Assembly Fastas
+    Merge Haplotig haplotigs Fastas
 
     ** NOTES **
-    The merged assembly will be in the assembly directory.
+    The merged haplotigs will be in the haplotigs directory.
     Haplotigs with one read with be skipped.
     All contigs in haplotig assmebled fasta will be used.
     Haplotig contigs will be renamed to includ the haplotig id.
@@ -25,9 +25,7 @@ def lah_asm_merge_cmd(dbfile):
     sessionmaker = db.connect()
     session = sessionmaker()
 
-    assembly = session.query(Assembly).first() # FIXME may be multiple asemblies
-    print("Merged fasta: {}".format(assembly.merged_fasta()))
-    metrics = assembly.merge(session)
+    sample = session.query(Sample).first() # FIXME may be multiple samples
+    print("Merged fasta: {}".format(sample.merged_fasta()))
+    metrics = sample.merge(session)
     print("Haplotig metrics:\n{}".format(yaml.dump(metrics, sort_keys=True, indent=4)))
-
-#-- lah_asm_merge_cmd

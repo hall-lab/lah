@@ -2,21 +2,24 @@ import click, os, yoyo
 from lah.db import LahDb
 
 @click.group()
-def lah_db_cli():
+def db_cli():
     """
-    Work with the haplotig SQLite database
+    Work with the local haplotype assembly SQLite database
     """
     pass
 
-@click.command(short_help="make a new haplotig assembly db")
+# [create]
+@click.command(short_help="make a new local haplotype assembly db")
 @click.argument("dbfile", type=click.STRING)
-def lah_db_create_cmd(dbfile):
+def db_create_cmd(dbfile):
     """
-    Generate a New SQLite Database for Haplotigs Asseemblies
+    Generate a New SQLite Database for Local Haplotype Assemblies
     """
     print("Generate SQLite DB in {}".format(dbfile))
     db = LahDb(dbfile=dbfile)
     db.create()
-lah_db_cli.add_command(lah_db_create_cmd, name="create")
+db_cli.add_command(db_create_cmd, name="create")
 
-#-- lah_db_create_cmd
+# [ingest]
+from lah.cli_db_ingest import db_ingest_cmd
+db_cli.add_command(db_ingest_cmd, name="ingest")

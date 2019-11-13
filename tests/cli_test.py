@@ -7,7 +7,11 @@ class SxCliTest(unittest.TestCase):
     def tearDown(self):
         self.out.close()
 
-    def test1_sx(self):
+    def test_lah(self):
+        rv = subprocess.call(['lah'], stdout=self.out)
+        self.assertEqual(rv, 0)
+
+    def test_sx(self):
         rv = subprocess.call(['sx'], stdout=self.out)
         self.assertEqual(rv, 0)
 

@@ -4,6 +4,7 @@ import lah.haplotig_iters, lah.haplotig
 # haplotig [hap]
 # - generate-fastq
 # - list
+# - prepare
 # - reads
 
 @click.group()
@@ -12,6 +13,14 @@ def lah_hap_cli():
     Work with Haplotigs
     """
     pass
+
+# MERGE
+from lah.cli_haplotigs_merge import lah_hap_merge_cmd
+lah_hap_cli.add_command(lah_hap_merge_cmd, name="merge")
+
+# PREPARE
+from lah.cli_haplotigs_prepare import lah_hap_prepare_cmd
+lah_hap_cli.add_command(lah_hap_prepare_cmd, name="prepare")
 
 @click.command(short_help="generate fastq for a  haplotig")
 @click.option("--haplotig", required=True, type=click.STRING, help="Haplotig directory. This will have the 'reads' file, and be the output of the fastq file.")
