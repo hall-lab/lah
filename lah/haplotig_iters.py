@@ -4,7 +4,7 @@ edge_splitter = re.compile("\s+")
 
 class HaplotigIterator():
 
-    required_headers = set(["rg_id", "rid"])
+    required_headers = set(["hid", "rid"])
     @staticmethod
     def validate_headers(headers):
         missing = HaplotigIterator.required_headers - set(headers)
@@ -30,22 +30,22 @@ class HaplotigIterator():
         if not self.prev:
             raise StopIteration()
 
-        rg_id = self.prev["rg_id"]
+        hid = self.prev["hid"]
         rids = set([self.prev["rid"]])
         self.prev = None
         while True:
             try:
-                rg = next(self.reader)
+                hap = next(self.reader)
             except StopIteration: # EOF
                 break
-            if rg["rg_id"] != rg_id: # save read group, break to return haplotig
-                self.prev = rg
+            if hap["hid"] != hid: # save read group, break to return haplotig
+                self.prev = hap
                 break
             else:
-                rids.add(rg["rid"])
+                rids.add(hap["rid"])
 
         if len(rids) > 0:
-            return {"rg_id": rg_id, "rids": rids}
+            return {"hid": hid, "rids": rids}
         else:
             raise StopIteration()
 

@@ -12,11 +12,11 @@ class Sample(db.Base):
 
     def ingest(self, session, haplotig_iter):
         for raw in haplotig_iter:
-            haplotig = Haplotig(name=raw["rg_id"], sample_id=self.id, reads_cnt=len(raw["rids"]))
+            haplotig = Haplotig(id=raw["hid"], sample_id=self.id,)
             session.add(haplotig)
             session.flush()
             for rid in raw["rids"]:
-                read = HaplotigRead(id=rid, haplotig_id=1)
+                read = HaplotigRead(id=rid, haplotig_id=haplotig.id)
                 session.add(read)
 
     #-- ingest
@@ -30,7 +30,7 @@ class Sample(db.Base):
         sample_template = jinja2.Template(sample_template_str)
     
         for haplotig in session.query(Haplotig).all():
-            haplotig_d = os.path.abspath(os.path.join(haplotigs_d, haplotig.name))
+            haplotig_d = os.path.abspath(os.path.join(haplotigs_d, haplotig.id))
             if not os.path.exists(haplotig_d):
                 os.makedirs(haplotig_d)
     
@@ -55,8 +55,8 @@ class Sample(db.Base):
                 metrics["skipped one read"] += 1
                 continue
 
-            haplotig_d = os.path.abspath(os.path.join(self.directory, haplotig.name))
-            sample_fa = os.path.join(haplotig_d, ".".join([haplotig.name, "contigs", "fasta"]))
+            haplotig_d = os.path.abspath(os.path.join(self.directory, haplotig.id))
+            sample_fa = os.path.join(haplotig_d, ".".join([haplotig.id, "contigs", "fasta"]))
             if not os.path.exists(sample_fa):
                 metrics["skipped no assembly"] += 1
                 continue
@@ -64,7 +64,7 @@ class Sample(db.Base):
             cnt = 1
             metrics["count"] += 1
             for seq in SxReader(seq_fn=sample_fa):
-                seq.id = ".".join([haplotig.name, str(cnt)])
+                seq.id = ".".join([haplotig.id, str(cnt)])
                 writer.write(seq)
                 cnt += 1
         return metrics

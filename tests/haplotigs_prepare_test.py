@@ -37,7 +37,7 @@ class LahHaplotigPrepareTests(unittest.TestCase):
         self.assertTrue(os.path.exists(self.dbfile))
         self.assertTrue(os.path.exists(self.sample_d))
         for haplotig in self.session.query(Haplotig).all():
-            haplotig_d = os.path.join(self.sample_d, "haplotigs", haplotig.name)
+            haplotig_d = os.path.join(self.sample_d, "haplotigs", haplotig.id)
             self.assertTrue(os.path.exists(haplotig_d))
             self.assertTrue(os.path.exists( os.path.join(haplotig_d, "asm.sh") ))
 
