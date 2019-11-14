@@ -31,7 +31,7 @@ class HaplotigIterator():
             raise StopIteration()
 
         rg_id = self.prev["rg_id"]
-        rids = [self.prev["rid"]]
+        rids = set([self.prev["rid"]])
         self.prev = None
         while True:
             try:
@@ -42,10 +42,9 @@ class HaplotigIterator():
                 self.prev = rg
                 break
             else:
-                rids.append(rg["rid"])
+                rids.add(rg["rid"])
 
         if len(rids) > 0:
-            rids.sort()
             return {"rg_id": rg_id, "rids": rids}
         else:
             raise StopIteration()

@@ -1,6 +1,6 @@
 import jinja2, os
 import lah.db as db
-from lah.haplotig import Haplotig
+from lah.haplotig import Haplotig, HaplotigRead
 from lah.haplotig_iters import HaplotigIterator
 from sx.io import SxReader, SxWriter
 
@@ -14,6 +14,10 @@ class Sample(db.Base):
         for raw in haplotig_iter:
             haplotig = Haplotig(name=raw["rg_id"], sample_id=self.id, reads_cnt=len(raw["rids"]))
             session.add(haplotig)
+            session.flush()
+            for rid in raw["rids"]:
+                read = HaplotigRead(id=rid, haplotig_id=1)
+                session.add(read)
 
     #-- ingest
 

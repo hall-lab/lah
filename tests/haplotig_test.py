@@ -1,7 +1,7 @@
 import os, tempfile, unittest
 
 from .context import lah
-from lah.haplotig import Haplotig
+from lah.haplotig import Haplotig, HaplotigRead
 import lah.db
 
 class LahHaplotigTest(unittest.TestCase):
@@ -25,11 +25,33 @@ class LahHaplotigTest(unittest.TestCase):
         self.assertEqual(haplotig.reads_cnt, 14)
 
         session.add(haplotig)
-        session.commit()
-
+        session.flush()
         self.assertEqual(haplotig.id, 1)
+
+        session.commit()
         haplotig = session.query(Haplotig).first()
         self.assertEqual(haplotig.id, 1)
+
+    def test2_haplotig_read_create_and_get(self):
+        dbfile = self.dbfile
+        db = lah.db.LahDb(dbfile=dbfile)
+        db.create()
+        sessionmaker = db.connect()
+        session = sessionmaker()
+
+        rd_id = "m54238_180913_181445/44892801/ccs"
+        rd = HaplotigRead(id=rd_id, haplotig_id=1)
+        self.assertIsNotNone(rd)
+        self.assertEqual(rd.id, rd_id)
+        self.assertEqual(rd.haplotig_id, 1)
+
+        session.add(rd)
+        session.flush()
+        self.assertEqual(rd.id, rd_id)
+
+        session.commit()
+        rd = session.query(HaplotigRead).first()
+        self.assertEqual(rd.id, rd_id)
 
 # -- LahHaplotigTest
 

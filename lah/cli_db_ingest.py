@@ -39,7 +39,7 @@ def db_ingest_cmd(sample_name, sample_dir, dbfile, haplotigs, headers):
 
     sample = Sample(name=sample_name, directory=sample_dir)
     session.add(sample)
-    session.commit()
+    session.flush()
 
     haplotig_iter = HaplotigIterator(in_fn=haplotigs, headers=headers)
     sample.ingest(session=session, haplotig_iter=haplotig_iter)
