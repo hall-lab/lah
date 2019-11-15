@@ -21,6 +21,7 @@ def db_ingest_cmd(chromosome_name, dbfile, haplotigs_fn, headers):
     print("Haplotigs file: {}".format(haplotigs_fn))
     if not os.path.exists(haplotigs_fn):
         raise Exception("haplotig file {} does not exist!".format(haplotigs_fn))
+    headers_str = headers
     headers = headers.split(",")
     HaplotigIterator.validate_headers(headers)
 
@@ -34,7 +35,7 @@ def db_ingest_cmd(chromosome_name, dbfile, haplotigs_fn, headers):
     sessionmaker = db.connect()
     session = sessionmaker()
 
-    chromosome = Chromosome(name=chromosome_name, haplotigs_fn=haplotigs_fn)
+    chromosome = Chromosome(name=chromosome_name, haplotigs_fn=haplotigs_fn, haplotig_hdrs=headers_str)
     session.add(chromosome)
     session.flush() # sets chromosome id
     print("Chromsome: {} {}".format(chromosome.id, chromosome.name))

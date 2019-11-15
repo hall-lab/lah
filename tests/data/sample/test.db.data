@@ -1,4 +1,4 @@
-INSERT INTO "chromosomes" VALUES(1,'chr','chr.haplotigs.tsv');
+INSERT INTO "chromosomes" VALUES(1,'chr','chr.haplotigs.tsv','NA1,rid,hid');
 INSERT INTO "haplotigs" VALUES(1,'401_0_1_0',1,0,1,NULL);
 INSERT INTO "haplotigs" VALUES(2,'401_0_2_0',1,119,2,NULL);
 INSERT INTO "haplotigs" VALUES(3,'402_0_1_0',1,238,8,NULL);
