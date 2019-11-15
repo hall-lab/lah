@@ -1,25 +1,14 @@
 import jinja2, os
-import lah.db as db
-from lah.haplotig import Haplotig, HaplotigRead
+from lah.haplotig import Haplotig
 from lah.haplotig_iters import HaplotigIterator
 from sx.io import SxReader, SxWriter
 
-class Sample(db.Base):
-    __tablename__ = 'samples'
+class Sample(object):
+    def __init__(self, directory):
+        self.directory = directory
 
     def merged_fasta(self):
         return os.path.join(self.directory, ".".join(["sample", "fasta"]))
-
-    def ingest(self, session, haplotig_iter):
-        for raw in haplotig_iter:
-            haplotig = Haplotig(id=raw["hid"], sample_id=self.id,)
-            session.add(haplotig)
-            session.flush()
-            for rid in raw["rids"]:
-                read = HaplotigRead(id=rid, haplotig_id=haplotig.id)
-                session.add(read)
-
-    #-- ingest
 
     def prepare(self, session):
         haplotigs_d = os.path.join(self.directory, "haplotigs")

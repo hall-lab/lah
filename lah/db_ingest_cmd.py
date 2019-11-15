@@ -1,0 +1,50 @@
+import click, os
+
+from lah.db import LahDb
+from lah.chromosome import Chromosome
+from lah.haplotig import Haplotig
+from lah.haplotig_iters import HaplotigIterator
+
+@click.command(short_help="create and ingest haplotigs into a database")
+@click.option("--chromosome-name", "-n", required=False, type=click.STRING, help="Chromosome name.")
+@click.option("--dbfile", "-d", required=True, type=click.STRING, help="Database file to ingest haplotigs.")
+@click.option("--haplotigs_fn", "-f", required=True, type=click.STRING, help="File of haplotigs.")
+@click.option("--headers", "-g", required=True, type=click.STRING, help="Headers for haplotigs file. Give as a comma separated list.")
+def db_ingest_cmd(chromosome_name, dbfile, haplotigs_fn, headers):
+    """
+    Ingest a Chromosome's Haplotigs
+
+    """
+    print("Ingest chromosome {}...".format(chromosome_name))
+
+    haplotigs_fn = os.path.abspath(haplotigs_fn)
+    print("Haplotigs file: {}".format(haplotigs_fn))
+    if not os.path.exists(haplotigs_fn):
+        raise Exception("haplotig file {} does not exist!".format(haplotigs_fn))
+    headers = headers.split(",")
+    HaplotigIterator.validate_headers(headers)
+
+    print("DB: {}".format(dbfile))
+    db = LahDb(dbfile=dbfile)
+    if not os.path.exists(dbfile):
+        print("Creating DB...")
+        db.create()
+
+    print("Connecting to DB...")
+    sessionmaker = db.connect()
+    session = sessionmaker()
+
+    chromosome = Chromosome(name=chromosome_name, haplotigs_fn=haplotigs_fn)
+    session.add(chromosome)
+    session.flush() # sets chromosome id
+    print("Chromsome: {} {}".format(chromosome.id, chromosome.name))
+
+    print("Ingesting haplotigs...")
+    haplotig_iter = HaplotigIterator(in_fn=haplotigs_fn, headers=headers)
+    for raw in haplotig_iter:
+        haplotig = Haplotig(name=raw["hid"], chromosome_id=chromosome.id, file_pos=raw["file_pos"], read_cnt=len(raw["rids"]))
+        session.add(haplotig)
+    session.commit()
+
+    # TODO haplotigs stats
+    print("Ingest chromosome ... DONE")

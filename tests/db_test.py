@@ -5,7 +5,6 @@ import lah.db
 
 class LahDbTest(unittest.TestCase):
     def setUp(self):
-        self.data_d = data_d = os.path.join(os.path.dirname(__file__), "data", "db")
         self.dbfile = tempfile.NamedTemporaryFile()
 
     def tearDown(self):

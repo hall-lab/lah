@@ -21,5 +21,5 @@ def db_create_cmd(dbfile):
 db_cli.add_command(db_create_cmd, name="create")
 
 # [ingest]
-from lah.cli_db_ingest import db_ingest_cmd
+from lah.db_ingest_cmd import db_ingest_cmd
 db_cli.add_command(db_ingest_cmd, name="ingest")

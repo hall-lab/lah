@@ -3,12 +3,6 @@ from sqlalchemy.orm import relationship
 
 class Haplotig(Base):
     __tablename__ = 'haplotigs'
-    reads = relationship("HaplotigRead", back_populates="haplotig")
+    chromosome = relationship("Chromosome", back_populates="haplotigs")
 
 #-- Haplotig
-
-class HaplotigRead(Base):
-    __tablename__ = 'haplotig_reads'
-    haplotig = relationship("Haplotig", back_populates="reads")
-
-#-- HaplotigRead

@@ -13,11 +13,12 @@ class HaplotigIterator():
 
     def __init__(self, headers, in_fn):
         self.validate_headers(headers)
+        self.headers = headers
         self.in_f = open(in_fn, "r")
-        dialect = csv.Sniffer().sniff(self.in_f.read(1024))
+        self.dialect = csv.Sniffer().sniff(self.in_f.read(1024))
         self.in_f.seek(0)
-        self.reader = csv.DictReader(self.in_f, fieldnames=headers, dialect=dialect)
-        self.prev = next(self.reader)
+        self.prev = next(csv.DictReader([self.in_f.readline()], fieldnames=self.headers, dialect=self.dialect))
+        self.prev["file_pos"] = 0
 
     def __del__(self):
         if hasattr(self, "in_f"):
@@ -31,21 +32,24 @@ class HaplotigIterator():
             raise StopIteration()
 
         hid = self.prev["hid"]
+        file_pos = self.prev["file_pos"]
         rids = set([self.prev["rid"]])
         self.prev = None
         while True:
-            try:
-                hap = next(self.reader)
-            except StopIteration: # EOF
+            line = self.in_f.readline()
+            if not line:
                 break
-            if hap["hid"] != hid: # save read group, break to return haplotig
+
+            hap = next(csv.DictReader([line], fieldnames=self.headers, dialect=self.dialect))
+            if hap["hid"] != hid:
+                hap["file_pos"] = self.in_f.tell()
                 self.prev = hap
                 break
             else:
                 rids.add(hap["rid"])
 
         if len(rids) > 0:
-            return {"hid": hid, "rids": rids}
+            return {"hid": hid, "file_pos": file_pos, "rids": rids}
         else:
             raise StopIteration()
 
