@@ -11,14 +11,20 @@ class HaplotigIterator():
         if missing:
             raise Exception("Missing required headers: {}".format(" ".join(missing)))
 
-    def __init__(self, headers, in_fn):
+    def __init__(self, headers, in_fn, pos=0):
         self.validate_headers(headers)
         self.headers = headers
         self.in_f = open(in_fn, "r")
         self.dialect = csv.Sniffer().sniff(self.in_f.read(1024))
-        self.in_f.seek(0)
-        self.prev = next(csv.DictReader([self.in_f.readline()], fieldnames=self.headers, dialect=self.dialect))
-        self.prev["file_pos"] = 0
+        self.in_f.seek(pos)
+        hap = next(csv.DictReader([self.in_f.readline()], fieldnames=self.headers, dialect=self.dialect))
+        if not bool(hap):
+            raise("Failed to find first haplotype at poisition {}!".format(pos))
+        self.previous_hap = {
+            "hid": hap["hid"],
+            "rids": set([hap["rid"]]),
+            "file_pos": pos,
+        }
 
     def __del__(self):
         if hasattr(self, "in_f"):
@@ -28,29 +34,30 @@ class HaplotigIterator():
         return self
 
     def __next__(self):
-        if not self.prev:
+        if not bool(self.previous_hap):
             raise StopIteration()
 
-        hid = self.prev["hid"]
-        file_pos = self.prev["file_pos"]
-        rids = set([self.prev["rid"]])
-        self.prev = None
+        current_hap = self.previous_hap
+        self.previous_hap = None
         while True:
+            file_pos = self.in_f.tell()
             line = self.in_f.readline()
             if not line:
                 break
 
             hap = next(csv.DictReader([line], fieldnames=self.headers, dialect=self.dialect))
-            if hap["hid"] != hid:
-                hap["file_pos"] = self.in_f.tell()
-                self.prev = hap
+            if hap["hid"] != current_hap["hid"]:
+                self.previous_hap = {
+                    "hid": hap["hid"],
+                    "rids": set([hap["rid"]]),
+                    "file_pos": file_pos,
+                }
                 break
             else:
-                rids.add(hap["rid"])
+                current_hap["rids"].add(hap["rid"])
 
-        if len(rids) > 0:
-            return {"hid": hid, "file_pos": file_pos, "rids": rids}
-        else:
-            raise StopIteration()
+        if current_hap:
+            return current_hap
+        raise StopIteration()
 
 #-- HaplotigIterator

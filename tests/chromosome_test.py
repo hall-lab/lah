@@ -12,11 +12,31 @@ class ChromosomeTest(unittest.TestCase):
         sessionmaker = db.connect()
         self.session = sessionmaker()
         self.chromosome = self.session.query(Chromosome).filter(Chromosome.name == 'chr').first()
+        self.chromosome.haplotigs_fn = os.path.join(self.data_d, self.chromosome.haplotigs_fn)
 
-    def test_headers(self):
+    def test1_headers(self):
         headers = ["NA1", "rid", "hid"]
         self.assertEqual(self.chromosome.haplotig_hdrs, ",".join(headers))
         self.assertEqual(self.chromosome.haplotig_headers(), headers)
+
+    def test2_load_haplotig(self):
+        haplotigs = self.chromosome.haplotigs
+        self.assertEqual(len(haplotigs), 4)
+        haplotig = haplotigs[2]
+        self.chromosome.load_haplotig(haplotig)
+        self.assertTrue(hasattr(haplotig, "reads"))
+        expected_reads = [
+                "m54238_180909_174539/15467504/ccs",
+                "m54238_180909_174539/24445361/ccs",
+                "m54238_180910_180559/31916502/ccs",
+                "m54238_180914_183539/60817532/ccs",
+                "m54238_180916_191625/17694942/ccs",
+                "m54328_180924_001027/12976682/ccs",
+                "m54335_180925_223313/49349181/ccs",
+                "m54335_180926_225328/38011681/ccs",
+                ]
+        self.assertEqual(haplotig.reads, expected_reads)
+        
 
 # -- ChromosomeTest
 
