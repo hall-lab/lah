@@ -28,6 +28,10 @@ class DbObjectsTest(unittest.TestCase):
         found_chr = haplotig.chromosome
         self.assertEqual(found_chr, chromosome)
 
+        chromosome.sequence_files
+        self.assertIsNotNone(sequence_files)
+        self.assertEqual(len(sequence_files), 2)
+
 # -- DbObjectsTest
 
 if __name__ == '__main__':
