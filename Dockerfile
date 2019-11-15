@@ -11,6 +11,7 @@ RUN apt-get update && \
   less \
   libnss-sss \
   man \
+  sqlite3 \
   vim && \
   apt-get clean
 

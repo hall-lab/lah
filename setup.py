@@ -46,5 +46,5 @@ setup(
     tests_requires=tests_require,
     packages=find_packages(include=['lah','sx'], exclude=('tests')),
     include_package_data=True,
-    #package_data={"": [""]}
+    package_data={"lah": ["db-migrations/*"]},
 )
