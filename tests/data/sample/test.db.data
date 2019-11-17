@@ -3,5 +3,5 @@ INSERT INTO "haplotigs" VALUES(1,'401_0_1_0',1,0,1,NULL);
 INSERT INTO "haplotigs" VALUES(2,'401_0_2_0',1,60,2,NULL);
 INSERT INTO "haplotigs" VALUES(3,'402_0_1_0',1,178,8,NULL);
 INSERT INTO "haplotigs" VALUES(4,'402_0_2_0',1,655,14,NULL);
-INSERT INTO "seqfiles" VALUES(1,'reads.1.fastq')
-INSERT INTO "seqfiles" VALUES(2,'reads.2.fastq')
+INSERT INTO "seqfiles" VALUES(1,'tests/data/sample/seqfiles/reads.1.fastq');
+INSERT INTO "seqfiles" VALUES(2,'tests/data/sample/seqfiles/reads.2.fastq');

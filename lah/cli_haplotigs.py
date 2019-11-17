@@ -2,9 +2,9 @@ import click, natsort, os, subprocess, sys, tabulate
 import lah.haplotig_iters, lah.haplotig
 
 # haplotig [hap]
-# - generate-fastq
 # - list
 # - prepare
+# - seqfile
 # - reads
 
 @click.group()
@@ -22,35 +22,9 @@ lah_hap_cli.add_command(lah_hap_merge_cmd, name="merge")
 from lah.cli_haplotigs_prepare import lah_hap_prepare_cmd
 lah_hap_cli.add_command(lah_hap_prepare_cmd, name="prepare")
 
-@click.command(short_help="generate fastq for a  haplotig")
-@click.option("--haplotig", required=True, type=click.STRING, help="Haplotig directory. This will have the 'reads' file, and be the output of the fastq file.")
-@click.option("--fastqs", required=True, type=click.STRING, help="File of fastqs to look for haplotig reads.")
-def lah_hap_generate_fastq(haplotig, fastqs):
-    """
-    Generate fastq for a Haplotig
-    """
-    print("Generate fastq for {}".format(haplotig))
-    rds_fn = os.path.join(haplotig, "reads")
-    if not os.path.exists(fastqs):
-        raise Exception("Fastqs file does not exist: {}".format(fastqs))
-    if not os.path.exists(rds_fn):
-        raise Exception("No haplotig reads file: {}".format(rds_fn))
-    haplotig_fastq_fn = os.path.join(haplotig, "haplotig.fastq")
-    if os.path.exists(haplotig_fastq_fn):
-        os.remove(haplotig_fastq_fn)
-
-    try:
-        with open(fastqs, "r") as fastq_f:
-            for fastq_fn in fastq_f.readlines():
-                fastq_fn = fastq_fn.rstrip()
-                cmd = ["sx", "subset", "by-name", fastq_fn, haplotig_fastq_fn, "--names", rds_fn]
-                print("RUNNING: {}".format(" ".join(cmd)))
-                subprocess.call(cmd)
-    except:
-        os.remove(haplotig_fastq_fn)
-        raise
-    print("Generate fastq...OK")
-lah_hap_cli.add_command(lah_hap_generate_fastq, name="generate-fastq")
+# [seqfile]
+from lah.haplotig_seqfile_cmd import haplotig_seqfile_cmd
+lah_hap_cli.add_command(haplotig_seqfile_cmd, name="seqfile")
 
 @click.command(short_help="list haplotigs in a source")
 @click.argument("source", type=click.STRING)
