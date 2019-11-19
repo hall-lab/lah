@@ -1,4 +1,4 @@
-import filecmp, os, tempfile, unittest
+import filecmp, io, os, sys, tempfile, unittest
 from click.testing import CliRunner
 
 from .context import lah
@@ -30,8 +30,11 @@ class HaplotigSeqfileCmdTest(unittest.TestCase):
 
         haplotig.chromosome.load_haplotig(haplotig)
         source_seqfiles = session.query(Seqfile).all()
+
+        sys.stdout = io.StringIO() # silence stdout
         haplotig.seqfile(sources=source_seqfiles, output=self.output)
         self.assertTrue(filecmp.cmp(self.output, os.path.join(self.data_d, "402_0_1_0.fastq")))
+        sys.stdout = sys.__stdout__
 
     def test2_haplotig_seqfile_cmd(self):
         runner = CliRunner()
