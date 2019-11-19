@@ -10,13 +10,17 @@ def cli():
     """
     pass
 
+# [chrmosome]
+from lah.cli_chromosome import chr_cli
+cli.add_command(chr_cli, name="chr")
+
 # [db]
 from lah.cli_db import db_cli
 cli.add_command(db_cli, name="db")
 
-# [haplotigs]
-from lah.cli_haplotigs import lah_hap_cli
-cli.add_command(lah_hap_cli, name="haplotigs")
+# [haplotig]
+from lah.cli_haplotig import lah_hap_cli
+cli.add_command(lah_hap_cli, name="haplotig")
 
 # [seqfiles]
 from lah.cli_seqfiles import seqfiles_cli

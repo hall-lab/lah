@@ -14,6 +14,10 @@ def lah_hap_cli():
     """
     pass
 
+# [asm]
+from lah.haplotig_asm_cmd import haplotig_asm_cmd
+lah_hap_cli.add_command(haplotig_asm_cmd, name="asm")
+
 # MERGE
 from lah.cli_haplotigs_merge import lah_hap_merge_cmd
 lah_hap_cli.add_command(lah_hap_merge_cmd, name="merge")
