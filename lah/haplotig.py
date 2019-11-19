@@ -40,7 +40,7 @@ class Haplotig(Base):
         output_f.close()
 
         if len(rds) != 0:
-            raise Exception("Failed to find haplotig {} reads: {}".format(slef.name, " ".join(rds)))
+            raise Exception("Failed to find haplotig {} {} reads: {}".format(self.id, self.name, " ".join(rds)))
 
         #-- seqfile
 

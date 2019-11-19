@@ -38,7 +38,6 @@ def haplotig_seqfile_cmd(hid, output, dbfile):
     source_seqfiles = session.query(Seqfile).all()
     if not len(source_seqfiles):
         raise Exception("No seqfiles fround in database!")
-    print("Source seqfiles: \n{}".format("\n".join(map(lambda x: x.fn, source_seqfiles))))
 
     print("Output: {}".format(output))
     haplotig.seqfile(sources=source_seqfiles, output=output)
