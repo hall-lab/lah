@@ -10,9 +10,9 @@ def cli():
     """
     pass
 
-# [chrmosome]
-from lah.cli_chromosome import chr_cli
-cli.add_command(chr_cli, name="chr")
+# [asm]
+from lah.cli_asm import asm_cli
+cli.add_command(asm_cli, name="asm")
 
 # [db]
 from lah.cli_db import db_cli
