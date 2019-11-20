@@ -31,7 +31,7 @@ def asm_merge_cmd(dbfile, output=None):
     sm = db.connect()
     session = sm()
 
-    merge_fn = os.path.join(dn, "asm.fasta")
+    merge_fn = os.path.join(dn, "asm.merged.fasta")
     if output is not None:
         merge_fn = output
     print("Merged file: {}".format(merge_fn))
