@@ -2,7 +2,7 @@ import tempfile, unittest
 from click.testing import CliRunner
 
 from .context import lah
-from lah.cli_asm import asm_cli
+from lah.cli_asm import asm_cli, asm_metrics_cmd
 
 class CliAsmTest(unittest.TestCase):
     def setUp(self):
@@ -13,7 +13,7 @@ class CliAsmTest(unittest.TestCase):
         self.out.close()
         self.err.close()
     
-    def test1_asm_cli(self):
+    def test0_asm_cli(self):
          runner = CliRunner()
 
          result = runner.invoke(asm_cli, [])
@@ -24,6 +24,15 @@ class CliAsmTest(unittest.TestCase):
          #self.assertEqual(result.exit_code, 0)
 
          result = runner.invoke(asm_cli, ["--help"])
+         self.assertEqual(result.exit_code, 0)
+
+    def test1_asm_metrics_cmd(self):
+         runner = CliRunner()
+
+         result = runner.invoke(asm_metrics_cmd, [])
+         self.assertEqual(result.exit_code, 2)
+
+         result = runner.invoke(asm_metrics_cmd, ["--help"])
          self.assertEqual(result.exit_code, 0)
 
 # -- CliAsmTest

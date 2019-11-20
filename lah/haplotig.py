@@ -19,6 +19,14 @@ class Haplotig(Base):
 
     #-- load_haplotig
 
+    def asm_bn(self):
+        return ".".join([self.name, "contigs", "fasta"])
+
+    def asm_fn(self, assemblies_dn):
+        return os.path.join(assemblies_dn, self.asm_bn())
+
+    #-- assembly
+
     def seqfile_bn(self):
         return ".".join([self.name, "fastq"])
 
