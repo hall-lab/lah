@@ -27,7 +27,7 @@ def asm_metrics_cmd(dbfile):
     """
     Show Haplotigs Assembly Metrics
     """
-    dn = os.path.dirname(dbfile)
+    dn = os.path.dirname(os.path.abspath(dbfile))
     if not os.path.exists(dn):
         raise Exception("Directory does not exist: {}".format(dn))
     db = LahDb(dbfile)
@@ -35,18 +35,23 @@ def asm_metrics_cmd(dbfile):
     session = sm()
 
     haplotigs_asm_dn = os.path.join(dn, "assemblies")
-    m_rows = [] # metrics
+    rows = [] # metrics
+    cnt = 0
     for haplotig in session.query(Haplotig).all():
         asm_fn = haplotig.asm_fn(haplotigs_asm_dn)
-        ctgs = {}
+        ctg_lens = []
         row = [ haplotig.name, str(haplotig.read_cnt) ]
         if os.path.exists(asm_fn):
-            for seq in  SeqIO.parse( asm_fn, "fasta"):
-                ctgs[seq.name] = len(seq)
-            row += [ str(len(ctgs)), str(sum(ctgs.values())), str(max(ctgs.values())), ",".join(map(str, ctgs.values())) ]
+            for seq in SeqIO.parse( asm_fn, "fasta"):
+                ctg_lens.append(len(seq))
+            if len(ctg_lens) == 0:
+                row += [ "NOCTGS", "NA", "NA", "NA" ]
+            else:
+                row += [ str(len(ctg_lens)), str(sum(ctg_lens)), str(max(ctg_lens)), ",".join(map(str, ctg_lens)) ]
         else:
-            row += [ "NA", "NA", "NA", "NA" ]
-        m_rows.append(row)
-    print( tabulate.tabulate(m_rows, ["NAME", "RDS", "COUNT", "TOTAL", "MAX", "CTGS"], tablefmt="simple") )
+            row += [ "NOASM", "NA", "NA", "NA" ]
+        rows.append(row)
+        print("\t".join(row))
+    #print( tabulate.tabulate(rows, ["NAME", "RDS", "COUNT", "TOTAL", "MAX", "CTGS"], tablefmt="presto") )
 asm_cli.add_command(asm_metrics_cmd, "metrics")
 
