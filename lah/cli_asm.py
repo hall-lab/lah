@@ -16,9 +16,9 @@ def asm_cli():
     """
     pass
 
-# [merge]
-#from lah.cli_haplotigs_merge import lah_hap_merge_cmd
-#asm_cli.add_command(lah_hap_merge_cmd, name="merge")
+#[merge]
+from lah.cli_asm_merge import asm_merge_cmd
+asm_cli.add_command(asm_merge_cmd, name="merge")
 
 # [metrics]
 @click.command(short_help="show haplotigs metrics")

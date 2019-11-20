@@ -18,14 +18,6 @@ def lah_hap_cli():
 from lah.haplotig_asm_cmd import haplotig_asm_cmd
 lah_hap_cli.add_command(haplotig_asm_cmd, name="asm")
 
-# MERGE
-from lah.cli_haplotigs_merge import lah_hap_merge_cmd
-lah_hap_cli.add_command(lah_hap_merge_cmd, name="merge")
-
-# PREPARE
-from lah.cli_haplotigs_prepare import lah_hap_prepare_cmd
-lah_hap_cli.add_command(lah_hap_prepare_cmd, name="prepare")
-
 # [seqfile]
 from lah.haplotig_seqfile_cmd import haplotig_seqfile_cmd
 lah_hap_cli.add_command(haplotig_seqfile_cmd, name="seqfile")
