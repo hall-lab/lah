@@ -19,7 +19,6 @@ class HaplotigSeqfileCmdTest(unittest.TestCase):
         sm = db.connect()
         session = sm()
         self.haplotig = session.query(Haplotig).get(3)
-        self.assertIsNotNone(self.haplotig)
         self.output = self.haplotig.seqfile_fn(self.temp_dn)
         self.source_seqfiles = session.query(Seqfile).all()
 
@@ -27,17 +26,21 @@ class HaplotigSeqfileCmdTest(unittest.TestCase):
         self.temp_d.cleanup()
 
     def test0_haplotig_seqfile_attrs(self):
-        seqfile_bn = self.haplotig.seqfile_bn()
-        self.assertEqual(seqfile_bn, ".".join([self.haplotig.name, "fastq"]))
-        self.assertEqual(self.haplotig.seqfile_fn(self.temp_dn), os.path.join(self.temp_dn, seqfile_bn))
+        haplotig = self.haplotig
+        self.assertIsNotNone(haplotig)
+        seqfile_bn = haplotig.seqfile_bn()
+        self.assertEqual(seqfile_bn, ".".join([haplotig.name, "fastq"]))
+        self.assertEqual(haplotig.seqfile_fn(self.temp_dn), os.path.join(self.temp_dn, seqfile_bn))
 
     def test1_haplotig_seqfile(self):
+        haplotig = self.haplotig
+        self.assertIsNotNone(haplotig)
         with self.assertRaisesRegex(Exception, "No reads loaded for haplotig"):
-            self.haplotig.seqfile(sources=self.source_seqfiles, output=self.output)
+            haplotig.seqfile(sources=self.source_seqfiles, output=self.output)
 
         sys.stdout = io.StringIO() # silence stdout
-        self.haplotig.chromosome.load_haplotig(self.haplotig)
-        self.haplotig.seqfile(sources=self.source_seqfiles, output=self.output)
+        haplotig.load_reads()
+        haplotig.seqfile(sources=self.source_seqfiles, output=self.output)
         self.assertTrue(filecmp.cmp(self.output, os.path.join(self.data_d, "402_0_1_0.fastq")))
         sys.stdout = sys.__stdout__
 

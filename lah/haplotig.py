@@ -1,12 +1,23 @@
 import os, subprocess, tempfile
 from Bio import SeqIO
+from sqlalchemy.orm import relationship
 
 from lah.db import Base
-from sqlalchemy.orm import relationship
+from lah.chromosome import Chromosome
+from lah.haplotig_iters import HaplotigIterator
 
 class Haplotig(Base):
     __tablename__ = 'haplotigs'
     chromosome = relationship("Chromosome", back_populates="haplotigs")
+
+    def load_reads(self):
+        h_i = HaplotigIterator(in_fn=self.chromosome.haplotigs_fn, headers=self.chromosome.haplotig_headers(), pos=self.file_pos)
+        raw_haplotig = next(h_i)
+        if raw_haplotig["hid"] != self.name:
+            raise Exception("Got the wrong haplotig from {} at position {}.".format(self.haplotigs_fn, self.file_pos))
+        self.reads = sorted(raw_haplotig["rids"])
+
+    #-- load_haplotig
 
     def seqfile_bn(self):
         return ".".join([self.name, "fastq"])
@@ -48,6 +59,6 @@ class Haplotig(Base):
         if len(rds) != 0:
             raise Exception("Failed to find haplotig {} {} reads: {}".format(self.id, self.name, " ".join(rds)))
 
-        #-- seqfile
+    #-- seqfile
 
 #-- Haplotig

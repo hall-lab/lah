@@ -3,7 +3,6 @@ import click, os, sys, tempfile
 import inspect
 
 from lah.db import LahDb
-from lah.chromosome import Chromosome
 from lah.haplotig import Haplotig
 from lah.seqfiles import Seqfile
 from sx.subset import by_name
@@ -30,8 +29,7 @@ def haplotig_seqfile_cmd(hid, output, dbfile):
     if not haplotig:
         raise Exception("Failed to get haplotig {} from db!".format(hid))
 
-    chromosome = haplotig.chromosome
-    chromosome.load_haplotig(haplotig)
+    haplotig.load_reads()
     if not hasattr(haplotig, "reads"):
         raise Exception("Haplotig {} has no reads!".format(hid))
 
