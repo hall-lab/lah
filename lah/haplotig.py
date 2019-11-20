@@ -8,6 +8,12 @@ class Haplotig(Base):
     __tablename__ = 'haplotigs'
     chromosome = relationship("Chromosome", back_populates="haplotigs")
 
+    def seqfile_bn(self):
+        return ".".join([self.name, "fastq"])
+
+    def seqfile_fn(self, haplotigs_dn):
+        return os.path.join(haplotigs_dn, self.seqfile_bn())
+
     def seqfile(self, sources, output):
         if not hasattr(self, "reads") or len(self.reads) == 0:
             raise Exception("No reads loaded for haplotig!")
