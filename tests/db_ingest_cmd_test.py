@@ -21,9 +21,8 @@ class LahDbIngestCliTests(unittest.TestCase):
 
     def validate(self):
         self.assertTrue(os.path.exists(self.dbfile))
-        db = LahDb(self.dbfile)
-        sessionmaker = db.connect()
-        session = sessionmaker()
+        LahDb.connect(self.dbfile)
+        session =LahDb.session()
 
         chromosome = session.query(Chromosome).filter(Chromosome.name == "chr").first()
         self.assertIsNotNone(chromosome)

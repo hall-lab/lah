@@ -26,14 +26,13 @@ def db_ingest_cmd(chromosome_name, dbfile, haplotigs_fn, headers):
     HaplotigIterator.validate_headers(headers)
 
     print("DB: {}".format(dbfile))
-    db = LahDb(dbfile=dbfile)
     if not os.path.exists(dbfile):
         print("Creating DB...")
-        db.create()
+        LahDb.create(dbfile)
 
     print("Connecting to DB...")
-    sessionmaker = db.connect()
-    session = sessionmaker()
+    LahDb.connect(dbfile)
+    session = LahDb.session()
 
     chromosome = Chromosome(name=chromosome_name, haplotigs_fn=haplotigs_fn, haplotig_hdrs=headers_str)
     session.add(chromosome)

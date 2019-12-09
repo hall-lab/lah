@@ -11,7 +11,7 @@ class CliSeqfilesTest(unittest.TestCase):
         self.temp_d = tempfile.TemporaryDirectory()
         self.temp_dn = self.temp_d.name
         self.dbfile = os.path.join(self.temp_dn, "test.db")
-        LahDb(self.dbfile).create()
+        LahDb.create(self.dbfile)
 
     def tearDown(self):
         self.temp_d.cleanup()

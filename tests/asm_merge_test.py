@@ -12,7 +12,6 @@ class AsmMergeTest(unittest.TestCase):
 
         self.temp_d = tempfile.TemporaryDirectory()
         self.temp_dn = self.temp_d.name
-        self.temp_dn = "mytest"
         self.output = os.path.join(self.temp_dn, "output.fasta")
 
     def tearDown(self):

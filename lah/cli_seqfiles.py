@@ -18,9 +18,8 @@ def seqfiles_add_cmd(seqfiles, dbfile):
     Add Haplotig Sequence Files to the Database
     """
     print("Add seqfiles to {}".format(dbfile))
-    db = LahDb(dbfile=dbfile)
-    sm = db.connect()
-    session = sm()
+    LahDb.connect(dbfile)
+    session = LahDb.session()
     for fn in seqfiles:
         print("{}".format(fn))
         session.add(Seqfile(fn=os.path.abspath(fn)))
@@ -34,10 +33,8 @@ def seqfiles_list_cmd(dbfile):
     """
     List Haplotig Sequence Files in the Database
     """
-    db = LahDb(dbfile=dbfile)
-    sm = db.connect()
-    session = sm()
-    db = LahDb(dbfile=dbfile)
+    LahDb.connect(dbfile)
+    session = LahDb.session()
     rows = []
     for seqfile in session.query(Seqfile).all():
         rows.append([seqfile.id, seqfile.fn])

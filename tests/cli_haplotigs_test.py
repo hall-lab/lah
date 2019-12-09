@@ -1,6 +1,6 @@
 import subprocess, tempfile, unittest
 
-class LahHaplotigsCliTest(unittest.TestCase):
+class LahhaplotigCliTest(unittest.TestCase):
     def setUp(self):
         self.out = tempfile.TemporaryFile()
         self.err = tempfile.TemporaryFile()
@@ -9,38 +9,38 @@ class LahHaplotigsCliTest(unittest.TestCase):
         self.out.close()
         self.err.close()
 
-    def test1_lah_haplotigs(self):
-        rv = subprocess.call(["lah", "haplotigs"], stdout=self.out)
+    def test1_lah_haplotig(self):
+        rv = subprocess.call(["lah", "haplotig"], stdout=self.out)
         self.assertEqual(rv, 0)
-        rv = subprocess.call(["lah", "haplotigs", "-h"], stdout=self.out)
+        rv = subprocess.call(["lah", "haplotig", "-h"], stdout=self.out)
         self.assertEqual(rv, 0)
-        rv = subprocess.call(["lah", "haplotigs", "--help"], stdout=self.out)
+        rv = subprocess.call(["lah", "haplotig", "--help"], stdout=self.out)
         self.assertEqual(rv, 0)
 
-    def test2_lah_haplotigs_list(self):
-        rv = subprocess.call(["lah", "haplotigs", "list"], stdout=self.out, stderr=self.err)
+    def test2_lah_haplotig_list(self):
+        rv = subprocess.call(["lah", "haplotig", "list"], stdout=self.out, stderr=self.err)
         self.assertEqual(rv, 2)
-        rv = subprocess.call(["lah", "haplotigs", "list", "-h"], stdout=self.out)
+        rv = subprocess.call(["lah", "haplotig", "list", "-h"], stdout=self.out)
         self.assertEqual(rv, 0)
-        rv = subprocess.call(["lah", "haplotigs", "list", "--help"], stdout=self.out)
+        rv = subprocess.call(["lah", "haplotig", "list", "--help"], stdout=self.out)
 
-    def test3_lah_haplotigs_reads(self):
-        rv = subprocess.call(["lah", "haplotigs", "reads"], stdout=self.out, stderr=self.err)
+    def test3_lah_haplotig_reads(self):
+        rv = subprocess.call(["lah", "haplotig", "reads"], stdout=self.out, stderr=self.err)
         self.assertEqual(rv, 2)
-        rv = subprocess.call(["lah", "haplotigs", "reads", "-h"], stdout=self.out)
+        rv = subprocess.call(["lah", "haplotig", "reads", "-h"], stdout=self.out)
         self.assertEqual(rv, 0)
-        rv = subprocess.call(["lah", "haplotigs", "reads", "--help"], stdout=self.out)
+        rv = subprocess.call(["lah", "haplotig", "reads", "--help"], stdout=self.out)
         self.assertEqual(rv, 0)
 
-    def test3_lah_haplotigs_generate_fastq(self):
-        rv = subprocess.call(["lah", "haplotigs", "generate-fastq"], stdout=self.out, stderr=self.err)
+    def test3_lah_haplotig_generate_fastq(self):
+        rv = subprocess.call(["lah", "haplotig", "seqfile"], stdout=self.out, stderr=self.err)
         self.assertEqual(rv, 2)
-        rv = subprocess.call(["lah", "haplotigs", "generate-fastq", "-h"], stdout=self.out)
+        rv = subprocess.call(["lah", "haplotig", "seqfile", "-h"], stdout=self.out)
         self.assertEqual(rv, 0)
-        rv = subprocess.call(["lah", "haplotigs", "generate-fastq", "--help"], stdout=self.out)
+        rv = subprocess.call(["lah", "haplotig", "seqfile", "--help"], stdout=self.out)
         self.assertEqual(rv, 0)
 
-# -- LahHaplotigsCliTest
+# -- LahhaplotigCliTest
 
 if __name__ == '__main__':
     unittest.main(verbosity=2)

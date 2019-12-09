@@ -27,9 +27,8 @@ def asm_merge_cmd(dbfile, output=None):
     if not os.path.exists(dn):
         raise Exception("Directory does not exist: {}".format(dn))
     asm_dn = os.path.join(dn, "assemblies")
-    db = LahDb(dbfile)
-    sm = db.connect()
-    session = sm()
+    LahDb.connect(dbfile)
+    session = LahDb.session()
 
     merge_fn = os.path.join(dn, "asm.merged.fasta")
     if output is not None:
