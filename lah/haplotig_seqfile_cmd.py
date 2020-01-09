@@ -22,9 +22,8 @@ def haplotig_seqfile_cmd(hid, output, dbfile):
     if not os.path.exists(dbfile):
         raise Exception("DB file does not exist!")
 
-    db = LahDb(dbfile)
-    sm = db.connect()
-    session = sm()
+    LahDb.connect(dbfile)
+    session = LahDb.session()
     haplotig = session.query(Haplotig).get(hid)
     if not haplotig:
         raise Exception("Failed to get haplotig {} from db!".format(hid))

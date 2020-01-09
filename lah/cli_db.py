@@ -16,8 +16,7 @@ def db_create_cmd(dbfile):
     Generate a New SQLite Database for Local Haplotype Assemblies
     """
     print("Generate SQLite DB in {}".format(dbfile))
-    db = LahDb(dbfile=dbfile)
-    db.create()
+    LahDb.create(dbfile)
 db_cli.add_command(db_create_cmd, name="create")
 
 # [ingest]

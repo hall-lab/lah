@@ -15,14 +15,9 @@ class HaplotigAsmTest(unittest.TestCase):
         self.temp_d = tempfile.TemporaryDirectory()
         self.temp_dn = self.temp_d.name
 
-        db = LahDb(self.dbfile)
-        sm = db.connect()
-        session = sm()
+        LahDb.connect(self.dbfile)
+        session = LahDb.session()
         self.haplotig = session.query(Haplotig).get(3)
-        #self.output = self.haplotig.seqfile_fn(self.temp_dn)
-        #self.source_seqfiles = session.query(Seqfile).all()
-        #self.output = os.path.join(self.temp_dn, self.h_asm_bn)
-        #self.expected_output = os.path.join(self.temp_dn, self.h_asm_bn)
 
     def tearDown(self):
         self.temp_d.cleanup()

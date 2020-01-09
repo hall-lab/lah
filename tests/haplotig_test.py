@@ -1,15 +1,14 @@
 import os, unittest
 
-import lah.db
+from lah.db import LahDb
 from lah.haplotig import Haplotig
 
 class HaplotigTest(unittest.TestCase):
     def setUp(self):
         self.data_d = os.path.join(os.path.dirname(__file__), "data", "sample")
         self.dbfile = os.path.join(self.data_d, "test.db")
-        db = lah.db.LahDb(self.dbfile)
-        sessionmaker = db.connect()
-        session = sessionmaker()
+        LahDb.connect(self.dbfile)
+        session = LahDb.session()
         self.haplotig = session.query(Haplotig).get(3)
 
     def test0_load(self):

@@ -30,9 +30,8 @@ def asm_metrics_cmd(dbfile):
     dn = os.path.dirname(os.path.abspath(dbfile))
     if not os.path.exists(dn):
         raise Exception("Directory does not exist: {}".format(dn))
-    db = LahDb(dbfile)
-    sm = db.connect()
-    session = sm()
+    LahDb.connect(dbfile)
+    session = LahDb.session()
 
     haplotigs_asm_dn = os.path.join(dn, "assemblies")
     rows = [] # metrics
