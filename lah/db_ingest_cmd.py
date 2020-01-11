@@ -50,7 +50,7 @@ def db_ingest_cmd(chromosome_name, dbfile, haplotigs_fn, headers):
         if metrics["total"] % 2000 == 0:
             print(" {} ...".format(metrics["total"]))
             session.commit()
-            session = sessionmaker()
+            session = LahDb.session()
     session.commit()
 
     print("Haplotigs: {}".format(metrics["total"]))
