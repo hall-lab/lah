@@ -2,7 +2,7 @@ import filecmp, os, subprocess, tempfile, unittest
 from mock import patch
 from click.testing import CliRunner
 
-from lah.haplotig_asm_cmd import haplotig_asm_cmd as cmd
+from lah.haplotig_asm import haplotig_asm_cmd as cmd
 
 class HaplotigAsmTest(unittest.TestCase):
     def setUp(self):

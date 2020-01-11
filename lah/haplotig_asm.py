@@ -8,7 +8,8 @@ from lah.seqfiles import Seqfile
 @click.command(short_help="generate haplotig seqfile")
 @click.option("--seqfile", "-s", required=True, type=click.STRING, help="Haplotype seqfile to asemble.")
 @click.option("--output-dn", "-o", required=True, type=click.STRING, help="Base directory for LAH data. Haplotig fasta qill be put into 'haplotigs' subdir. If requested, additional haplotig assembly files will be put into 'haplotig-asm/$HAPLOTIG_NAME' subdir.")
-def haplotig_asm_cmd(seqfile, output_dn):
+@click.option("--save-files", is_flag=True, help="Save additional assembly output files.")
+def haplotig_asm_cmd(seqfile, output_dn, save_files):
     """
     Assemble Haplotig
 
@@ -48,4 +49,13 @@ def haplotig_asm_cmd(seqfile, output_dn):
         os.remove(dst)
     shutil.copyfile(src, dst)
 
+    if save_files:
+        os.path.join(output_dn, "haplotig-asms", haplotig_n) # FIXME put somewhere central
+        save_extra_assembly_files(temp_dn, os.output_dn)
+
 #-- haplotig_asm_cmd
+
+def save_extra_assembly_files(src_dn, dest_dn):
+    print("HERE")
+
+#-- save_extra_assembly_files
