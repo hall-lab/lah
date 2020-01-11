@@ -37,8 +37,10 @@ WORKDIR /apps/
 RUN rm -rf gnuplot-5.2.6*
 
 # Install samtools
-WORKDIR /tmp/samtools/
-COPY samtools/samtools-1.9/ ./
+WORKDIR /tmp/
+COPY samtools/samtools-1.9.tgz ./
+RUN tar zxvf samtools-1.9.tgz
+WORKDIR /tmp/samtools-1.9/
 RUN ./configure --prefix=/usr/local && \
   make && \
   make install
