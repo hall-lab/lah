@@ -1,4 +1,4 @@
-import click, jinja2, os, shutil, subprocess, tempfile
+import click, jinja2, os, re, shutil, subprocess, tempfile
 
 from lah.db import LahDb
 from lah.chromosome import Chromosome
@@ -41,7 +41,7 @@ def haplotig_asm_cmd(seqfile, output_dn, save_files):
     # Copy the haplotig asm fasta
     ctgs_bn = ".".join([haplotig_n, "contigs", "fasta"])
     src = os.path.join(temp_dn, ctgs_bn)
-    dst = os.path.join(output_dn, "haplotigs", ctgs_bn)
+    dst = os.path.join(output_dn, "assemblies", ctgs_bn)
     print("Assembly contigs fasta: {}".format(src))
     if not os.path.exists(src):
         raise Exception("Could not find assembled ctgs fasta: {}".format(src))
@@ -51,12 +51,35 @@ def haplotig_asm_cmd(seqfile, output_dn, save_files):
     shutil.copyfile(src, dst)
 
     if save_files:
-        os.path.join(output_dn, "haplotig-asms", haplotig_n) # FIXME put somewhere central
-        save_extra_assembly_files(temp_dn, os.output_dn)
+        dest_dn = os.path.join(output_dn, "haplotig-asm", haplotig_n)
+        save_extra_assembly_files(temp_dn, dest_dn)
 
 #-- haplotig_asm_cmd
 
 def save_extra_assembly_files(src_dn, dest_dn):
-    print("HERE")
+    pwd = os.getcwd()
+    os.chdir(src_dn)
+
+    patterns = []
+    for p in canu.keep_file_patterns():
+        patterns.append( re.compile(p) )
+
+    fns_to_copy = set()
+    for root_dn, dirs, basenames in os.walk("."):
+        for bn in basenames:
+            fn = os.path.join(root_dn, bn).strip("./")
+            for p in patterns:
+                if re.match(p, fn):
+                    fns_to_copy.add(fn)
+    
+    os.chdir(pwd)
+    for fn in fns_to_copy:
+        sub_dn = os.path.dirname(fn)
+        dest = os.path.join(dest_dn, sub_dn)
+        if not os.path.exists(dest):
+            os.makedirs(dest)
+        src = os.path.join(src_dn, fn)
+        print("COPY {} {}".format(src, dest))
+        shutil.copy(src, dest)
 
 #-- save_extra_assembly_files
