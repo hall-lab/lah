@@ -61,7 +61,7 @@ def save_extra_assembly_files(src_dn, dest_dn):
     os.chdir(src_dn)
 
     patterns = []
-    for p in canu.keep_file_patterns():
+    for p in lah.assemblers.keep_file_patterns():
         patterns.append( re.compile(p) )
 
     fns_to_copy = set()
