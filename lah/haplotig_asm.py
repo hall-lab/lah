@@ -28,7 +28,7 @@ def haplotig_asm_cmd(seqfile, output_dn, save_files):
     asm_template_str = 'canu -p {{ PREFIX }} -d {{ DIRECTORY }} genomeSize={{ SIZE }} correctedErrorRate=0.015 ovlMerThreshold=75 batOptions="-eg 0.01 -eM 0.01 -dg 6 -db 6 -dr 1 -ca 50 -cp 5" -pacbio-corrected {{ FASTQ }} useGrid=false'
     asm_template = jinja2.Template(asm_template_str)
     #asm_cmd = asm_template.render({"PREFIX": haplotig.name, "DIRECTORY": temp_dn, "SIZE": "{}".format(1000), "FASTQ": seqfile})
-    asm_cmd = asm_template.render({"PREFIX": haplotig_n, "DIRECTORY": temp_dn, "SIZE": "{}".format(50000), "FASTQ": seqfile})
+    asm_cmd = asm_template.render({"PREFIX": haplotig_n, "DIRECTORY": temp_dn, "SIZE": "{}".format(20000), "FASTQ": seqfile})
     print("Assembly command:\n{}".format(asm_cmd))
     script_fn = os.path.join(temp_dn, "asm.sh")
     with open(script_fn, "w") as f:
