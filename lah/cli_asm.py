@@ -6,13 +6,13 @@ from lah.chromosome import Chromosome
 from lah.haplotig import Haplotig
 
 # asm [haplotigs assemblies]
-# - metrics
 # - merge
+# - metrics
 
 @click.group()
 def asm_cli():
     """
-    Work with Haplotig Assemblies
+    Work with Assembled Haplotigs
     """
     pass
 
@@ -50,31 +50,5 @@ def asm_metrics_cmd(dbfile):
         else:
             row += [ "NOASM", "NA", "NA", "NA" ]
         rows.append(row)
-        print("\t".join(row))
-    #print( tabulate.tabulate(rows, ["NAME", "RDS", "COUNT", "TOTAL", "MAX", "CTGS"], tablefmt="presto") )
-asm_cli.add_command(asm_metrics_cmd, "metrics")
-
-# [metrics]
-@click.command(short_help="show haplotigs metrics")
-@click.option("--dbfile", "-d", required=True, type=click.STRING, help="Database file.")
-def asm_metrics_cmd(dbfile):
-    """
-    Show Haplotigs Assembly Metrics
-    """
-    dn = os.path.dirname(dbfile)
-    if not os.path.exists(dn):
-        raise Exception("Directory does not exist: {}".format(dn))
-    LahDb.connect(dbfile)
-    session = LahDb.session()
-
-    haplotigs_asm_dn = os.path.join(dn, "assemblies")
-    m_rows = [] # metrics
-    for haplotig in session.query(Haplotig).all():
-        asm_fn = haplotig.asm_fn(haplotigs_asm_dn)
-        ctgs = {}
-        if os.path.exists(asm_fn):
-            for seq in  SeqIO.parse( asm_fn, "fasta"):
-                ctgs[seq.name] = len(seq)
-        m_rows.append([ haplotig.name, str(haplotig.read_cnt), str(len(ctgs)), str(sum(ctgs.values())), str(max(ctgs.values())), ",".join(map(str, ctgs.values())) ])
-    print( tabulate.tabulate(m_rows, ["NAME", "RDS", "COUNT", "TOTAL", "MAX", "CTGS"], tablefmt="simple") )
+    print( tabulate.tabulate(rows, ["NAME", "RDS", "COUNT", "TOTAL", "MAX", "CTGS"], tablefmt="presto") )
 asm_cli.add_command(asm_metrics_cmd, "metrics")
