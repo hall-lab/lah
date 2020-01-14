@@ -2,8 +2,8 @@ import click, natsort, os, subprocess, sys, tabulate
 import lah.haplotig_iters, lah.haplotig
 
 # haplotig [hap]
+# - ams
 # - list
-# - prepare
 # - seqfile
 # - reads
 
@@ -15,7 +15,7 @@ def lah_hap_cli():
     pass
 
 # [asm]
-from lah.haplotig_asm_cmd import haplotig_asm_cmd
+from lah.haplotig_asm import haplotig_asm_cmd
 lah_hap_cli.add_command(haplotig_asm_cmd, name="asm")
 
 # [seqfile]
