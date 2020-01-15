@@ -4,7 +4,7 @@ from click.testing import CliRunner
 from .context import lah
 from lah.db import LahDb
 from lah.seqfiles import Seqfile
-from lah.cli_seqfiles import seqfiles_add_cmd, seqfiles_list_cmd
+from lah.seqfiles_cli import seqfiles_add_cmd, seqfiles_list_cmd
 
 class CliSeqfilesTest(unittest.TestCase):
     def setUp(self):
