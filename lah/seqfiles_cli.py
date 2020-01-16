@@ -3,7 +3,7 @@ from lah.db import LahDb
 from lah.seqfiles import Seqfile
 
 @click.group()
-def seqfiles_cli():
+def cli():
     """
     Manipulate the Sequence Files Registered to the Database
     """
@@ -24,7 +24,7 @@ def seqfiles_add_cmd(seqfiles, dbfile):
         print("{}".format(fn))
         session.add(Seqfile(fn=os.path.abspath(fn)))
     session.commit()
-seqfiles_cli.add_command(seqfiles_add_cmd, name="add")
+cli.add_command(seqfiles_add_cmd, name="add")
 
 # [list]
 @click.command(short_help="list seqfiles in the db")
@@ -39,4 +39,8 @@ def seqfiles_list_cmd(dbfile):
     for seqfile in session.query(Seqfile).all():
         rows.append([seqfile.id, seqfile.fn])
     print( tabulate.tabulate(rows, ["ID", "SEQFILE"], tablefmt="simple") )
-seqfiles_cli.add_command(seqfiles_list_cmd, name="list")
+cli.add_command(seqfiles_list_cmd, name="list")
+
+# [subset]
+from lah.seqfiles_subset import by_names_cmd
+cli.add_command(by_names_cmd, "subset")

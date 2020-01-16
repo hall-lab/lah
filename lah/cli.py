@@ -23,5 +23,5 @@ from lah.cli_haplotig import lah_hap_cli
 cli.add_command(lah_hap_cli, name="haplotig")
 
 # [seqfiles]
-from lah.cli_seqfiles import seqfiles_cli
+from lah.seqfiles_cli import cli as seqfiles_cli
 cli.add_command(seqfiles_cli, name="seqfiles")

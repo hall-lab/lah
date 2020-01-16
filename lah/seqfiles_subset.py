@@ -1,17 +1,26 @@
-import os
+import click, os
 
-from lah.db import Base
+@click.command()
+@click.argument("seqfiles", required=True, type=click.STRING, nargs=-1)
+@click.option("--names", "-n", required=True, type=click.STRING, help="File of names to subset by.")
+@click.option("--output", "-o", required=True, type=click.STRING, help="Output seqfile.")
+def by_names_cmd(seqfiles, names, output):
+    """
+    subset seqfiles by names in an FOF
+    """
+    by_names(seqfiles, names, output)
 
-class Seqfile(Base):
-    __tablename__ = 'seqfiles'
+#-- by_names_cmd
 
-#-- Seqfile
-
-def subset_by_names(seqfiles, names, output):
+def by_names(seqfiles, names, output):
     if len(seqfiles) == 0:
         raise Exception("No seqfiles given to subset by name!")
 
-    if isinstance(names, str):
+    for seqfile in seqfiles:
+        if not os.path.exists(seqfile):
+            raise Exception("Seqfile does not exists! {}".format(seqfile))
+
+    if isinstance(names, str): # allow internal callers to send a list of names
         if not os.path.exists(names):
             raise Exception("Assumed names file given to subset by names does not exist!")
         names_fn = names
@@ -53,4 +62,4 @@ def subset_by_names(seqfiles, names, output):
     if len(names) != 0: # let caller handle exception if necessary
         raise Exception("Failed to find all names in seqfiles: {}".format(" ".join(names)))
 
-#-- subset_by_name
+#-- by_names
