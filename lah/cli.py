@@ -25,3 +25,7 @@ cli.add_command(lah_hap_cli, name="haplotig")
 # [seqfiles]
 from lah.cli_seqfiles import seqfiles_cli
 cli.add_command(seqfiles_cli, name="seqfiles")
+
+# [unbinned]
+from lah.cli_unbinned import unbinned_cli
+cli.add_command(unbinned_cli, name="unbinned")
