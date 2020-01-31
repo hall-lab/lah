@@ -7,6 +7,19 @@ class Seqfile(Base):
 
 #-- Seqfile
 
+def fetch_and_write_seq(seqfile_f, output_f, i):
+    # SEQ TOTAL LENGTH INCLUDING NEWLINES
+    l = (int(int(i[1])/int(i[3])) * int(i[4])) + (int(i[1]) % int(i[3]))
+    # SEQ
+    output_f.write("@{}\n".format(i[0]))
+    seqfile_f.seek( int(i[2]) )
+    output_f.write( seqfile_f.read(l) )
+    # QUAL
+    output_f.write("\n+\n")
+    seqfile_f.seek( int(i[5]) )
+    output_f.write( seqfile_f.read(l) )
+    output_f.write("\n")
+
 def subset_by_names(seqfiles, names, output):
     if len(seqfiles) == 0:
         raise Exception("No seqfiles given to subset by name!")
@@ -37,17 +50,7 @@ def subset_by_names(seqfiles, names, output):
                     # "".join( seqfile_f.read(l).split("\n"))
                     i = l.rstrip().split("\t")
                     if i[0] in names:
-                        # SEQ TOTAL LENGTH INCLUDING NEWLINES
-                        l = (int(int(i[1])/int(i[3])) * int(i[4])) + (int(i[1]) % int(i[3]))
-                        # SEQ
-                        output_f.write("@{}\n".format(i[0]))
-                        seqfile_f.seek( int(i[2]) )
-                        output_f.write( seqfile_f.read(l) )
-                        # QUAL
-                        output_f.write("\n+\n") 
-                        seqfile_f.seek( int(i[5]) )
-                        output_f.write( seqfile_f.read(l) )
-                        output_f.write("\n")
+                        fetch_and_write_seq(seqfile_f, output_f, i)
                         names.remove(i[0])
 
     if len(names) != 0: # let caller handle exception if necessary
