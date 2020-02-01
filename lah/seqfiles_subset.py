@@ -1,31 +1,26 @@
-import os
-from math import ceil
+import click, os
 
-from lah.db import Base
+@click.command()
+@click.argument("seqfiles", required=True, type=click.STRING, nargs=-1)
+@click.option("--names", "-n", required=True, type=click.STRING, help="File of names to subset by.")
+@click.option("--output", "-o", required=True, type=click.STRING, help="Output seqfile.")
+def by_names_cmd(seqfiles, names, output):
+    """
+    subset seqfiles by names in an FOF
+    """
+    by_names(seqfiles, names, output)
 
-class Seqfile(Base):
-    __tablename__ = 'seqfiles'
+#-- by_names_cmd
 
-#-- Seqfile
-
-def fetch_and_write_seq(seqfile_f, output_f, i):
-    # SEQ TOTAL LENGTH INCLUDING NEWLINES
-    #l = (int(int(i[1])/int(i[3])) * int(i[4])) + (int(i[1]) % int(i[4]))
-    l = ceil((int(i[1])/int(i[3]))*int(i[4]))
-    # SEQ
-    output_f.write("@{}\n".format(i[0]))
-    seqfile_f.seek( int(i[2]) )
-    output_f.write( seqfile_f.read(l) )
-    # QUAL
-    output_f.write("+\n")
-    seqfile_f.seek( int(i[5]) )
-    output_f.write( seqfile_f.read(l) )
-
-def subset_by_names(seqfiles, names, output):
+def by_names(seqfiles, names, output):
     if len(seqfiles) == 0:
         raise Exception("No seqfiles given to subset by name!")
 
-    if isinstance(names, str):
+    for seqfile in seqfiles:
+        if not os.path.exists(seqfile):
+            raise Exception("Seqfile does not exists! {}".format(seqfile))
+
+    if isinstance(names, str): # allow internal callers to send a list of names
         if not os.path.exists(names):
             raise Exception("Assumed names file given to subset by names does not exist!")
         names_fn = names
@@ -51,10 +46,20 @@ def subset_by_names(seqfiles, names, output):
                     # "".join( seqfile_f.read(l).split("\n"))
                     i = l.rstrip().split("\t")
                     if i[0] in names:
-                        fetch_and_write_seq(seqfile_f, output_f, i)
+                        # SEQ TOTAL LENGTH INCLUDING NEWLINES
+                        l = (int(int(i[1])/int(i[3])) * int(i[4])) + (int(i[1]) % int(i[3]))
+                        # SEQ
+                        output_f.write("@{}\n".format(i[0]))
+                        seqfile_f.seek( int(i[2]) )
+                        output_f.write( seqfile_f.read(l) )
+                        # QUAL
+                        output_f.write("\n+\n") 
+                        seqfile_f.seek( int(i[5]) )
+                        output_f.write( seqfile_f.read(l) )
+                        output_f.write("\n")
                         names.remove(i[0])
 
     if len(names) != 0: # let caller handle exception if necessary
         raise Exception("Failed to find all names in seqfiles: {}".format(" ".join(names)))
 
-#-- subset_by_name
+#-- by_names
