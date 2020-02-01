@@ -1,7 +1,7 @@
 import click, os
 
 from lah.db import LahDb
-from lah.unbinned import read_names, seqfile
+import lah.unbinned
 
 # unbinned
 # - list
@@ -22,7 +22,7 @@ def unbinned_list_cmd(dbfile):
     List unbinned read names
     """
     LahDb.connect(dbfile)
-    print("\n".join(read_names()))
+    print("\n".join(lah.unbinned.read_names()))
 unbinned_cli.add_command(unbinned_list_cmd, "list")
 
 # [seqfile]
@@ -43,5 +43,5 @@ def unbinned_seqfile_cmd(dbfile, output=None):
     output_dn = os.path.dirname(dbfile)
     if output is None:
         output = lah.unbinned.seqfile_fn( os.path.dirname(dbfile) )
-    seqfile(output)
+    lah.unbinned.seqfile(output)
 unbinned_cli.add_command(unbinned_seqfile_cmd, "seqfile")
