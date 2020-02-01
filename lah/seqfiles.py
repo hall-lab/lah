@@ -1,4 +1,5 @@
 import os
+from math import ceil
 
 from lah.db import Base
 
@@ -9,16 +10,16 @@ class Seqfile(Base):
 
 def fetch_and_write_seq(seqfile_f, output_f, i):
     # SEQ TOTAL LENGTH INCLUDING NEWLINES
-    l = (int(int(i[1])/int(i[3])) * int(i[4])) + (int(i[1]) % int(i[3]))
+    #l = (int(int(i[1])/int(i[3])) * int(i[4])) + (int(i[1]) % int(i[4]))
+    l = ceil((int(i[1])/int(i[3]))*int(i[4]))
     # SEQ
     output_f.write("@{}\n".format(i[0]))
     seqfile_f.seek( int(i[2]) )
     output_f.write( seqfile_f.read(l) )
     # QUAL
-    output_f.write("\n+\n")
+    output_f.write("+\n")
     seqfile_f.seek( int(i[5]) )
     output_f.write( seqfile_f.read(l) )
-    output_f.write("\n")
 
 def subset_by_names(seqfiles, names, output):
     if len(seqfiles) == 0:
