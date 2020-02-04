@@ -13,9 +13,11 @@ class LahDb():
         return "sqlite:///" + dbfile
 
     @staticmethod
-    def sessionmaker(sm=None):
-        if sm is not None:
-            LahDb.__singleton["sessionmaker"] = sm
+    def dbfile():
+        return LahDb.__singleton.get("dbfile", None)
+
+    @staticmethod
+    def sessionmaker():
         return LahDb.__singleton.get("sessionmaker", None)
 
     #-- singelton attributes
@@ -26,13 +28,14 @@ class LahDb():
         if sm is not None: # FIXME error on re-connect?
             return sm
         if not os.path.exists(dbfile):
-            raise Exception("Database feil does not exist! {}".format(dbfile))
+            raise Exception("Database file does not exist! {}".format(dbfile))
         db_url = LahDb.dburl(dbfile)
         engine = create_engine(db_url)
         if not Base.classes:
             Base.metadata.create_all(engine)
             Base.prepare(engine, reflect=True)
-        LahDb.sessionmaker( sessionmaker(bind=engine) )
+        LahDb.__singleton["dbfile"] = dbfile
+        LahDb.__singleton["sessionmaker"] = sessionmaker(bind=engine)
 
     #-- connect
 

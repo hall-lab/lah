@@ -14,6 +14,7 @@ class LahDbTest(unittest.TestCase):
 
     def test1_lah_db_connect(self):
         LahDb.connect(self.dbfile)
+        self.assertEqual(LahDb.dbfile(), self.dbfile)
         self.assertIsNotNone(LahDb.sessionmaker())
 
         session = LahDb.session()
