@@ -1,21 +1,43 @@
-import subprocess, tempfile, unittest
+import click, os, unittest
+from click.testing import CliRunner
 
-class SxCliTest(unittest.TestCase):
-    def setUp(self):
-        self.out = tempfile.TemporaryFile()
+from lah.cli import cli as lah_cli
+from sx.cli import cli as sx_cli
 
-    def tearDown(self):
-        self.out.close()
+@click.command()
+def test_cmd():
+    print("Hello World!")
+lah_cli.add_command(test_cmd, "test")
 
+class CliTest(unittest.TestCase):
     def test_lah(self):
-        rv = subprocess.call(['lah'], stdout=self.out)
-        self.assertEqual(rv, 0)
+        runner = CliRunner()
+
+        result = runner.invoke(lah_cli, [])
+        self.assertEqual(result.exit_code, 0)
+
+        result = runner.invoke(lah_cli, ["-h"])
+        self.assertEqual(result.exit_code, 0)
+
+        result = runner.invoke(lah_cli, ["--help"])
+        self.assertEqual(result.exit_code, 0)
+
+        result = runner.invoke(lah_cli, ["test"])
+        self.assertEqual(result.exit_code, 0)
+        self.assertEqual(result.output, "Hello World!\n")
+
+        dbfile = os.path.join(os.path.dirname(__file__), "data", "sample", "test.db")
+        result = runner.invoke(lah_cli, ["test"])
+        #result = runner.invoke(lah_cli, ["-d", dbfile, "test"])
+        self.assertEqual(result.exit_code, 0)
 
     def test_sx(self):
-        rv = subprocess.call(['sx'], stdout=self.out)
-        self.assertEqual(rv, 0)
+        runner = CliRunner()
 
-# -- SxCliTest
+        result = runner.invoke(sx_cli, [])
+        self.assertEqual(result.exit_code, 0)
+
+# -- CliTest
 
 if __name__ == '__main__':
     unittest.main(verbosity=2)
