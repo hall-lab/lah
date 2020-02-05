@@ -6,51 +6,53 @@ from sqlalchemy.orm import sessionmaker
 Base = automap_base()
 
 class LahDb():
-    __singleton = {}
+    __current = None
 
     @staticmethod
-    def dburl(dbfile):
-        return "sqlite:///" + dbfile
-
-    @staticmethod
-    def dbfile():
-        return LahDb.__singleton.get("dbfile", None)
-
-    @staticmethod
-    def sessionmaker():
-        return LahDb.__singleton.get("sessionmaker", None)
+    def current():
+        return LahDb.__current
 
     #-- singelton attributes
 
-    @staticmethod
-    def connect(dbfile):
-        sm = LahDb.sessionmaker()
-        if sm is not None: # FIXME error on re-connect?
+    def __init__(self, dbfile):
+        self.dbfile = dbfile
+        LahDb.__current = self
+
+    def dburl(self):
+        return "sqlite:///" + self.dbfile
+
+    #-- init/attrs
+
+    def connect(self):
+        sm = getattr(self, "sessionmaker", None)
+        if sm is not None:
             return sm
-        if not os.path.exists(dbfile):
+
+        if not os.path.exists(self.dbfile):
             raise Exception("Database file does not exist! {}".format(dbfile))
-        db_url = LahDb.dburl(dbfile)
-        engine = create_engine(db_url)
+        dburl = LahDb.dburl(self)
+        engine = create_engine(dburl)
+
         if not Base.classes:
             Base.metadata.create_all(engine)
             Base.prepare(engine, reflect=True)
-        LahDb.__singleton["dbfile"] = dbfile
-        LahDb.__singleton["sessionmaker"] = sessionmaker(bind=engine)
+
+        self.sessionmaker = sessionmaker(bind=engine)
 
     #-- connect
-
-    @staticmethod
-    def session():
-        sm = LahDb.sessionmaker()
+    
+    def session(self=None):
+        if self is None:
+            self = LahDb.current()
+        sm = self.sessionmaker
         if sm is None:
             raise Exception("No session maker found! Are we connected to the DB?")
         return sm()
 
     #-- new_seesion
 
-    @staticmethod
-    def create(dbfile):
-        dburl = LahDb.dburl(dbfile)
+    def create(self):
+        dburl = self.dburl()
         backend = yoyo.get_backend(dburl)
         migration_d = os.path.join(os.path.dirname(__file__), 'db-migrations')
         if not os.path.exists(migration_d):
