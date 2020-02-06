@@ -2,7 +2,6 @@ import click, os, unittest
 from click.testing import CliRunner
 
 from lah.cli import cli as lah_cli
-from sx.cli import cli as sx_cli
 
 @click.command()
 def test_cmd():
@@ -29,12 +28,6 @@ class CliTest(unittest.TestCase):
         dbfile = os.path.join(os.path.dirname(__file__), "data", "sample", "test.db")
         result = runner.invoke(lah_cli, ["test"])
         #result = runner.invoke(lah_cli, ["-d", dbfile, "test"])
-        self.assertEqual(result.exit_code, 0)
-
-    def test_sx(self):
-        runner = CliRunner()
-
-        result = runner.invoke(sx_cli, [])
         self.assertEqual(result.exit_code, 0)
 
 # -- CliTest
