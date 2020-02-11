@@ -1,7 +1,7 @@
 import filecmp, os, shutil, subprocess, tempfile, unittest
 from click.testing import CliRunner
 
-from .context import lah
+from lah.cli import cli
 from lah.db import LahDb
 from lah.seqfiles import Seqfile
 from lah.seqfiles_cli import seqfiles_add_cmd, seqfiles_list_cmd
@@ -11,7 +11,7 @@ class CliSeqfilesTest(unittest.TestCase):
         self.temp_d = tempfile.TemporaryDirectory()
         self.temp_dn = self.temp_d.name
         self.dbfile = os.path.join(self.temp_dn, "test.db")
-        LahDb.create(self.dbfile)
+        LahDb(self.dbfile).create()
 
     def tearDown(self):
         self.temp_d.cleanup()
@@ -27,7 +27,7 @@ class CliSeqfilesTest(unittest.TestCase):
 
         seqfile1 = "seqfile1.fastq"
         seqfile2 = "seqfile2.fastq"
-        result = runner.invoke(seqfiles_add_cmd, ["--dbfile", self.dbfile, seqfile1, seqfile2])
+        result = runner.invoke(cli, ["-d", self.dbfile, "seqfiles", "add", seqfile1, seqfile2])
         try:
             self.assertEqual(result.exit_code, 0)
         except:

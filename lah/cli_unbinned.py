@@ -16,20 +16,18 @@ def unbinned_cli():
 
 # [list]
 @click.command()
-@click.option("--dbfile", "-d", required=True, type=click.STRING, help="Database file.")
-def unbinned_list_cmd(dbfile):
+def unbinned_list_cmd():
     """
     List unbinned read names
     """
-    LahDb.connect(dbfile)
+    session = LahDb.session()
     print("\n".join(lah.unbinned.read_names()))
 unbinned_cli.add_command(unbinned_list_cmd, "list")
 
 # [seqfile]
 @click.command()
-@click.option("--dbfile", "-d", required=True, type=click.STRING, help="Database file.")
 @click.option("--output", "-o", type=click.STRING, help="Output seqfile, defaults to 'DIR/unbinned.fastq'.")
-def unbinned_seqfile_cmd(dbfile, output=None):
+def unbinned_seqfile_cmd(output=None):
     """
     Generate unbinned seqfile and reads file.
 
@@ -39,8 +37,8 @@ def unbinned_seqfile_cmd(dbfile, output=None):
 
     If the seqfile exists, the command will exit.
     """
-    LahDb.connect(dbfile)
-    output_dn = os.path.dirname(dbfile)
+    sessin = LahDb.session()
+    output_dn = os.path.dirname(LahDb.current().dbfile)
     if output is None:
         output = lah.unbinned.seqfile_fn( os.path.dirname(dbfile) )
     lah.unbinned.seqfile(output)

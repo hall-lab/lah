@@ -44,6 +44,8 @@ class LahDb():
     def session(self=None):
         if self is None:
             self = LahDb.current()
+            if self is None:
+                raise Exception("Database connection is required, please set the dbfile with environment variable: `LAH_DBFILE=<DBFILE> lah ...` or via the dbfile option: `lah -d <DBFILE> ...`")
         sm = self.sessionmaker
         if sm is None:
             raise Exception("No session maker found! Are we connected to the DB?")

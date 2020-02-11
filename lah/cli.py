@@ -11,7 +11,7 @@ def cli(dbfile):
     """
     [L]ocal [A]ssembly of [H]aplotypes
     """
-    if dbfile:
+    if dbfile and os.path.exists(dbfile):
         LahDb(dbfile=dbfile).connect()
     pass
 

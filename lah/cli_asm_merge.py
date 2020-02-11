@@ -5,9 +5,8 @@ from lah.db import LahDb
 from lah.haplotig import Haplotig
 
 @click.command(short_help="merge haplotig assemblies")
-@click.option("--dbfile", "-d", required=True, type=click.STRING, help="Database feil.")
 @click.option("--output", "-o", type=click.STRING, help="Output merged assembly to this files instead of in same directory as dbfile.")
-def asm_merge_cmd(dbfile, output=None):
+def asm_merge_cmd(output=None):
     """
     Merge Haplotig haplotigs Fastas
 
@@ -19,16 +18,10 @@ def asm_merge_cmd(dbfile, output=None):
 
     """
     print("Merge haplotig assemblies...")
-    print("DB: {}".format(dbfile))
-    if not os.path.exists(dbfile):
-        raise Exception("Database file does not exist! {}".format(dbfile))
 
-    dn = os.path.dirname(os.path.abspath(dbfile))
-    if not os.path.exists(dn):
-        raise Exception("Directory does not exist: {}".format(dn))
-    asm_dn = os.path.join(dn, "assemblies")
-    LahDb.connect(dbfile)
     session = LahDb.session()
+    dn = os.path.dirname(LahDb.current().dbfile)
+    asm_dn = os.path.join(dn, "assemblies")
 
     merge_fn = os.path.join(dn, "asm.merged.fasta")
     if output is not None:

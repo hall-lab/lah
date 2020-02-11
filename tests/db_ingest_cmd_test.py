@@ -1,10 +1,10 @@
 import filecmp, os, shutil, subprocess, tempfile, unittest
 from click.testing import CliRunner
 
-from .context import lah
 from lah.db import LahDb
 from lah.haplotig import Haplotig
 from lah.chromosome import Chromosome
+from lah.cli import cli
 from lah.db_ingest_cmd import db_ingest_cmd
 
 class LahDbIngestCliTests(unittest.TestCase):
@@ -21,8 +21,9 @@ class LahDbIngestCliTests(unittest.TestCase):
 
     def validate(self):
         self.assertTrue(os.path.exists(self.dbfile))
-        LahDb.connect(self.dbfile)
-        session =LahDb.session()
+        db = LahDb(dbfile=self.dbfile)
+        db.connect()
+        session = db.session()
 
         chromosome = session.query(Chromosome).filter(Chromosome.name == "chr").first()
         self.assertIsNotNone(chromosome)
@@ -34,10 +35,9 @@ class LahDbIngestCliTests(unittest.TestCase):
     def test1_ingest(self):
         runner = CliRunner()
 
-        result = runner.invoke(db_ingest_cmd, [])
+        result = runner.invoke(cli, ["-d", self.dbfile, "db", "ingest"])
         self.assertEqual(result.exit_code, 2)
-        #result = runner.invoke(db_ingest_cmd, ["-h"]) 
-        #self.assertEqual(result.exit_code, 0)
+
         result = runner.invoke(db_ingest_cmd, ["--help"])
         self.assertEqual(result.exit_code, 0)
 
@@ -47,7 +47,8 @@ class LahDbIngestCliTests(unittest.TestCase):
         haplotigs_fn = os.path.join(self.temp_dn, haplotigs_bn)
         shutil.copyfile(os.path.join(self.data_d, haplotigs_bn), haplotigs_fn)
 
-        result = runner.invoke(db_ingest_cmd, ["--chromosome-name", "chr", "--dbfile", self.dbfile, "-f", haplotigs_fn, "-g", "NA,rid,hid"])
+        LahDb(self.dbfile).create()
+        result = runner.invoke(cli, ["-d", self.dbfile, "db", "ingest", "--chromosome-name", "chr", "-f", haplotigs_fn, "-g", "NA,rid,hid"])
         try:
             self.assertEqual(result.exit_code, 0)
         except:

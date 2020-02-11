@@ -12,13 +12,10 @@ def cli():
 # [add]
 @click.command(short_help="add sequence files to the db")
 @click.argument("seqfiles", required=True, type=click.STRING, nargs=-1)
-@click.option("--dbfile", required=True, type=click.STRING)
-def seqfiles_add_cmd(seqfiles, dbfile):
+def seqfiles_add_cmd(seqfiles):
     """
     Add Haplotig Sequence Files to the Database
     """
-    print("Add seqfiles to {}".format(dbfile))
-    LahDb.connect(dbfile)
     session = LahDb.session()
     for fn in seqfiles:
         print("{}".format(fn))
@@ -28,12 +25,10 @@ cli.add_command(seqfiles_add_cmd, name="add")
 
 # [list]
 @click.command(short_help="list seqfiles in the db")
-@click.option("--dbfile", required=True, type=click.STRING)
-def seqfiles_list_cmd(dbfile):
+def seqfiles_list_cmd():
     """
     List Haplotig Sequence Files in the Database
     """
-    LahDb.connect(dbfile)
     session = LahDb.session()
     rows = []
     for seqfile in session.query(Seqfile).all():

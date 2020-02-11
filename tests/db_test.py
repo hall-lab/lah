@@ -1,6 +1,5 @@
 import filecmp, os, tempfile, unittest
 
-from .context import lah
 from lah.db import LahDb
 
 class LahDbTest(unittest.TestCase):

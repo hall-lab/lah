@@ -22,16 +22,14 @@ asm_cli.add_command(asm_merge_cmd, name="merge")
 
 # [metrics]
 @click.command(short_help="show haplotigs metrics")
-@click.option("--dbfile", "-d", required=True, type=click.STRING, help="Database file.")
-def asm_metrics_cmd(dbfile):
+def asm_metrics_cmd():
     """
     Show Haplotigs Assembly Metrics
     """
-    dn = os.path.dirname(os.path.abspath(dbfile))
+    session = LahDb.session()
+    dn = os.path.dirname(os.path.abspath(LahDb.dbfile()))
     if not os.path.exists(dn):
         raise Exception("Directory does not exist: {}".format(dn))
-    LahDb.connect(dbfile)
-    session = LahDb.session()
 
     haplotigs_asm_dn = os.path.join(dn, "assemblies")
     rows = [] # metrics
