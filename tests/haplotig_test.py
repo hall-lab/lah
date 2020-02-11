@@ -7,8 +7,9 @@ class HaplotigTest(unittest.TestCase):
     def setUp(self):
         self.data_d = os.path.join(os.path.dirname(__file__), "data", "sample")
         self.dbfile = os.path.join(self.data_d, "test.db")
-        LahDb.connect(self.dbfile)
-        session = LahDb.session()
+        db = LahDb(self.dbfile)
+        db.connect()
+        session = db.session()
         self.haplotig = session.query(Haplotig).get(3)
 
     def test0_load(self):

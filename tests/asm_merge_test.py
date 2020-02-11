@@ -1,7 +1,7 @@
 import filecmp, os, tempfile, unittest
 from click.testing import CliRunner
 
-from .context import lah
+from lah.cli import cli
 from lah.cli_asm_merge import asm_merge_cmd
 
 class AsmMergeTest(unittest.TestCase):
@@ -25,12 +25,12 @@ class AsmMergeTest(unittest.TestCase):
         runner = CliRunner()
 
         result = runner.invoke(asm_merge_cmd, [])
-        self.assertEqual(result.exit_code, 2)
+        self.assertEqual(result.exit_code, 1)
 
         result = runner.invoke(asm_merge_cmd, ["--help"])
         self.assertEqual(result.exit_code, 0)
 
-        result = runner.invoke(asm_merge_cmd, ["-d", self.dbfile, "-o", self.output])
+        result = runner.invoke(cli, ["-d", self.dbfile, "asm", "merge", "-o", self.output])
         try:
             self.assertEqual(result.exit_code, 0)
         except:

@@ -1,9 +1,9 @@
 import filecmp, io, os, sys, tempfile, unittest
 from click.testing import CliRunner
 
-from .context import lah
 from lah.db import LahDb
 from lah.chromosome import Chromosome
+from lah.cli import cli
 from lah.haplotig import Haplotig
 from lah.seqfiles import Seqfile
 from lah.haplotig_seqfile_cmd import haplotig_seqfile_cmd as cmd
@@ -16,8 +16,9 @@ class HaplotigSeqfileCmdTest(unittest.TestCase):
         self.temp_d = tempfile.TemporaryDirectory()
         self.temp_dn = self.temp_d.name
 
-        LahDb.connect(self.dbfile)
-        session = LahDb.session()
+        db = LahDb(self.dbfile)
+        db.connect()
+        session = db.session()
         self.haplotig = session.query(Haplotig).get(3)
         self.output = self.haplotig.seqfile_fn(self.temp_dn)
         self.source_seqfiles = session.query(Seqfile).all()
@@ -53,7 +54,7 @@ class HaplotigSeqfileCmdTest(unittest.TestCase):
         result = runner.invoke(cmd, ["--help"])
         self.assertEqual(result.exit_code, 0)
 
-        result = runner.invoke(cmd, ["--hid", self.haplotig.id, "--dbfile", self.dbfile, "--output", self.output])
+        result = runner.invoke(cli, ["-d", self.dbfile, "haplotig", "seqfile", "--hid", self.haplotig.id, "--output", self.output])
         try:
             self.assertEqual(result.exit_code, 0)
         except:

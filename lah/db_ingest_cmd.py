@@ -7,10 +7,9 @@ from lah.haplotig_iters import HaplotigIterator
 
 @click.command(short_help="create and ingest haplotigs into a database")
 @click.option("--chromosome-name", "-n", required=False, type=click.STRING, help="Chromosome name.")
-@click.option("--dbfile", "-d", required=True, type=click.STRING, help="Database file to ingest haplotigs.")
 @click.option("--haplotigs_fn", "-f", required=True, type=click.STRING, help="File of haplotigs.")
 @click.option("--headers", "-g", required=True, type=click.STRING, help="Headers for haplotigs file. Give as a comma separated list.")
-def db_ingest_cmd(chromosome_name, dbfile, haplotigs_fn, headers):
+def db_ingest_cmd(chromosome_name, haplotigs_fn, headers):
     """
     Ingest a Chromosome's Haplotigs
 
@@ -25,13 +24,7 @@ def db_ingest_cmd(chromosome_name, dbfile, haplotigs_fn, headers):
     headers = headers.split(",")
     HaplotigIterator.validate_headers(headers)
 
-    print("DB: {}".format(dbfile))
-    if not os.path.exists(dbfile):
-        print("Creating DB...")
-        LahDb.create(dbfile)
-
     print("Connecting to DB...")
-    LahDb.connect(dbfile)
     session = LahDb.session()
 
     chromosome = Chromosome(name=chromosome_name, haplotigs_fn=haplotigs_fn, haplotig_hdrs=headers_str)

@@ -1,6 +1,5 @@
 import os, unittest
 
-from .context import lah
 import lah.haplotig_iters
 
 class LahHaplotigItersTest(unittest.TestCase):

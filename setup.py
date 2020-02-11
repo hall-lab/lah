@@ -38,13 +38,12 @@ setup(
     install_requires=install_requires,
     entry_points='''
         [console_scripts]
-        sx=sx.cli:cli
         lah=lah.cli:cli
     ''',
     setup_requires=["pytest-runner"],
     test_suite="nose.collector",
     tests_requires=tests_require,
-    packages=find_packages(include=['lah','sx'], exclude=('tests')),
+    packages=find_packages(include=['lah'], exclude=('tests')),
     include_package_data=True,
     package_data={"lah": ["db-migrations/*"]},
 )

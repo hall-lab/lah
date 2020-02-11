@@ -1,13 +1,18 @@
-import click
+import click, os
+
+from lah.db import LahDb
 from lah.version import __version__
 
 CONTEXT_SETTINGS = dict(help_option_names=['-h', '--help'])
 @click.group(context_settings=CONTEXT_SETTINGS)
 @click.version_option(version=__version__)
-def cli():
+@click.option("--dbfile", "-d", type=click.STRING, envvar='LAH_DBFILE', help="Database file.")
+def cli(dbfile):
     """
     [L]ocal [A]ssembly of [H]aplotypes
     """
+    if dbfile and os.path.exists(dbfile):
+        LahDb(dbfile=dbfile).connect()
     pass
 
 # [asm]

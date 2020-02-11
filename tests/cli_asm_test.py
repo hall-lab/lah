@@ -1,7 +1,6 @@
 import tempfile, unittest
 from click.testing import CliRunner
 
-from .context import lah
 from lah.cli_asm import asm_cli, asm_metrics_cmd
 
 class CliAsmTest(unittest.TestCase):
@@ -19,10 +18,6 @@ class CliAsmTest(unittest.TestCase):
          result = runner.invoke(asm_cli, [])
          self.assertEqual(result.exit_code, 0)
 
-         # FIXME -h returns 2 here, but 0 n the command line 
-         #result = runner.invoke(asm_cli, ["-h"])
-         #self.assertEqual(result.exit_code, 0)
-
          result = runner.invoke(asm_cli, ["--help"])
          self.assertEqual(result.exit_code, 0)
 
@@ -30,7 +25,7 @@ class CliAsmTest(unittest.TestCase):
          runner = CliRunner()
 
          result = runner.invoke(asm_metrics_cmd, [])
-         self.assertEqual(result.exit_code, 2)
+         self.assertEqual(result.exit_code, 1)
 
          result = runner.invoke(asm_metrics_cmd, ["--help"])
          self.assertEqual(result.exit_code, 0)

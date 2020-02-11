@@ -2,6 +2,7 @@ import filecmp, os, tempfile, unittest
 from click.testing import CliRunner
 
 from lah.db import LahDb
+from lah.cli import cli
 from lah.cli_unbinned import unbinned_cli, unbinned_list_cmd, unbinned_seqfile_cmd
 import lah.unbinned
 
@@ -39,7 +40,8 @@ class UnbinnedTest(unittest.TestCase):
 
     def test1_unbinned_read_names(self):
         self.assertTrue(os.path.exists(self.dbfile), "DBFILE {}".format(self.dbfile))
-        LahDb.connect(self.dbfile)
+        db = LahDb(dbfile=self.dbfile)
+        db.connect()
         read_names = lah.unbinned.read_names()
         self.verify_unbinned_read_names(read_names)
 
@@ -47,12 +49,12 @@ class UnbinnedTest(unittest.TestCase):
         runner = CliRunner()
 
         result = runner.invoke(unbinned_list_cmd, [])
-        self.assertEqual(result.exit_code, 2)
+        self.assertEqual(result.exit_code, 1)
 
         result = runner.invoke(unbinned_list_cmd, ["--help"])
         self.assertEqual(result.exit_code, 0)
 
-        result = runner.invoke(unbinned_list_cmd, ["-d", self.dbfile])
+        result = runner.invoke(cli, ["-d", self.dbfile, "unbinned", "list"])
         try:
             self.assertEqual(result.exit_code, 0)
         except:
@@ -64,7 +66,8 @@ class UnbinnedTest(unittest.TestCase):
         self.verify_unbinned_read_names(names)
 
     def test2_unbinned_seqfile(self):
-        LahDb.connect(self.dbfile)
+        db = LahDb(self.dbfile)
+        db.connect()
         seqfile_fn = lah.unbinned.unbinned_seqfile_fn(self.temp_dn)
         lah.unbinned.seqfile(seqfile_fn)
         self.assertTrue(filecmp.cmp(seqfile_fn, self.expected_seqfile_fn))
@@ -73,13 +76,13 @@ class UnbinnedTest(unittest.TestCase):
         runner = CliRunner()
 
         result = runner.invoke(unbinned_seqfile_cmd, [])
-        self.assertEqual(result.exit_code, 2)
+        self.assertEqual(result.exit_code, 1)
 
         result = runner.invoke(unbinned_seqfile_cmd, ["--help"])
         self.assertEqual(result.exit_code, 0)
 
         seqfile_fn = lah.unbinned.unbinned_seqfile_fn(self.temp_dn)
-        result = runner.invoke(unbinned_seqfile_cmd, ["-d", self.dbfile, "-o", seqfile_fn])
+        result = runner.invoke(cli, ["-d", self.dbfile, "unbinned", "seqfile", "-o", seqfile_fn])
         try:
             self.assertEqual(result.exit_code, 0)
         except:
