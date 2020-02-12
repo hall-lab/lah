@@ -1,10 +1,10 @@
-import filecmp, os, shutil, subprocess, tempfile, unittest
+import os, shutil, tempfile, unittest
 from click.testing import CliRunner
 
 from lah.db import LahDb
 from lah.haplotig import *
 from lah.cli import cli
-from lah.db_ingest_cmd import db_ingest_cmd
+from lah.db_ingest import db_ingest_cmd as cmd
 
 class LahDbIngestCliTests(unittest.TestCase):
     def setUp(self):
@@ -36,7 +36,7 @@ class LahDbIngestCliTests(unittest.TestCase):
         result = runner.invoke(cli, ["-d", self.dbfile, "db", "ingest"])
         self.assertEqual(result.exit_code, 2)
 
-        result = runner.invoke(db_ingest_cmd, ["--help"])
+        result = runner.invoke(cmd, ["--help"])
         self.assertEqual(result.exit_code, 0)
 
         haplotigs_bn = "chr.haplotigs.tsv"

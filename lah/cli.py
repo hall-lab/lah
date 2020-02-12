@@ -20,7 +20,7 @@ from lah.cli_asm import asm_cli
 cli.add_command(asm_cli, name="asm")
 
 # [db]
-from lah.cli_db import db_cli
+from lah.db_cli import db_cli
 cli.add_command(db_cli, name="db")
 
 # [haplotig]
