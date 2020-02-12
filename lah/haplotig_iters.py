@@ -1,10 +1,9 @@
 import csv, re
 
-edge_splitter = re.compile("\s+")
-
 class HaplotigIterator():
 
     required_headers = set(["hid", "rid"])
+
     @staticmethod
     def validate_headers(headers):
         missing = HaplotigIterator.required_headers - set(headers)
@@ -16,6 +15,8 @@ class HaplotigIterator():
         self.headers = headers
         self.in_f = open(in_fn, "r")
         self.dialect = csv.Sniffer().sniff(self.in_f.read(1024))
+        self.seek(pos)
+        return
         self.in_f.seek(pos)
         hap = next(csv.DictReader([self.in_f.readline()], fieldnames=self.headers, dialect=self.dialect))
         if not bool(hap):
@@ -59,5 +60,29 @@ class HaplotigIterator():
         if current_hap:
             return current_hap
         raise StopIteration()
+
+    #-- iter functions
+
+    def seek(self, pos):
+        self.in_f.seek(pos)
+        hap = next(csv.DictReader([self.in_f.readline()], fieldnames=self.headers, dialect=self.dialect))
+        if not bool(hap):
+            raise("Failed to find first haplotype at poisition {}!".format(pos))
+        self.previous_hap = {
+            "hid": hap["hid"],
+            "rids": set([hap["rid"]]),
+            "file_pos": pos,
+        }
+
+    #-- seek
+
+    def load_haplotig_reads(self, haplotig):
+        self.seek(haplotig.file_pos)
+        raw_haplotig = next(self)
+        if raw_haplotig["hid"] != haplotig.name:
+            raise Exception("Expected haplotig {} at position {}, but got {}.".format(haplotig.name, haplotig.file_pos, raw_haplotig["hid"]))
+        haplotig.reads = sorted(raw_haplotig["rids"])
+
+    #-- load_haplotig_reads
 
 #-- HaplotigIterator

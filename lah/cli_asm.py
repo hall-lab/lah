@@ -2,7 +2,6 @@ import click, os, tabulate
 from Bio import SeqIO
 
 from lah.db import LahDb
-from lah.chromosome import Chromosome
 from lah.haplotig import Haplotig
 
 # asm [haplotigs assemblies]

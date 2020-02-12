@@ -1,10 +1,10 @@
 import filecmp, io, os, sys, tempfile, unittest
 from click.testing import CliRunner
 
-from lah.db import LahDb
-from lah.chromosome import Chromosome
 from lah.cli import cli
-from lah.haplotig import Haplotig
+from lah.haplotig import Haplotig, Metadata
+from lah.haplotig_iters import HaplotigIterator
+from lah.db import LahDb
 from lah.seqfiles import Seqfile
 from lah.haplotig_seqfile_cmd import haplotig_seqfile_cmd as cmd
 
@@ -19,6 +19,9 @@ class HaplotigSeqfileCmdTest(unittest.TestCase):
         db = LahDb(self.dbfile)
         db.connect()
         session = db.session()
+        haplotigs_bn = session.query(Metadata).filter_by(name="haplotigs_fn").one().value
+        self.haplotigs_fn = os.path.join(self.data_d, haplotigs_bn)
+        self.haplotigs_headers = session.query(Metadata).filter_by(name="haplotigs_headers").one().value.split(",")
         self.haplotig = session.query(Haplotig).get(3)
         self.output = self.haplotig.seqfile_fn(self.temp_dn)
         self.source_seqfiles = session.query(Seqfile).all()
@@ -40,7 +43,10 @@ class HaplotigSeqfileCmdTest(unittest.TestCase):
             haplotig.seqfile(sources=self.source_seqfiles, output=self.output)
 
         sys.stdout = io.StringIO() # silence stdout
-        haplotig.load_reads()
+
+        haplotig_iter = HaplotigIterator(headers=self.haplotigs_headers, in_fn=self.haplotigs_fn)
+        haplotig_iter.load_haplotig_reads(haplotig)
+
         haplotig.seqfile(sources=self.source_seqfiles, output=self.output)
         self.assertTrue(filecmp.cmp(self.output, os.path.join(self.haplotigs_dn, "402_0_1_0.fastq")))
         sys.stdout = sys.__stdout__

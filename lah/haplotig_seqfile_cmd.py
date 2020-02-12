@@ -3,7 +3,7 @@ import click, os, sys, tempfile
 import inspect
 
 from lah.db import LahDb
-from lah.haplotig import Haplotig
+from lah.haplotig import *
 from lah.seqfiles import Seqfile
 
 @click.command(short_help="generate haplotig seqfile")
@@ -22,9 +22,13 @@ def haplotig_seqfile_cmd(hid, output):
     if not haplotig:
         raise Exception("Failed to get haplotig {} from db!".format(hid))
 
-    haplotig.load_reads()
-    if not hasattr(haplotig, "reads"):
-        raise Exception("Haplotig {} has no reads!".format(hid))
+    directory = session.query(Metadata).filter_by(name="directory").one().value
+    haplotigs_bn = session.query(Metadata).filter_by(name="haplotigs_fn").one().value
+    haplotigs_headers = session.query(Metadata).filter_by(name="haplotigs_headers").one().value
+    headers = haplotigs_headers.split(",")
+    
+    h_i = HaplotigIterator(in_fn=os.path.join(directory, haplotigs_bn), headers=headers, pos=haplotig.file_pos)
+    h_i.load_haplotig_reads(haplotig)
 
     source_seqfiles = session.query(Seqfile).all()
     if not len(source_seqfiles):
@@ -33,3 +37,5 @@ def haplotig_seqfile_cmd(hid, output):
     print("Output: {}".format(output))
     haplotig.seqfile(sources=source_seqfiles, output=output)
     print("Generate haplotig seqfile ... OK")
+
+#-- haplotig_seqfile_cmd

@@ -2,7 +2,6 @@ import click, jinja2, os, re, shutil, subprocess, tempfile
 
 import lah.assemblers
 from lah.db import LahDb
-from lah.chromosome import Chromosome
 from lah.haplotig import Haplotig
 from lah.seqfiles import Seqfile
 

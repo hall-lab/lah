@@ -1,20 +1,25 @@
 import os, unittest
+from mock import patch
 
 import lah.haplotig_iters
+from lah.haplotig import Haplotig
 
 class LahHaplotigItersTest(unittest.TestCase):
+    def setUp(self):
+        self.haplotigs_fn = os.path.join(os.path.dirname(__file__), "data", "sample", "chr.haplotigs.tsv")
+        self.haplotigs_headers = ["NA", "rid", "hid"]
 
     def test1_validate_headers(self):
         with self.assertRaisesRegex(Exception, "Missing required headers: rid"):
             lah.haplotig_iters.HaplotigIterator.validate_headers(["NA", "READ", "hid"])
 
     def test2_haplotig_iterator(self):
-        in_fn = os.path.join(os.path.dirname(__file__), "data", "sample", "chr.haplotigs.tsv")
+        in_fn = self.haplotigs_fn
 
         with self.assertRaisesRegex(Exception, "Missing required headers: rid"):
             lah.haplotig_iters.HaplotigIterator(headers=["NA", "READ", "hid"], in_fn=in_fn)
 
-        haplotig_iter = lah.haplotig_iters.HaplotigIterator(headers=["NA", "rid", "hid"], in_fn=in_fn)
+        haplotig_iter = lah.haplotig_iters.HaplotigIterator(headers=self.haplotigs_headers, in_fn=in_fn)
         self.assertIsNotNone(haplotig_iter)
 
         haplotigs = []
@@ -38,17 +43,36 @@ class LahHaplotigItersTest(unittest.TestCase):
         self.assertEqual(haplotigs[3]["file_pos"], 655)
 
     def test2_haplotig_iterator_with_pos(self):
-        in_fn = os.path.join(os.path.dirname(__file__), "data", "sample", "chr.haplotigs.tsv")
+        in_fn = self.haplotigs_fn
 
         with self.assertRaisesRegex(Exception, "Missing required headers: rid"):
             lah.haplotig_iters.HaplotigIterator(headers=["NA", "READ", "hid"], in_fn=in_fn)
 
-        haplotig_iter = lah.haplotig_iters.HaplotigIterator(headers=["NA", "rid", "hid"], in_fn=in_fn, pos=178)
+        haplotig_iter = lah.haplotig_iters.HaplotigIterator(headers=self.haplotigs_headers, in_fn=in_fn, pos=178)
         self.assertIsNotNone(haplotig_iter)
         haplotig = next(haplotig_iter)
         self.assertEqual(haplotig["hid"], "402_0_1_0")
         self.assertEqual(len(haplotig["rids"]), 8)
         self.assertEqual(haplotig["file_pos"], 178)
+
+    @patch("lah.haplotig.Haplotig")
+    def test3_load_haplotig_reads(self, Hap):
+        haplotig = Hap()
+        haplotig.name = "402_0_1_0"
+        haplotig.file_pos = 178
+        haplotig_iter = lah.haplotig_iters.HaplotigIterator(headers=self.haplotigs_headers, in_fn=self.haplotigs_fn)
+        haplotig_iter.load_haplotig_reads(haplotig)
+        expected_reads = [
+            "m54238_180909_174539/15467504/ccs",
+            "m54238_180909_174539/24445361/ccs",
+            "m54238_180910_180559/31916502/ccs",
+            "m54238_180914_183539/60817532/ccs",
+            "m54238_180916_191625/17694942/ccs",
+            "m54328_180924_001027/12976682/ccs",
+            "m54335_180925_223313/49349181/ccs",
+            "m54335_180926_225328/38011681/ccs",
+        ]
+        self.assertEqual(haplotig.reads, expected_reads)
 
 # -- LahHaplotigItersTest
 

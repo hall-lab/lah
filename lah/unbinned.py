@@ -1,7 +1,8 @@
 import os
 
 from lah.db import LahDb
-from lah.haplotig import Haplotig
+from lah.haplotig import Metadata
+from lah.haplotig_iters import HaplotigIterator
 from lah.seqfiles import Seqfile, fetch_and_write_seq
 
 def unbinned_reads_fn(dn):
@@ -12,11 +13,17 @@ def unbinned_seqfile_fn(dn):
 
 def binned_reads():
     session = LahDb.session()
-    binned_read_names = set()
-    for haplotig in session.query(Haplotig).all():
-        haplotig.load_reads()
-        binned_read_names.update(haplotig.reads)
+    directory = session.query(Metadata).filter_by(name="directory").one().value
+    haplotigs_bn = session.query(Metadata).filter_by(name="haplotigs_fn").one().value
+    haplotigs_fn = os.path.join(directory, haplotigs_bn)
+    headers = session.query(Metadata).filter_by(name="haplotigs_headers").one().value.split(",")
     session.close()
+
+    haplotig_iter = HaplotigIterator(in_fn=haplotigs_fn, headers=headers)
+    binned_read_names = set()
+    for raw in haplotig_iter:
+        binned_read_names.update(raw["rids"])
+
     return binned_read_names
 
 def unbinned_read_idxs(binned, seqfile_fn):

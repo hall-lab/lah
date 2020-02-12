@@ -3,21 +3,15 @@ from Bio import SeqIO
 from sqlalchemy.orm import relationship
 
 from lah.db import Base
-from lah.chromosome import Chromosome
 from lah.haplotig_iters import HaplotigIterator
+
+class Metadata(Base):
+    __tablename__ = 'metadata'
+
+#-- Metadata
 
 class Haplotig(Base):
     __tablename__ = 'haplotigs'
-    chromosome = relationship("Chromosome", back_populates="haplotigs")
-
-    def load_reads(self):
-        h_i = HaplotigIterator(in_fn=self.chromosome.haplotigs_fn, headers=self.chromosome.haplotig_headers(), pos=self.file_pos)
-        raw_haplotig = next(h_i)
-        if raw_haplotig["hid"] != self.name:
-            raise Exception("Got the wrong haplotig from {} at position {}.".format(self.haplotigs_fn, self.file_pos))
-        self.reads = sorted(raw_haplotig["rids"])
-
-    #-- load_haplotig
 
     def asm_bn(self):
         return ".".join([self.name, "contigs", "fasta"])

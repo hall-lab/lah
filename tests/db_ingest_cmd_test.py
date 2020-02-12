@@ -2,8 +2,7 @@ import filecmp, os, shutil, subprocess, tempfile, unittest
 from click.testing import CliRunner
 
 from lah.db import LahDb
-from lah.haplotig import Haplotig
-from lah.chromosome import Chromosome
+from lah.haplotig import *
 from lah.cli import cli
 from lah.db_ingest_cmd import db_ingest_cmd
 
@@ -25,9 +24,8 @@ class LahDbIngestCliTests(unittest.TestCase):
         db.connect()
         session = db.session()
 
-        chromosome = session.query(Chromosome).filter(Chromosome.name == "chr").first()
-        self.assertIsNotNone(chromosome)
-        self.assertEqual(chromosome.id, 1)
+        metadata = session.query(Metadata).all()
+        self.assertTrue(len(metadata), 3)
 
         haplotigs = session.query(Haplotig).all()
         self.assertTrue(len(haplotigs), 4)
@@ -48,7 +46,7 @@ class LahDbIngestCliTests(unittest.TestCase):
         shutil.copyfile(os.path.join(self.data_d, haplotigs_bn), haplotigs_fn)
 
         LahDb(self.dbfile).create()
-        result = runner.invoke(cli, ["-d", self.dbfile, "db", "ingest", "--chromosome-name", "chr", "-f", haplotigs_fn, "-g", "NA,rid,hid"])
+        result = runner.invoke(cli, ["-d", self.dbfile, "db", "ingest", "-f", haplotigs_fn, "-g", "NA,rid,hid"])
         try:
             self.assertEqual(result.exit_code, 0)
         except:
