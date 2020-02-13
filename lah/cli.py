@@ -32,5 +32,5 @@ from lah.seqfiles_cli import cli as seqfiles_cli
 cli.add_command(seqfiles_cli, name="seqfiles")
 
 # [unbinned]
-from lah.cli_unbinned import unbinned_cli
+from lah.unbinned_cli import unbinned_cli
 cli.add_command(unbinned_cli, name="unbinned")
