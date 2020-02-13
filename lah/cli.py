@@ -24,7 +24,7 @@ from lah.db_cli import db_cli
 cli.add_command(db_cli, name="db")
 
 # [haplotig]
-from lah.cli_haplotig import lah_hap_cli
+from lah.haplotig_cli import lah_hap_cli
 cli.add_command(lah_hap_cli, name="haplotig")
 
 # [seqfiles]
