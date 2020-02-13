@@ -16,7 +16,7 @@ def cli(dbfile):
     pass
 
 # [asm]
-from lah.cli_asm import asm_cli
+from lah.asm_cli import asm_cli
 cli.add_command(asm_cli, name="asm")
 
 # [db]
