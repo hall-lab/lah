@@ -1,13 +1,6 @@
 import os
 from math import ceil
 
-from lah.db import Base
-
-class Seqfile(Base):
-    __tablename__ = 'seqfiles'
-
-#-- Seqfile
-
 def fetch_and_write_seq(seqfile_f, output_f, i):
     # SEQ TOTAL LENGTH INCLUDING NEWLINES
     #l = (int(int(i[1])/int(i[3])) * int(i[4])) + (int(i[1]) % int(i[4]))

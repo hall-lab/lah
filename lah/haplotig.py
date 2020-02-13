@@ -3,12 +3,8 @@ from Bio import SeqIO
 from sqlalchemy.orm import relationship
 
 from lah.db import Base
+from lah.models import *
 from lah.haplotig_iters import HaplotigIterator
-
-class Metadata(Base):
-    __tablename__ = 'metadata'
-
-#-- Metadata
 
 class Haplotig(Base):
     __tablename__ = 'haplotigs'

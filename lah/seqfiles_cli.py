@@ -1,6 +1,7 @@
 import click, os, tabulate
+
 from lah.db import LahDb
-from lah.seqfiles import Seqfile
+from lah.models import *
 
 @click.group()
 def cli():

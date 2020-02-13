@@ -1,9 +1,9 @@
 import os
 
 from lah.db import LahDb
-from lah.haplotig import Metadata
+from lah.models import *
 from lah.haplotig_iters import HaplotigIterator
-from lah.seqfiles import Seqfile, fetch_and_write_seq
+from lah.seqfiles import fetch_and_write_seq
 
 def unbinned_reads_fn(dn):
     return os.path.join(dn, "unbinned.reads")

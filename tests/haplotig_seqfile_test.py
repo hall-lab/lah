@@ -5,8 +5,8 @@ from lah.cli import cli
 from lah.haplotig import Haplotig, Metadata
 from lah.haplotig_iters import HaplotigIterator
 from lah.db import LahDb
-from lah.seqfiles import Seqfile
 from lah.haplotig_seqfile_cmd import haplotig_seqfile_cmd as cmd
+from lah.models import *
 
 class HaplotigSeqfileCmdTest(unittest.TestCase):
     def setUp(self):
