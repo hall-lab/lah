@@ -16,7 +16,6 @@ class HaplotigAsmTest(unittest.TestCase):
     @patch("tempfile.TemporaryDirectory")
     @patch("subprocess.check_call")
     def test1_haplotig_asm_cmd(self, check_call_patch, tempd_patch):
-    #def test1_haplotig_asm_cmd(self, tempd_patch, check_call_patch):
         runner = CliRunner()
 
         result = runner.invoke(cmd, [])

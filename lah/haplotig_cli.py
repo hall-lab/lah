@@ -1,5 +1,8 @@
 import click, natsort, os, subprocess, sys, tabulate
-import lah.haplotig_iters, lah.haplotig
+
+from lah.db import LahDb
+from lah.haplotig_iters import HaplotigIterator
+from lah.haplotig import *
 
 # haplotig [hap]
 # - ams
@@ -8,7 +11,7 @@ import lah.haplotig_iters, lah.haplotig
 # - reads
 
 @click.group()
-def lah_hap_cli():
+def hap_cli():
     """
     Work with Haplotigs
     """
@@ -16,40 +19,41 @@ def lah_hap_cli():
 
 # [asm]
 from lah.haplotig_asm import haplotig_asm_cmd
-lah_hap_cli.add_command(haplotig_asm_cmd, name="asm")
+hap_cli.add_command(haplotig_asm_cmd, name="asm")
 
 # [seqfile]
 from lah.haplotig_seqfile_cmd import haplotig_seqfile_cmd
-lah_hap_cli.add_command(haplotig_seqfile_cmd, name="seqfile")
+hap_cli.add_command(haplotig_seqfile_cmd, name="seqfile")
 
-@click.command(short_help="list haplotigs in a source")
-@click.argument("source", type=click.STRING)
-def lah_hap_list(source):
+@click.command(short_help="list haplotigs")
+def hap_list_cmd():
     """
-    List Haplotigs in Different Sources
+    List Haplotigs
     """
+    session = LahDb.session()
     rows = []
-    for hap in lah.haplotig.HaplotigIterator(in_fn=source):
-        rows += [[ hap.id, len(hap.rids) ]]
+    for hap in session.query(Haplotig).all():
+        rows += [[ hap.id, hap.name, hap.read_cnt ]]
+    #rows = natsort.natsorted(rows, key=lambda x:x[1])
+    sys.stdout.write( tabulate.tabulate(rows, ["ID", "NAME", "READS"], tablefmt="simple") + "\n")
+hap_cli.add_command(hap_list_cmd, name="list")
 
-    rows = natsort.natsorted(rows, key=lambda x:x[1])
-    sys.stdout.write( tabulate.tabulate(rows, ["HAP", "READS"], tablefmt="simple") + "\n")
-lah_hap_cli.add_command(lah_hap_list, name="list")
-
-@click.command(short_help="list haplotig reads")
-@click.argument("haplotig_id", type=click.STRING)
-@click.argument("source", type=click.STRING)
-def lah_hap_reads(haplotig_id, source):
+@click.command(short_help="show haplotig reads")
+@click.argument("hids", type=click.STRING, nargs=-1)
+def hap_reads_cmd(hids):
     """
     Show Reads for a Haplotig
     """
-    haplotig = None
-    for haplotig in lah.haplotig.HaplotigIterator(in_fn=source):
-        if haplotig_id == haplotig.id:
-            break
-
-    if haplotig is None:
-        raise Exception("No haplotig found for id {}".format(haplotig_id))
-
-    print("\n".join(haplotig.reads()))
-lah_hap_cli.add_command(lah_hap_reads, name="reads")
+    session = LahDb.session()
+    directory = session.query(Metadata).filter_by(name="directory").one().value
+    haplotigs_bn = session.query(Metadata).filter_by(name="haplotigs_fn").one().value
+    haplotigs_headers = session.query(Metadata).filter_by(name="haplotigs_headers").one().value
+    headers = haplotigs_headers.split(",")
+    hi = HaplotigIterator(in_fn=os.path.join(directory, haplotigs_bn), headers=headers)
+    reads = []
+    for hid in hids:
+        haplotig = session.query(Haplotig).filter_by(name=hid).one()
+        hi.load_haplotig_reads(haplotig)
+        reads += haplotig.reads
+    print("\n".join(reads))
+hap_cli.add_command(hap_reads_cmd, name="reads")
