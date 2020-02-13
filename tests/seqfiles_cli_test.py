@@ -1,4 +1,4 @@
-import filecmp, os, shutil, subprocess, tempfile, unittest
+import filecmp, os, shutil, tempfile, unittest
 from click.testing import CliRunner
 
 from lah.cli import cli

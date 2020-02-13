@@ -16,21 +16,21 @@ def cli(dbfile):
     pass
 
 # [asm]
-from lah.cli_asm import asm_cli
+from lah.asm_cli import asm_cli
 cli.add_command(asm_cli, name="asm")
 
 # [db]
-from lah.cli_db import db_cli
+from lah.db_cli import db_cli
 cli.add_command(db_cli, name="db")
 
 # [haplotig]
-from lah.cli_haplotig import lah_hap_cli
-cli.add_command(lah_hap_cli, name="haplotig")
+from lah.haplotig_cli import hap_cli
+cli.add_command(hap_cli, name="haplotig")
 
 # [seqfiles]
 from lah.seqfiles_cli import cli as seqfiles_cli
 cli.add_command(seqfiles_cli, name="seqfiles")
 
 # [unbinned]
-from lah.cli_unbinned import unbinned_cli
+from lah.unbinned_cli import unbinned_cli
 cli.add_command(unbinned_cli, name="unbinned")

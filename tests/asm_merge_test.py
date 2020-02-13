@@ -2,7 +2,7 @@ import filecmp, os, tempfile, unittest
 from click.testing import CliRunner
 
 from lah.cli import cli
-from lah.cli_asm_merge import asm_merge_cmd
+from lah.asm_merge import asm_merge_cmd
 
 class AsmMergeTest(unittest.TestCase):
     def setUp(self):

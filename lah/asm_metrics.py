@@ -4,22 +4,6 @@ from Bio import SeqIO
 from lah.db import LahDb
 from lah.haplotig import Haplotig
 
-# asm [haplotigs assemblies]
-# - merge
-# - metrics
-
-@click.group()
-def asm_cli():
-    """
-    Work with Assembled Haplotigs
-    """
-    pass
-
-#[merge]
-from lah.cli_asm_merge import asm_merge_cmd
-asm_cli.add_command(asm_merge_cmd, name="merge")
-
-# [metrics]
 @click.command(short_help="show haplotigs metrics")
 def asm_metrics_cmd():
     """
@@ -48,4 +32,3 @@ def asm_metrics_cmd():
             row += [ "NOASM", "NA", "NA", "NA" ]
         rows.append(row)
     print( tabulate.tabulate(rows, ["NAME", "RDS", "COUNT", "TOTAL", "MAX", "CTGS"], tablefmt="presto") )
-asm_cli.add_command(asm_metrics_cmd, "metrics")

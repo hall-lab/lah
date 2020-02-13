@@ -3,7 +3,7 @@ from click.testing import CliRunner
 
 from lah.db import LahDb
 from lah.cli import cli
-from lah.cli_unbinned import unbinned_cli, unbinned_list_cmd, unbinned_seqfile_cmd
+from lah.unbinned_cli import unbinned_cli, unbinned_list_cmd, unbinned_seqfile_cmd
 import lah.unbinned
 
 class UnbinnedTest(unittest.TestCase):
