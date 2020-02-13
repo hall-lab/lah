@@ -1,3 +1,6 @@
-# SX
+https://travis-ci.org/hall-lab/lah.svg?branch=master
 
-Transform sequences.
+# LAH
+
+[L]ocal [A]ssembly of [H]aplotypes
+
