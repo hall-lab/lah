@@ -27,6 +27,10 @@ cli.add_command(db_cli, name="db")
 from lah.haplotig_cli import hap_cli
 cli.add_command(hap_cli, name="haplotig")
 
+# [metrics]
+from lah.metrics_cli import metrics_cli
+cli.add_command(metrics_cli, name="metrics")
+
 # [seqfiles]
 from lah.seqfiles_cli import cli as seqfiles_cli
 cli.add_command(seqfiles_cli, name="seqfiles")
