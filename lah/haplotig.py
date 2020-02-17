@@ -40,9 +40,9 @@ class Haplotig(Base):
                 break
             print("Seqfile: {}".format(seqfile.fn))
             print("Reads remaining: {}".format(len(rds)))
-            fai_fn = ".".join([seqfile.fn, "fai"])
-            with open(seqfile.fn, "r") as seqfile_f, open(fai_fn, "r") as fai_f:
-                for l in fai_f.readlines():
+            idx_fn = seqfile.idx_fn()
+            with open(seqfile.fn, "r") as seqfile_f, open(idx_fn, "r") as idx_f:
+                for l in idx_f.readlines():
                     rd_fai = l.rstrip().split("\t")
                     if rd_fai[0] in rds:
                         seqfile_f.seek( int(rd_fai[2]) )

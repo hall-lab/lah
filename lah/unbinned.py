@@ -26,8 +26,7 @@ def binned_reads():
 
     return binned_read_names
 
-def unbinned_read_idxs(binned, seqfile_fn):
-    idx_fn = ".".join([seqfile_fn, "fai"])
+def unbinned_read_idxs(binned, idx_fn):
     with open(idx_fn, "r") as idx_f:
         for line in idx_f:
             idx = line.rstrip().split("\t")
@@ -44,7 +43,7 @@ def read_names():
 
     read_names = set()
     for seqfile in seqfiles:
-        unbinned = unbinned_read_idxs(binned, seqfile.fn)
+        unbinned = unbinned_read_idxs(binned, seqfile.idx_fn())
         for idx in unbinned:
             read_names.add(idx[0])
 
@@ -61,7 +60,7 @@ def seqfile(output_fn):
     with open(output_fn, "w") as output_f:
         for seqfile in seqfiles:
             with open(seqfile.fn, "r") as seqfile_f:
-                unbinned = unbinned_read_idxs(binned, seqfile.fn)
+                unbinned = unbinned_read_idxs(binned, seqfile.idx_fn())
                 for idx in unbinned:
                     fetch_and_write_seq(seqfile_f, output_f, idx)
 

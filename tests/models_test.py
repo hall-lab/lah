@@ -20,6 +20,12 @@ class ModelsTest(unittest.TestCase):
         metrics = session.query(Metric).all()
         self.assertEqual(len(metrics), 2)
 
+    def test_seqfiles(self):
+        session = self.db.session()
+        seqfile = session.query(Seqfile).first()
+        self.assertIsNotNone(seqfile)
+        self.assertEqual(seqfile.idx_fn(), ".".join([seqfile.fn, "fai"]))
+
 # -- ModelsTest
 
 if __name__ == '__main__':

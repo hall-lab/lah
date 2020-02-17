@@ -13,4 +13,7 @@ class Metric(Base):
 class Seqfile(Base):
     __tablename__ = 'seqfiles'
 
+    def idx_fn(self):
+        return ".".join([self.fn, "fai"])
+
 #-- Seqfile
