@@ -3,7 +3,6 @@ import os
 from lah.db import LahDb
 from lah.models import *
 from lah.haplotig_iters import HaplotigIterator
-from lah.seqfiles import fetch_and_write_seq
 
 def unbinned_reads_fn(dn):
     return os.path.join(dn, "unbinned.reads")
@@ -62,7 +61,7 @@ def seqfile(output_fn):
             with open(seqfile.fn, "r") as seqfile_f:
                 unbinned = unbinned_read_idxs(binned, seqfile.idx_fn())
                 for idx in unbinned:
-                    fetch_and_write_seq(seqfile_f, output_f, idx)
+                    seqfile.fetch_and_write_seq(seqfile_f, output_f, idx)
 
     return output_fn
     
