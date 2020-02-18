@@ -16,6 +16,20 @@ class MetricsTest(unittest.TestCase):
     def tearDown(self):
         self.temp_d.cleanup()
 
+    def verify_haplotig_metrics(self):
+         db = LahDb(dbfile=self.dbfile)
+         db.connect()
+         session = db.session()
+         metrics = session.query(Metric).filter_by(grp="haplotig").all()
+         self.assertEqual(len(metrics), 4)
+
+    def verify_reads_metrics(self):
+         db = LahDb(dbfile=self.dbfile)
+         db.connect()
+         session = db.session()
+         metrics = session.query(Metric).filter_by(grp="seqfile").all()
+         self.assertEqual(len(metrics), 14)
+
     def test_metrics_generate_cmd(self):
          runner = CliRunner()
 
@@ -29,11 +43,9 @@ class MetricsTest(unittest.TestCase):
              print(result.output)
              raise
 
-         db = LahDb(dbfile=self.dbfile)
-         db.connect()
-         session = db.session()
-         metrics = session.query(Metric).filter_by(name="contig lengths").all()
-         self.assertEqual(len(metrics), 4)
+         self.assertEqual(result.output, "Metrics generation complete! Use other metrics commands to view.\n")
+         self.verify_haplotig_metrics()
+         self.verify_reads_metrics()
 
 # -- MetricsTest
 
