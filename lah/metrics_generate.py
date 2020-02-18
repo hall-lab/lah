@@ -32,7 +32,7 @@ def metrics_generate_cmd():
                 contig_legths.append(len(seq))
         if len(contig_legths) == 0:
             contig_legths[0] = 0
-        metric = Metric(grp=haplotig.name, name="contig lengths", value=",".join(map(str, contig_legths)))
+        metric = Metric(grp="haplotig", grp_id=haplotig.name, name="contig lengths", value=",".join(map(str, contig_legths)))
         session.add(metric)
     session.commit()
     print("Metrics generation complete! Use other metrics commands to view.")

@@ -6,7 +6,7 @@ from yoyo import step
 
 steps = [
     step(
-        "CREATE TABLE IF NOT EXISTS metrics (name TEXT NOT NULL, value TEXT NOT NULL, grp TEXT NOT NULL, PRIMARY KEY(name, value, grp))",
+        "CREATE TABLE IF NOT EXISTS metrics (id INTEGER PRIMARY KEY, grp TEXT NOT NULL, grp_id TEXT NOT NULL, name TEXT NOT NULL, value TEXT NOT NULL)",
         "DROP TABLE metrics",
     ),
     step(

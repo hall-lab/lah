@@ -25,12 +25,12 @@ def metrics_ctglens_cmd():
     session = LahDb.session()
     rows = []
     cnt = 0
-    for metric in session.query(Metric).filter_by(name="contig lengths"):
+    for metric in session.query(Metric).filter_by(grp="haplotig", name="contig lengths"):
         if metric.value == "0":
-            rows += [[ metric.grp, "NO_ASM", "NA", "NA", "NA" ]]
+            rows += [[ metric.entity_id, "NO_ASM", "NA", "NA", "NA" ]]
         else:
             contig_lengths = list(map(int, metric.value.split(",")))
-            rows += [[ metric.grp, str(len(contig_lengths)), str(sum(contig_lengths)), str(max(contig_lengths)), metric.value ]]
+            rows += [[ metric.grp_id, str(len(contig_lengths)), str(sum(contig_lengths)), str(max(contig_lengths)), metric.value ]]
     if len(rows) == 0:
         raise Exception("No contig lengths metrics found in the DB. Use the 'generate' command to create and save them.")
     print( tabulate.tabulate(rows, ["NAME", "RDS", "COUNT", "TOTAL", "MAX", "CTGS"], tablefmt="presto") )

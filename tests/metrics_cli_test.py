@@ -35,7 +35,7 @@ class MetricsCliTest(unittest.TestCase):
         db.connect()
         session = db.session()
         for name in ["401_0_1_0", "401_0_2_0", "402_0_1_0", "402_0_2_0"]:
-            session.add(Metric(grp=name, name="contig lengths", value=12))
+            session.add(Metric(grp="haplotig", grp_id=name, name="contig lengths", value=12))
         session.commit()
 
         result = runner.invoke(cli, ["-d", self.dbfile, "metrics", "ctg-lengths"])
