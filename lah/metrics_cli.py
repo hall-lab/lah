@@ -4,8 +4,8 @@ from lah.db import LahDb
 from lah.models import *
 
 # metrics
-# - ctg-lengths
 # - generate
+# - haplotigs
 # - seqfiles
 # - unbinned
 
@@ -16,9 +16,9 @@ def metrics_cli():
     """
     pass
 
-# [ctg-lengths]
+# [haplotigs]
 @click.command(short_help="show haplotig assembly metrics from the DB")
-def metrics_ctglens_cmd():
+def metrics_haplotigs_cmd():
     """
     Show Haplotigs Assembly Metrics
     """
@@ -34,7 +34,7 @@ def metrics_ctglens_cmd():
     if len(rows) == 0:
         raise Exception("No contig lengths metrics found in the DB. Use the 'generate' command to create and save them.")
     print( tabulate.tabulate(rows, ["NAME", "RDS", "COUNT", "TOTAL", "MAX", "CTGS"], tablefmt="presto") )
-metrics_cli.add_command(metrics_ctglens_cmd, name="ctg-lengths")
+metrics_cli.add_command(metrics_haplotigs_cmd, name="haplotigs")
 
 # [generate]
 from lah.metrics_generate import metrics_generate_cmd

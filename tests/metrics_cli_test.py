@@ -4,7 +4,7 @@ from click.testing import CliRunner
 from lah.db import LahDb
 from lah.models import Metric, Seqfile
 from lah.cli import cli
-from lah.metrics_cli import metrics_cli, metrics_ctglens_cmd, metrics_seqfiles_cmd
+from lah.metrics_cli import metrics_cli, metrics_haplotigs_cmd, metrics_seqfiles_cmd
 
 class MetricsCliTest(unittest.TestCase):
     def setUp(self):
@@ -60,10 +60,10 @@ class MetricsCliTest(unittest.TestCase):
     def test9_metrics_ctglens_cmd(self):
         runner = CliRunner()
 
-        result = runner.invoke(metrics_ctglens_cmd, ["--help"])
+        result = runner.invoke(metrics_haplotigs_cmd, ["--help"])
         self.assertEqual(result.exit_code, 0)
 
-        result = runner.invoke(metrics_ctglens_cmd, [])
+        result = runner.invoke(metrics_haplotigs_cmd, [])
         self.assertEqual(result.exit_code, 1)
 
         db = LahDb(dbfile=self.dbfile)
@@ -73,7 +73,7 @@ class MetricsCliTest(unittest.TestCase):
             session.add(Metric(grp="haplotig", grp_id=name, name="contig lengths", value=12))
         session.commit()
 
-        result = runner.invoke(cli, ["-d", self.dbfile, "metrics", "ctg-lengths"])
+        result = runner.invoke(cli, ["-d", self.dbfile, "metrics", "haplotigs"])
         try:
             self.assertEqual(result.exit_code, 0)
         except:
