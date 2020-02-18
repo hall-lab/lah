@@ -10,6 +10,10 @@ steps = [
         "DROP TABLE metrics",
     ),
     step(
+        "CREATE UNIQUE INDEX IF NOT EXISTS met_uniq_idx on metrics(grp, grp_id, name)",
+        "DROP INDEX met_grp_idx",
+    ),
+    step(
         "CREATE INDEX IF NOT EXISTS met_grp_idx on metrics(grp)",
         "DROP INDEX met_grp_idx",
     ),
