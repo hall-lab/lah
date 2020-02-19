@@ -1,8 +1,8 @@
->401_0_1_0.1 tig00000001 len=12 reads=2 covStat=2 gappedBases=no class=contig suggestRepeat=no suggestCircular=no
-AAAAAAAAAAAA
->401_0_2_0.1 tig00000001 len=12 reads=2 covStat=2 gappedBases=no class=contig suggestRepeat=no suggestCircular=no
-TTTTTTTTTTTT
+>401_0_1_0.1 tig00000001 len=24 reads=2 covStat=2 gappedBases=no class=contig suggestRepeat=no suggestCircular=no
+AAAAAAAAAAAAAAAAAAAAAAAA
+>401_0_2_0.1 tig00000001 len=20 reads=2 covStat=2 gappedBases=no class=contig suggestRepeat=no suggestCircular=no
+TTTTTTTTTTTTTTTTTTTT
 >402_0_1_0.1 tig00000001 len=12 reads=2 covStat=2 gappedBases=no class=contig suggestRepeat=no suggestCircular=no
 CCCCCCCCCCCC
->402_0_2_0.1 tig00000001 len=12 reads=2 covStat=2 gappedBases=no class=contig suggestRepeat=no suggestCircular=no
-GGGGGGGGGGGG
+>402_0_2_0.1 tig00000001 len=4 reads=2 covStat=2 gappedBases=no class=contig suggestRepeat=no suggestCircular=no
+GGGG

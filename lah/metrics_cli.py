@@ -4,6 +4,7 @@ from lah.db import LahDb
 from lah.models import *
 
 # metrics
+# - asm
 # - generate
 # - haplotigs
 # - seqfiles
@@ -15,6 +16,22 @@ def metrics_cli():
     Generate and show metrics
     """
     pass
+
+# [asm]
+@click.command(short_help="show haplotig assembly metrics from the DB")
+def metrics_asm_cmd():
+    """
+    Show Merged Assembly Metrics
+    """
+    session = LahDb.session()
+    rows = []
+    cnt = 0
+    for metric in session.query(Metric).filter_by(grp="asm"): # grp_id=1
+        rows += [[ metric.name, metric.value ]]
+    if len(rows) == 0:
+        raise Exception("No merged assembly metrics found in the DB. Use the 'generate' command to create and save them.")
+    print( tabulate.tabulate(rows, ["NAME", "VALUE"], tablefmt="simple") )
+metrics_cli.add_command(metrics_asm_cmd, name="asm")
 
 # [haplotigs]
 @click.command(short_help="show haplotig assembly metrics from the DB")

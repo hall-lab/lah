@@ -4,7 +4,7 @@ from click.testing import CliRunner
 from lah.db import LahDb
 from lah.models import Metric, Seqfile
 from lah.cli import cli
-from lah.metrics_cli import metrics_cli, metrics_haplotigs_cmd, metrics_seqfiles_cmd
+from lah.metrics_cli import metrics_cli, metrics_asm_cmd, metrics_haplotigs_cmd, metrics_seqfiles_cmd
 
 class MetricsCliTest(unittest.TestCase):
     def setUp(self):
@@ -24,6 +24,35 @@ class MetricsCliTest(unittest.TestCase):
 
         result = runner.invoke(metrics_cli, ["--help"])
         self.assertEqual(result.exit_code, 0)
+
+    def test1_metrics_asm_cmd(self):
+        runner = CliRunner()
+
+        result = runner.invoke(metrics_asm_cmd, ["--help"])
+        self.assertEqual(result.exit_code, 0)
+
+        result = runner.invoke(metrics_asm_cmd, [])
+        self.assertEqual(result.exit_code, 1)
+
+        db = LahDb(dbfile=self.dbfile)
+        db.connect()
+        session = db.session()
+        session.add(Metric(grp="asm", grp_id="1", name="bases", value="96"))
+        session.add(Metric(grp="asm", grp_id="1", name="cnt", value="4"))
+        session.commit()
+
+        result = runner.invoke(cli, ["-d", self.dbfile, "metrics", "asm"])
+        try:
+            self.assertEqual(result.exit_code, 0)
+        except:
+            print("\n"+result.output)
+            raise
+
+        expected_output = """NAME      VALUE
+------  -------
+bases        96
+cnt           4\n"""
+        self.assertEqual(result.output, expected_output)
 
     def test1_metrics_seqfiles_cmd(self):
         runner = CliRunner()
@@ -57,7 +86,7 @@ class MetricsCliTest(unittest.TestCase):
  tests/data/sample/seqfiles/reads.2.fastq | length median |     7.2\n"""
         self.assertEqual(result.output, expected_output)
 
-    def test9_metrics_ctglens_cmd(self):
+    def test1_metrics_haplotigs_cmd(self):
         runner = CliRunner()
 
         result = runner.invoke(metrics_haplotigs_cmd, ["--help"])
