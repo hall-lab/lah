@@ -15,10 +15,6 @@ def cli(dbfile):
         LahDb(dbfile=dbfile).connect()
     pass
 
-# [asm]
-from lah.asm_cli import asm_cli
-cli.add_command(asm_cli, name="asm")
-
 # [db]
 from lah.db_cli import db_cli
 cli.add_command(db_cli, name="db")

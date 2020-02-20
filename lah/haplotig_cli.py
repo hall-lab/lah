@@ -7,6 +7,7 @@ from lah.haplotig import *
 # haplotig [hap]
 # - ams
 # - list
+# - merge
 # - seqfile
 # - reads
 
@@ -16,10 +17,6 @@ def hap_cli():
     Work with Haplotigs
     """
     pass
-
-# [asm]
-from lah.haplotig_asm import haplotig_asm_cmd
-hap_cli.add_command(haplotig_asm_cmd, name="asm")
 
 # [seqfile]
 from lah.haplotig_seqfile_cmd import haplotig_seqfile_cmd
@@ -57,3 +54,8 @@ def hap_reads_cmd(hids):
         reads += haplotig.reads
     print("\n".join(reads))
 hap_cli.add_command(hap_reads_cmd, name="reads")
+import click
+
+# [merge]
+from lah.haplotig_merge import haplotig_merge_cmd
+hap_cli.add_command(haplotig_merge_cmd, name="merge")

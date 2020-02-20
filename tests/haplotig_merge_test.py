@@ -2,9 +2,9 @@ import filecmp, os, tempfile, unittest
 from click.testing import CliRunner
 
 from lah.cli import cli
-from lah.asm_merge import asm_merge_cmd
+from lah.haplotig_merge import haplotig_merge_cmd
 
-class AsmMergeTest(unittest.TestCase):
+class haplotigMergeTest(unittest.TestCase):
     def setUp(self):
         self.data_d = os.path.join(os.path.dirname(__file__), "data", "sample")
         self.dbfile = os.path.join(self.data_d, "test.db")
@@ -21,16 +21,13 @@ class AsmMergeTest(unittest.TestCase):
         self.assertTrue(os.path.exists(self.output))
         self.assertTrue(filecmp.cmp(self.output, self.expected_output))
 
-    def test0_asm_merge_cli(self):
+    def test0_haplotig_merge_cli(self):
         runner = CliRunner()
 
-        result = runner.invoke(asm_merge_cmd, [])
-        self.assertEqual(result.exit_code, 1)
-
-        result = runner.invoke(asm_merge_cmd, ["--help"])
+        result = runner.invoke(haplotig_merge_cmd, ["--help"])
         self.assertEqual(result.exit_code, 0)
 
-        result = runner.invoke(cli, ["-d", self.dbfile, "asm", "merge", "-o", self.output])
+        result = runner.invoke(cli, ["-d", self.dbfile, "haplotig", "merge", "-o", self.output])
         try:
             self.assertEqual(result.exit_code, 0)
         except:
@@ -38,7 +35,7 @@ class AsmMergeTest(unittest.TestCase):
             raise
         self.verify_merged_fasta()
 
-# -- AsmMergeTest
+# -- haplotigMergeTest
 
 if __name__ == '__main__':
     unittest.main(verbosity=2)
