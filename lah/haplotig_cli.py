@@ -18,6 +18,10 @@ def hap_cli():
     """
     pass
 
+# [asm]
+from lah.haplotig_asm import haplotig_asm_cmd
+hap_cli.add_command(haplotig_asm_cmd, name="asm")
+
 # [seqfile]
 from lah.haplotig_seqfile_cmd import haplotig_seqfile_cmd
 hap_cli.add_command(haplotig_seqfile_cmd, name="seqfile")
