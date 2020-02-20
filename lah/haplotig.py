@@ -9,13 +9,17 @@ from lah.haplotig_iters import HaplotigIterator
 class Haplotig(Base):
     __tablename__ = 'haplotigs'
 
+    @staticmethod
+    def asm_sdn():
+        return "assemblies"
+
     def asm_bn(self):
         return ".".join([self.name, "contigs", "fasta"])
 
-    def asm_fn(self, assemblies_dn):
-        return os.path.join(assemblies_dn, self.asm_bn())
+    def asm_fn(self, dn):
+        return os.path.join(dn, self.asm_sdn(), self.asm_bn())
 
-    #-- assembly
+    #-- assembly paths
 
     def seqfile_bn(self):
         return ".".join([self.name, "fastq"])

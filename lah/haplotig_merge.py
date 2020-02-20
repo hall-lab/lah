@@ -21,8 +21,6 @@ def haplotig_merge_cmd(output=None):
 
     session = LahDb.session()
     dn = os.path.dirname(LahDb.current().dbfile)
-    asm_dn = os.path.join(dn, "assemblies")
-
     merge_fn = os.path.join(dn, "asm.merged.fasta")
     if output is not None:
         merge_fn = output
@@ -36,7 +34,7 @@ def haplotig_merge_cmd(output=None):
  
     with open(merge_fn, "a+") as asm_sq_f:
         for haplotig in session.query(Haplotig).all():
-            asm_fn = haplotig.asm_fn(asm_dn)
+            asm_fn = haplotig.asm_fn(dn)
             if not os.path.exists(asm_fn) or os.path.getsize(asm_fn) == 0:
                 metrics["NOASM"] += 1
                 continue

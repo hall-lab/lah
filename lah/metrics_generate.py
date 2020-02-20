@@ -26,14 +26,10 @@ def metrics_generate_cmd():
 
 def _generate_haplotig_assembly_metrics(session):
     dn = session.query(Metadata).filter_by(name="directory").one().value
-    haplotigs_asm_dn = os.path.join(dn, "assemblies")
-    if not os.path.exists(haplotigs_asm_dn):
-        raise Exception("Cannot find haplotig assemblies directory: {}".format(haplotigs_asm_dn))
-
     rows = [] # metrics
     cnt = 0
     for haplotig in session.query(Haplotig).all():
-        asm_fn = haplotig.asm_fn(haplotigs_asm_dn)
+        asm_fn = haplotig.asm_fn(dn)
         contig_legths = []
         row = [ haplotig.name, str(haplotig.read_cnt) ]
         if os.path.exists(asm_fn):
