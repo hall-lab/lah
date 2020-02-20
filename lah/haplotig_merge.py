@@ -6,7 +6,7 @@ from lah.haplotig import Haplotig
 
 @click.command(short_help="merge haplotig assemblies")
 @click.option("--output", "-o", type=click.STRING, help="Output merged assembly to this files instead of in same directory as dbfile.")
-def asm_merge_cmd(output=None):
+def haplotig_merge_cmd(output=None):
     """
     Merge Haplotig haplotigs Fastas
 
