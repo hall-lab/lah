@@ -4,7 +4,7 @@ import inspect
 
 from lah.db import LahDb
 from lah.haplotig import *
-from lah.seqfiles import Seqfile
+from lah.models import *
 
 @click.command(short_help="generate haplotig seqfile")
 @click.option("--hid", required=True, type=click.STRING)

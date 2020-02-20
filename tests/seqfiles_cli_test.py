@@ -3,7 +3,7 @@ from click.testing import CliRunner
 
 from lah.cli import cli
 from lah.db import LahDb
-from lah.seqfiles import Seqfile
+from lah.models import *
 from lah.seqfiles_cli import seqfiles_add_cmd, seqfiles_list_cmd
 
 class CliSeqfilesTest(unittest.TestCase):

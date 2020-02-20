@@ -3,7 +3,7 @@ import click, jinja2, os, re, shutil, subprocess, tempfile
 import lah.assemblers
 from lah.db import LahDb
 from lah.haplotig import Haplotig
-from lah.seqfiles import Seqfile
+from lah.models import *
 
 @click.command(short_help="generate haplotig seqfile")
 @click.option("--seqfile", "-s", required=True, type=click.STRING, help="Haplotype seqfile to asemble.")

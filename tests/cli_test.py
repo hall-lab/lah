@@ -4,9 +4,9 @@ from click.testing import CliRunner
 from lah.cli import cli as lah_cli
 
 @click.command()
-def test_cmd():
+def the_test_cmd():
     print("Hello World!")
-lah_cli.add_command(test_cmd, "test")
+lah_cli.add_command(the_test_cmd, "test")
 
 class CliTest(unittest.TestCase):
     def test_lah(self):

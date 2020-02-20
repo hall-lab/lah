@@ -1,2 +1,2 @@
->tig00000001 len=12 reads=2 covStat=2 gappedBases=no class=contig suggestRepeat=no suggestCircular=no
-GGGGGGGGGGGG
+>402_0_2_0.1 tig00000001 len=4 reads=2 covStat=2 gappedBases=no class=contig suggestRepeat=no suggestCircular=no
+GGGG
