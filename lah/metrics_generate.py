@@ -40,7 +40,6 @@ def _generate_haplotig_assembly_metrics(session):
             reads_cnt = 0
             for seq in SeqIO.parse( asm_fn, "fasta"):
                 contig_legths.append(len(seq))
-                print("{} {} {}".format(seq.id, seq.description, seq.features))
                 # canu specific
                 for attr in seq.description.split(" "):
                     if attr.startswith("reads="):
