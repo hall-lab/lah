@@ -18,7 +18,7 @@ class MetricsTest(unittest.TestCase):
 
     def verify_haplotig_metrics(self, session):
          metrics = session.query(Metric).filter_by(grp="haplotig").all()
-         self.assertEqual(len(metrics), 4)
+         self.assertEqual(len(metrics), 8)
 
     def verify_seqfile_metrics(self, session):
          metrics = session.query(Metric).filter_by(grp="seqfile").all()
