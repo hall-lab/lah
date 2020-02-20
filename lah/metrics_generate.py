@@ -37,12 +37,19 @@ def _generate_haplotig_assembly_metrics(session):
         contig_legths = []
         row = [ haplotig.name, str(haplotig.read_cnt) ]
         if os.path.exists(asm_fn):
+            reads_cnt = 0
             for seq in SeqIO.parse( asm_fn, "fasta"):
                 contig_legths.append(len(seq))
+                print("{} {} {}".format(seq.id, seq.description, seq.features))
+                # canu specific
+                for attr in seq.description.split(" "):
+                    if attr.startswith("reads="):
+                        reads_cnt += int(attr.split("=")[1])
         if len(contig_legths) == 0:
             contig_legths[0] = 0
-        metric = Metric(grp="haplotig", grp_id=haplotig.name, name="contig lengths", value=",".join(map(str, contig_legths)))
-        session.add(metric)
+            reads_cnt = 0
+        session.add( Metric(grp="haplotig", grp_id=haplotig.name, name="contig lengths", value=",".join(map(str, contig_legths))) )
+        session.add( Metric(grp="haplotig", grp_id=haplotig.name, name="reads cnt", value=reads_cnt) )
 
 #-- _generate_haplotig_assembly_metrics
 

@@ -100,6 +100,7 @@ cnt           4\n"""
         session = db.session()
         for name in ["401_0_1_0", "401_0_2_0", "402_0_1_0", "402_0_2_0"]:
             session.add(Metric(grp="haplotig", grp_id=name, name="contig lengths", value=12))
+            session.add(Metric(grp="haplotig", grp_id=name, name="reads cnt", value=2))
         session.commit()
 
         result = runner.invoke(cli, ["-d", self.dbfile, "metrics", "haplotigs"])
@@ -109,12 +110,12 @@ cnt           4\n"""
             print("\n"+result.output)
             raise
 
-        expected_output = """      NAME |   RDS |   COUNT |   TOTAL |   MAX
------------+-------+---------+---------+-------
- 401_0_1_0 |     1 |      12 |      12 |    12
- 401_0_2_0 |     1 |      12 |      12 |    12
- 402_0_1_0 |     1 |      12 |      12 |    12
- 402_0_2_0 |     1 |      12 |      12 |    12\n"""
+        expected_output = """      NAME |   COUNT |   TOTAL |   MAX |   CTGS |   RDS
+-----------+---------+---------+-------+--------+-------
+ 401_0_1_0 |       1 |      12 |    12 |     12 |     2
+ 401_0_2_0 |       1 |      12 |    12 |     12 |     2
+ 402_0_1_0 |       1 |      12 |    12 |     12 |     2
+ 402_0_2_0 |       1 |      12 |    12 |     12 |     2\n"""
         self.assertEqual(result.output, expected_output)
 
 # -- MetricsCliTest
