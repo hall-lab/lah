@@ -2,7 +2,7 @@ import click, natsort, os, subprocess, sys, tabulate
 
 from lah.db import LahDb
 from lah.haplotig_iters import HaplotigIterator
-from lah.haplotig import *
+from lah.models import *
 
 # haplotig [hap]
 # - ams
@@ -23,7 +23,7 @@ from lah.haplotig_asm import haplotig_asm_cmd
 hap_cli.add_command(haplotig_asm_cmd, name="asm")
 
 # [seqfile]
-from lah.haplotig_seqfile_cmd import haplotig_seqfile_cmd
+from lah.haplotig_seqfile import haplotig_seqfile_cmd
 hap_cli.add_command(haplotig_seqfile_cmd, name="seqfile")
 
 @click.command(short_help="list haplotigs")

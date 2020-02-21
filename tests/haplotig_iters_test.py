@@ -1,8 +1,8 @@
 import os, unittest
 from mock import patch
 
+from lah.models import Haplotig
 import lah.haplotig_iters
-from lah.haplotig import Haplotig
 
 class LahHaplotigItersTest(unittest.TestCase):
     def setUp(self):
@@ -55,7 +55,7 @@ class LahHaplotigItersTest(unittest.TestCase):
         self.assertEqual(len(haplotig["rids"]), 8)
         self.assertEqual(haplotig["file_pos"], 178)
 
-    @patch("lah.haplotig.Haplotig")
+    @patch("lah.models.Haplotig")
     def test3_load_haplotig_reads(self, Hap):
         haplotig = Hap()
         haplotig.name = "402_0_1_0"

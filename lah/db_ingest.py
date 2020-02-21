@@ -1,7 +1,7 @@
 import click, os
 
 from lah.db import LahDb
-from lah.haplotig import *
+from lah.models import *
 from lah.haplotig_iters import HaplotigIterator
 
 @click.command(short_help="create and ingest haplotigs into a database")

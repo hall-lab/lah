@@ -2,7 +2,7 @@ import os, shutil, tempfile, unittest
 from click.testing import CliRunner
 
 from lah.db import LahDb
-from lah.haplotig import *
+from lah.models import *
 from lah.cli import cli
 from lah.db_ingest import db_ingest_cmd as cmd
 

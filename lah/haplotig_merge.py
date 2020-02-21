@@ -2,7 +2,7 @@ import click, os, yaml
 from Bio import SeqIO
 
 from lah.db import LahDb
-from lah.haplotig import Haplotig
+from lah.models import Haplotig
 
 @click.command(short_help="merge haplotig assemblies")
 @click.option("--output", "-o", type=click.STRING, help="Output merged assembly to this files instead of in same directory as dbfile.")

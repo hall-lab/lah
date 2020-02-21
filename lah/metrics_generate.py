@@ -2,7 +2,6 @@ import click, numpy, os
 from Bio import SeqIO
 
 from lah.db import LahDb
-from lah.haplotig import Haplotig
 from lah.models import *
 
 @click.command(short_help="generate metrics and save to the DB")

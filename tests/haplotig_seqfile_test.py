@@ -2,11 +2,10 @@ import filecmp, io, os, sys, tempfile, unittest
 from click.testing import CliRunner
 
 from lah.cli import cli
-from lah.haplotig import Haplotig, Metadata
-from lah.haplotig_iters import HaplotigIterator
 from lah.db import LahDb
-from lah.haplotig_seqfile_cmd import haplotig_seqfile_cmd as cmd
 from lah.models import *
+from lah.haplotig_iters import HaplotigIterator
+from lah.haplotig_seqfile import haplotig_seqfile_cmd, create_seqfile
 
 class HaplotigSeqfileCmdTest(unittest.TestCase):
     def setUp(self):
@@ -37,29 +36,29 @@ class HaplotigSeqfileCmdTest(unittest.TestCase):
         self.assertEqual(seqfile_bn, ".".join([haplotig.name, "fastq"]))
         self.assertEqual(haplotig.seqfile_fn(self.temp_dn), os.path.join(self.temp_dn, "haplotigs", seqfile_bn))
 
-    def test1_haplotig_seqfile(self):
+    def test1_create_seqfile(self):
         haplotig = self.haplotig
         self.assertIsNotNone(haplotig)
         output_fn = os.path.join(self.temp_dn, "seqfile.fastq")
         with self.assertRaisesRegex(Exception, "No reads loaded for haplotig"):
-            haplotig.seqfile(sources=self.source_seqfiles, output=output_fn)
+            create_seqfile(self.haplotig, sources=self.source_seqfiles, output=output_fn)
 
         sys.stdout = io.StringIO() # silence stdout
 
         haplotig_iter = HaplotigIterator(headers=self.haplotigs_headers, in_fn=self.haplotigs_fn)
         haplotig_iter.load_haplotig_reads(haplotig)
 
-        haplotig.seqfile(sources=self.source_seqfiles, output=output_fn)
+        create_seqfile(self.haplotig, sources=self.source_seqfiles, output=output_fn)
         self.assertTrue(filecmp.cmp(output_fn, os.path.join(self.haplotigs_dn, "402_0_1_0.fastq")))
         sys.stdout = sys.__stdout__
 
     def test2_haplotig_seqfile_cmd(self):
         runner = CliRunner()
 
-        result = runner.invoke(cmd, [])
+        result = runner.invoke(haplotig_seqfile_cmd, [])
         self.assertEqual(result.exit_code, 2)
 
-        result = runner.invoke(cmd, ["--help"])
+        result = runner.invoke(haplotig_seqfile_cmd, ["--help"])
         self.assertEqual(result.exit_code, 0)
 
         output_fn = os.path.join(self.temp_dn, "from_cmd.fastq")
