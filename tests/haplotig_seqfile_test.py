@@ -15,6 +15,7 @@ class HaplotigSeqfileCmdTest(unittest.TestCase):
         self.haplotigs_dn = os.path.join(self.data_d, "haplotigs")
         self.temp_d = tempfile.TemporaryDirectory()
         self.temp_dn = self.temp_d.name
+        self.temp_dn = "tmp"
 
         db = LahDb(self.dbfile)
         db.connect()
@@ -23,8 +24,8 @@ class HaplotigSeqfileCmdTest(unittest.TestCase):
         self.haplotigs_fn = os.path.join(self.data_d, haplotigs_bn)
         self.haplotigs_headers = session.query(Metadata).filter_by(name="haplotigs_headers").one().value.split(",")
         self.haplotig = session.query(Haplotig).get(3)
-        self.output = self.haplotig.seqfile_fn(self.temp_dn)
         self.source_seqfiles = session.query(Seqfile).all()
+        session.close()
 
     def tearDown(self):
         self.temp_d.cleanup()
@@ -34,21 +35,22 @@ class HaplotigSeqfileCmdTest(unittest.TestCase):
         self.assertIsNotNone(haplotig)
         seqfile_bn = haplotig.seqfile_bn()
         self.assertEqual(seqfile_bn, ".".join([haplotig.name, "fastq"]))
-        self.assertEqual(haplotig.seqfile_fn(self.temp_dn), os.path.join(self.temp_dn, seqfile_bn))
+        self.assertEqual(haplotig.seqfile_fn(self.temp_dn), os.path.join(self.temp_dn, "haplotigs", seqfile_bn))
 
     def test1_haplotig_seqfile(self):
         haplotig = self.haplotig
         self.assertIsNotNone(haplotig)
+        output_fn = os.path.join(self.temp_dn, "seqfile.fastq")
         with self.assertRaisesRegex(Exception, "No reads loaded for haplotig"):
-            haplotig.seqfile(sources=self.source_seqfiles, output=self.output)
+            haplotig.seqfile(sources=self.source_seqfiles, output=output_fn)
 
         sys.stdout = io.StringIO() # silence stdout
 
         haplotig_iter = HaplotigIterator(headers=self.haplotigs_headers, in_fn=self.haplotigs_fn)
         haplotig_iter.load_haplotig_reads(haplotig)
 
-        haplotig.seqfile(sources=self.source_seqfiles, output=self.output)
-        self.assertTrue(filecmp.cmp(self.output, os.path.join(self.haplotigs_dn, "402_0_1_0.fastq")))
+        haplotig.seqfile(sources=self.source_seqfiles, output=output_fn)
+        self.assertTrue(filecmp.cmp(output_fn, os.path.join(self.haplotigs_dn, "402_0_1_0.fastq")))
         sys.stdout = sys.__stdout__
 
     def test2_haplotig_seqfile_cmd(self):
@@ -60,13 +62,14 @@ class HaplotigSeqfileCmdTest(unittest.TestCase):
         result = runner.invoke(cmd, ["--help"])
         self.assertEqual(result.exit_code, 0)
 
-        result = runner.invoke(cli, ["-d", self.dbfile, "haplotig", "seqfile", "--hid", self.haplotig.id, "--output", self.output])
+        output_fn = os.path.join(self.temp_dn, "from_cmd.fastq")
+        result = runner.invoke(cli, ["-d", self.dbfile, "haplotig", "seqfile", str(self.haplotig.id), "--output", output_fn])
         try:
             self.assertEqual(result.exit_code, 0)
         except:
             print(result.output)
             raise
-        self.assertTrue(filecmp.cmp(self.output, os.path.join(self.haplotigs_dn, "402_0_1_0.fastq")))
+        self.assertTrue(filecmp.cmp(output_fn, os.path.join(self.haplotigs_dn, "402_0_1_0.fastq")))
 
 # -- HaplotigSeqfileCmdTest
 

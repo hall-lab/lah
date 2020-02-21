@@ -21,11 +21,17 @@ class Haplotig(Base):
 
     #-- assembly paths
 
+    @staticmethod
+    def seqfile_sdn():
+        return "haplotigs"
+
     def seqfile_bn(self):
         return ".".join([self.name, "fastq"])
 
-    def seqfile_fn(self, haplotigs_dn):
-        return os.path.join(haplotigs_dn, self.seqfile_bn())
+    def seqfile_fn(self, dn):
+        return os.path.join(dn, self.seqfile_sdn(), self.seqfile_bn())
+
+    #-- seqfile paths
 
     def seqfile(self, sources, output):
         if not hasattr(self, "reads") or len(self.reads) == 0:

@@ -16,6 +16,8 @@ class HaplotigTest(unittest.TestCase):
         self.assertIsNotNone(self.haplotig)
         self.assertEqual(self.haplotig.asm_sdn(), "assemblies")
         self.assertEqual(self.haplotig.asm_fn(self.data_dn), os.path.join(self.data_dn, "assemblies", ".".join([self.haplotig.name, "contigs", "fasta"])))
+        self.assertEqual(self.haplotig.seqfile_sdn(), "haplotigs")
+        self.assertEqual(self.haplotig.seqfile_fn(self.data_dn), os.path.join(self.data_dn, "haplotigs", ".".join([self.haplotig.name, "fastq"])))
 
 # -- HaplotigTest
 

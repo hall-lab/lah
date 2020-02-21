@@ -19,16 +19,16 @@ def db_ingest_cmd(haplotigs_fn, headers):
     print("Connecting to DB...")
     session = LahDb.session()
 
-    info = {
+    metadata = {
         "directory": os.path.dirname(haplotigs_fn),
         "haplotigs_fn": haplotigs_fn,
         "headers": headers,
     }
     print("Setting metadata...")
-    for k in info.keys():
-        m = Metadata(name=k, value=info[k])
+    for k in metadata.keys():
+        m = Metadata(name=k, value=metadata[k])
         session.add(m)
-        print("Info: {} {}".format(m.name, m.value))
+        print("Metadata: {} {}".format(m.name, m.value))
     session.flush()
 
     headers = headers.split(",")
@@ -50,6 +50,9 @@ def db_ingest_cmd(haplotigs_fn, headers):
 
     print("Haplotigs: {}".format(metrics["total"]))
     print("Reads: {}".format(metrics["reads"]))
+    print("Create directory structure...")
+    os.makedirs( os.path.join(metadata["directory"], Haplotig.asm_sdn()), exist_ok=True )
+    os.makedirs( os.path.join(metadata["directory"], Haplotig.seqfile_sdn()), exist_ok=True )
     print("Ingest hapltigs ... DONE")
 
 #-- db_ingest_cmd
