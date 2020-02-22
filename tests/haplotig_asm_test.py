@@ -1,14 +1,44 @@
-import filecmp, os, subprocess, tempfile, unittest
+import filecmp, os, shutil, subprocess, tempfile, unittest
 from mock import patch
 from click.testing import CliRunner
 
+from lah.db import LahDb
+from lah.models import *
+from lah.cli import cli
 from lah.haplotig_asm import haplotig_asm_cmd as cmd
+from lah.db_cli import db_create_cmd
 
 class HaplotigAsmTest(unittest.TestCase):
     def setUp(self):
-        self.data_d = os.path.join(os.path.dirname(__file__), "data", "sample")
+        self.data_d = os.path.join(os.path.dirname(__file__), "data", "haplotig-asm2")
         self.temp_d = tempfile.TemporaryDirectory()
         self.temp_dn = self.temp_d.name
+        self.dbfile = os.path.join(self.temp_dn, "test.db")
+        self.haplotig_name = "402_0_1_0"
+        shutil.copy(os.path.join(self.data_d, "haplotigs.tsv"), self.temp_dn)
+
+        runner = CliRunner()
+        result = runner.invoke(db_create_cmd, [self.dbfile])
+        try:
+            self.assertEqual(result.exit_code, 0)
+        except:
+            print(result.output)
+            raise
+
+        result = runner.invoke(cli, ["-d", self.dbfile, "db", "ingest", "-f", os.path.join(self.temp_dn, "haplotigs.tsv"), "-g", "NA,rid,hid"])
+        try:
+            self.assertEqual(result.exit_code, 0)
+        except:
+            print(result.output)
+            raise
+
+        db = LahDb(dbfile=self.dbfile)
+        db.connect()
+        session = db.session()
+        haplotig = session.query(Haplotig).filter_by(name=self.haplotig_name).one()
+        self.haplotig_seqfile_fn = haplotig.seqfile_fn(self.temp_dn)
+        self.haplotig_asm_fn = os.path.join(self.temp_dn, haplotig.asm_bn())
+        session.close()
 
     def tearDown(self):
         self.temp_d.cleanup()
@@ -29,24 +59,16 @@ class HaplotigAsmTest(unittest.TestCase):
         tempd_patch.return_value = self.temp_d
 
         # Haplotig seqfile (reads)
-        haplotig_name = "1_0_0"
-        haplotig_seqfile_bn = ".".join([haplotig_name, "fastq"])
-        haplotig_seqfile  = os.path.join(self.temp_dn, haplotig_seqfile_bn)
-        with open(haplotig_seqfile, "w") as f:
+        with open(self.haplotig_seqfile_fn, "w") as f:
             f.write("HAPLOTIG READS FASTQ\n")
 
         # Haplotig ctgs fasta (output)
-        haplotig_ctgs_fa_bn = ".".join([haplotig_name, "contigs", "fasta"])
-        with open(os.path.join(self.temp_dn, haplotig_ctgs_fa_bn), "w") as f:
+        with open(self.haplotig_asm_fn, "w") as f:
             f.write("HAPLOTIG ASSEMBLY FASTA\n")
 
         # Run the command
-        output_dn = os.path.join(self.temp_dn, "H_TEST")
-        assemblies_dn = os.path.join(output_dn, "assemblies")
-        os.makedirs(assemblies_dn)
-        haplotigs_dn = os.path.join(output_dn, "haplotigs")
-        os.makedirs(haplotigs_dn)
-        result = runner.invoke(cmd, ["-s", haplotig_seqfile, "-o", output_dn])
+        #LahDb.__current = None
+        result = runner.invoke(cli, ["-d", self.dbfile, "haplotig", "asm", self.haplotig_name, "-o", self.temp_dn])
         try:
             self.assertEqual(result.exit_code, 0)
         except:
