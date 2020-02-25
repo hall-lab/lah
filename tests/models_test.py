@@ -14,9 +14,10 @@ class ModelsTest(unittest.TestCase):
         session = self.db.session()
         haplotig = session.query(Haplotig).get(3)
         self.assertIsNotNone(haplotig)
-        self.assertEqual(haplotig.asm_sdn(), "assemblies")
+        self.assertEqual(Haplotig.asm_files_sdn(), "asm-files")
+        self.assertEqual(Haplotig.asm_sdn(), "assemblies")
         self.assertEqual(haplotig.asm_fn(self.data_d), os.path.join(self.data_d, "assemblies", ".".join([haplotig.name, "contigs", "fasta"])))
-        self.assertEqual(haplotig.seqfile_sdn(), "haplotigs")
+        self.assertEqual(Haplotig.seqfile_sdn(), "haplotigs")
         self.assertEqual(haplotig.seqfile_fn(self.data_d), os.path.join(self.data_d, "haplotigs", ".".join([haplotig.name, "fastq"])))
 
     def test_metadata(self):

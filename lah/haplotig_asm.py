@@ -7,8 +7,8 @@ from lah.models import *
 @click.command(short_help="assemble haplotig reads")
 @click.argument("haplotig_id", type=click.STRING)
 @click.option("--output-dn", "-o", required=True, type=click.STRING, help="Base directory for LAH data. Haplotig fasta qill be put into 'haplotigs' subdir. If requested, additional haplotig assembly files will be put into 'haplotig-asm/$HAPLOTIG_NAME' subdir.")
-@click.option("--save-files", is_flag=True, help="Save additional assembly output files.")
-def haplotig_asm_cmd(haplotig_id, output_dn, save_files):
+@click.option("--retain-files", is_flag=True, help="Retain additional assembly output files.")
+def haplotig_asm_cmd(haplotig_id, output_dn, retain_files):
     """
     Assemble Haplotig
 
@@ -57,13 +57,14 @@ def haplotig_asm_cmd(haplotig_id, output_dn, save_files):
         os.remove(dst)
     shutil.copyfile(src, dst)
 
-    if save_files:
-        dest_dn = os.path.join(output_dn, "haplotig-asm", haplotig_n)
-        save_extra_assembly_files(temp_dn, dest_dn)
+    if retain_files:
+        dest_dn = os.path.join(output_dn, haplotig.asm_files_sdn(), haplotig.name)
+        os.makedirs(dest_dn, exist_ok=True)
+        retain_extra_assembly_files(temp_dn, dest_dn)
 
 #-- haplotig_asm_cmd
 
-def save_extra_assembly_files(src_dn, dest_dn):
+def retain_extra_assembly_files(src_dn, dest_dn):
     pwd = os.getcwd()
     os.chdir(src_dn)
 
@@ -79,6 +80,7 @@ def save_extra_assembly_files(src_dn, dest_dn):
                 if re.match(p, fn):
                     fns_to_copy.add(fn)
     
+    # FIXME check if files were found & test copying
     os.chdir(pwd)
     for fn in fns_to_copy:
         sub_dn = os.path.dirname(fn)
@@ -89,4 +91,4 @@ def save_extra_assembly_files(src_dn, dest_dn):
         print("COPY {} {}".format(src, dest))
         shutil.copy(src, dest)
 
-#-- save_extra_assembly_files
+#-- retain_extra_assembly_files

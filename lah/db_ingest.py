@@ -51,6 +51,7 @@ def db_ingest_cmd(haplotigs_fn, headers):
     print("Haplotigs: {}".format(metrics["total"]))
     print("Reads: {}".format(metrics["reads"]))
     print("Create directory structure...")
+    os.makedirs( os.path.join(metadata["directory"], Haplotig.asm_files_sdn()), exist_ok=True )
     os.makedirs( os.path.join(metadata["directory"], Haplotig.asm_sdn()), exist_ok=True )
     os.makedirs( os.path.join(metadata["directory"], Haplotig.seqfile_sdn()), exist_ok=True )
     print("Ingest hapltigs ... DONE")

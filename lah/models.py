@@ -7,6 +7,10 @@ class Haplotig(Base):
     __tablename__ = 'haplotigs'
 
     @staticmethod
+    def asm_files_sdn():
+        return "asm-files"
+
+    @staticmethod
     def asm_sdn():
         return "assemblies"
 
