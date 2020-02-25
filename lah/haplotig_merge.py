@@ -24,7 +24,7 @@ def haplotig_merge_cmd(output=None):
     merge_fn = os.path.join(dn, "asm.merged.fasta")
     if output is not None:
         merge_fn = output
-    print("Merged file: {}".format(merge_fn))
+    print("Output file: {}".format(merge_fn))
     if os.path.exists(merge_fn):
         os.remove(merge_fn)
     metrics = {

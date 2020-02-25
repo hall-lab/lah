@@ -18,9 +18,7 @@ def haplotig_seqfile_cmd(hid, output):
     print("Haplotig ID: {}".format(hid))
 
     session = LahDb.session()
-    print("HERE")
     haplotig = session.query(Haplotig).get(hid)
-    print("HERE")
     if not haplotig:
         raise Exception("Failed to get haplotig {} from db!".format(hid))
 
@@ -41,7 +39,7 @@ def haplotig_seqfile_cmd(hid, output):
     print("Output: {}".format(output))
 
     create_seqfile(haplotig, sources=source_seqfiles, output=output)
-    print("Generate haplotig seqfile ... OK")
+    print("Generate haplotig seqfile ... SUCCESS")
 
 #-- haplotig_seqfile_cmd
 
