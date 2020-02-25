@@ -6,12 +6,12 @@ from lah.models import *
 
 @click.command(short_help="assemble haplotig reads")
 @click.argument("haplotig_id", type=click.STRING)
-@click.option("--output-dn", "-o", required=True, type=click.STRING, help="Base directory for LAH data. Haplotig fasta qill be put into 'haplotigs' subdir. If requested, additional haplotig assembly files will be put into 'haplotig-asm/$HAPLOTIG_NAME' subdir.")
-@click.option("--retain-files", is_flag=True, help="Retain additional assembly output files.")
-def haplotig_asm_cmd(haplotig_id, output_dn, retain_files):
+@click.option("--retain-files", is_flag=True, help="Retain additional assembly output files in asm-files/<HID> subdir")
+def haplotig_asm_cmd(haplotig_id, retain_files):
     """
     Assemble Haplotig
 
+    Given a haplotig id (name), assemble its existing seqfile.
     """
     print("Assemble haplotig ... ")
 
@@ -47,10 +47,10 @@ def haplotig_asm_cmd(haplotig_id, output_dn, retain_files):
     # Copy the haplotig asm fasta
     asm_bn = haplotig.asm_bn()
     src = os.path.join(temp_dn, asm_bn)
-    dst = haplotig.asm_fn(output_dn)
+    dn = session.query(Metadata).filter_by(name="directory").one().value
+    dst = haplotig.asm_fn(dn)
     print("Assembly contigs fasta: {}".format(src))
     if not os.path.exists(src):
-        print("HERE")
         raise Exception("Could not find assembled ctgs fasta: {}".format(src))
     print("Destination contigs fasta: {}".format(dst))
     if os.path.exists(dst):
@@ -58,9 +58,12 @@ def haplotig_asm_cmd(haplotig_id, output_dn, retain_files):
     shutil.copyfile(src, dst)
 
     if retain_files:
-        dest_dn = os.path.join(output_dn, haplotig.asm_files_sdn(), haplotig.name)
+        print("Retaining additional assembly files...")
+        dest_dn = os.path.join(dn, haplotig.asm_files_sdn(), haplotig.name)
         os.makedirs(dest_dn, exist_ok=True)
         retain_extra_assembly_files(temp_dn, dest_dn)
+
+    print("Assemble haplotig ... SUCCESS")
 
 #-- haplotig_asm_cmd
 

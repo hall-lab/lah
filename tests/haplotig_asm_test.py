@@ -68,7 +68,7 @@ class HaplotigAsmTest(unittest.TestCase):
 
         # Run the command
         #LahDb.__current = None
-        result = runner.invoke(cli, ["-d", self.dbfile, "haplotig", "asm", self.haplotig_name, "-o", self.temp_dn, "--retain-files"])
+        result = runner.invoke(cli, ["-d", self.dbfile, "haplotig", "asm", self.haplotig_name, "--retain-files"])
         try:
             self.assertEqual(result.exit_code, 0)
         except:
