@@ -23,7 +23,7 @@ def db_ingest_cmd(haplotigs_fn, headers):
     metadata = {
         "directory": os.path.dirname(haplotigs_fn),
         "haplotigs_fn": haplotigs_fn,
-        "headers": headers,
+        "haplotig_headers": headers,
     }
     print("Setting metadata...")
     for k in metadata.keys():

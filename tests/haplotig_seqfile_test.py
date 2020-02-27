@@ -32,7 +32,7 @@ class HaplotigSeqfileCmdTest(unittest.TestCase):
         self.assertIsNotNone(haplotig)
         seqfiles = session.query(Seqfile).all()
         self.assertEqual(len(seqfiles), 2)
-        headers = session.query(Metadata).filter_by(name="headers").one().value
+        headers = session.query(Metadata).filter_by(name="haplotig_headers").one().value
         haplotigs_fn = session.query(Metadata).filter_by(name="haplotigs_fn").one().value
 
         output_fn = os.path.join(self.dataset.dn, "seqfile.fastq")

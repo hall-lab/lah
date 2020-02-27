@@ -18,7 +18,7 @@ def binned_reads():
     directory = session.query(Metadata).filter_by(name="directory").one().value
     haplotigs_bn = session.query(Metadata).filter_by(name="haplotigs_fn").one().value
     haplotigs_fn = os.path.join(directory, haplotigs_bn)
-    headers = session.query(Metadata).filter_by(name="headers").one().value.split(",")
+    headers = session.query(Metadata).filter_by(name="haplotig_headers").one().value.split(",")
     session.close()
 
     haplotig_iter = HaplotigIterator(in_fn=haplotigs_fn, headers=headers)

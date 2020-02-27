@@ -6,7 +6,7 @@ import lah.haplotig_iters
 
 class LahHaplotigItersTest(unittest.TestCase):
     def setUp(self):
-        self.haplotigs_fn = os.path.join(os.path.dirname(__file__), "data", "sample", "chr.haplotigs.tsv")
+        self.haplotigs_fn = os.path.join(os.path.dirname(__file__), "data", "dataset", "haplotigs.tsv")
         self.haplotigs_headers = ["NA", "rid", "hid"]
 
     def test1_validate_headers(self):

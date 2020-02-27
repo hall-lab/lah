@@ -4,7 +4,7 @@ from lah.db import LahDb
 
 class LahDbTest(unittest.TestCase):
     def setUp(self):
-        self.data_d = os.path.join(os.path.dirname(__file__), "data", "sample")
+        self.data_d = os.path.join(os.path.dirname(__file__), "data", "dataset")
         self.dbfile = os.path.join(self.data_d, "test.db")
 
         self.temp_d = tempfile.TemporaryDirectory()

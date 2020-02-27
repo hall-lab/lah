@@ -24,7 +24,7 @@ def haplotig_seqfile_cmd(hid, output):
 
     dn = session.query(Metadata).filter_by(name="directory").one().value
     haplotigs_bn = session.query(Metadata).filter_by(name="haplotigs_fn").one().value
-    haplotigs_headers = session.query(Metadata).filter_by(name="headers").one().value
+    haplotigs_headers = session.query(Metadata).filter_by(name="haplotig_headers").one().value
     headers = haplotigs_headers.split(",")
     
     h_i = HaplotigIterator(in_fn=os.path.join(dn, haplotigs_bn), headers=headers, pos=haplotig.file_pos)

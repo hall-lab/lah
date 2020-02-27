@@ -1,5 +1,5 @@
 INSERT INTO "metadata" VALUES('directory','tests/data/dataset');
-INSERT INTO "metadata" VALUES('haplotigs_fn','chr.haplotigs.tsv');
+INSERT INTO "metadata" VALUES('haplotigs_fn','haplotigs.tsv');
 INSERT INTO "metadata" VALUES('haplotigs_headers','NA1,rid,hid');
 INSERT INTO "haplotigs" VALUES(1,'401_0_1_0',0,1,NULL);
 INSERT INTO "haplotigs" VALUES(2,'401_0_2_0',60,2,NULL);

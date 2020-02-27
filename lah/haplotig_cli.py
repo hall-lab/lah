@@ -49,8 +49,7 @@ def hap_reads_cmd(hids):
     directory = session.query(Metadata).filter_by(name="directory").one().value
     haplotigs_bn = session.query(Metadata).filter_by(name="haplotigs_fn").one().value
     haplotigs_headers = session.query(Metadata).filter_by(name="haplotigs_headers").one().value
-    headers = haplotigs_headers.split(",")
-    hi = HaplotigIterator(in_fn=os.path.join(directory, haplotigs_bn), headers=headers)
+    hi = HaplotigIterator(in_fn=os.path.join(directory, haplotigs_bn), headers=haplotigs_headers.split(","))
     reads = []
     for hid in hids:
         haplotig = session.query(Haplotig).filter_by(name=hid).one()

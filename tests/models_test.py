@@ -5,7 +5,7 @@ from lah.models import *
 
 class ModelsTest(unittest.TestCase):
     def setUp(self):
-        self.data_d = os.path.join(os.path.dirname(__file__), "data", "sample")
+        self.data_d = os.path.join(os.path.dirname(__file__), "data", "dataset")
         self.dbfile = os.path.join(self.data_d, "test.db")
         self.db = LahDb(self.dbfile)
         self.db.connect()

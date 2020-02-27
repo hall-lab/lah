@@ -6,7 +6,7 @@ from lah.haplotig_cli import hap_cli, hap_list_cmd, hap_reads_cmd
 
 class HaplotigCliTest(unittest.TestCase):
     def setUp(self):
-        self.data_dn = os.path.join(os.path.dirname(__file__), "data", "sample")
+        self.data_dn = os.path.join(os.path.dirname(__file__), "data", "dataset")
         self.dbfile = os.path.join(self.data_dn, "test.db")
 
     def test1_hap_cli(self):
