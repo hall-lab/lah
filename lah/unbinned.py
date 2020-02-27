@@ -4,18 +4,21 @@ from lah.db import LahDb
 from lah.models import *
 from lah.haplotig_iters import HaplotigIterator
 
-def unbinned_reads_fn(dn):
-    return os.path.join(dn, "unbinned.reads")
+def subd():
+    return "unbinned"
 
-def unbinned_seqfile_fn(dn):
-    return os.path.join(dn, "unbinned.fastq")
+def reads_fn(dn):
+    return os.path.join(dn, subd(), "unbinned.reads")
+
+def seqfile_fn(dn):
+    return os.path.join(dn, subd(), "unbinned.fastq")
 
 def binned_reads():
     session = LahDb.session()
     directory = session.query(Metadata).filter_by(name="directory").one().value
     haplotigs_bn = session.query(Metadata).filter_by(name="haplotigs_fn").one().value
     haplotigs_fn = os.path.join(directory, haplotigs_bn)
-    headers = session.query(Metadata).filter_by(name="haplotigs_headers").one().value.split(",")
+    headers = session.query(Metadata).filter_by(name="headers").one().value.split(",")
     session.close()
 
     haplotig_iter = HaplotigIterator(in_fn=haplotigs_fn, headers=headers)
