@@ -8,12 +8,10 @@ from lah.db_ingest import db_ingest_cmd as cmd
 
 class LahDbIngestCliTests(unittest.TestCase):
     def setUp(self):
-        self.data_d = os.path.join(os.path.dirname(__file__), "data", "sample")
+        self.data_d = os.path.join(os.path.dirname(__file__), "data", "dataset")
         self.temp_d = tempfile.TemporaryDirectory()
         self.temp_dn = self.temp_d.name
         self.dbfile = os.path.join(self.temp_dn, "test.db")
-        self.out = tempfile.NamedTemporaryFile()
-        self.err = tempfile.NamedTemporaryFile()
 
     def tearDown(self):
         self.temp_d.cleanup()
@@ -34,6 +32,8 @@ class LahDbIngestCliTests(unittest.TestCase):
             sdn_f = getattr(haplotigs[0], sdn)
             self.assertTrue( os.path.exists(os.path.join(self.temp_dn, sdn_f())) )
 
+        session.close()
+
     def test1_ingest(self):
         runner = CliRunner()
 
@@ -43,7 +43,7 @@ class LahDbIngestCliTests(unittest.TestCase):
         result = runner.invoke(cmd, ["--help"])
         self.assertEqual(result.exit_code, 0)
 
-        haplotigs_bn = "chr.haplotigs.tsv"
+        haplotigs_bn = "haplotigs.tsv"
         haplotigs_source = os.path.join(self.data_d, haplotigs_bn)
         self.assertTrue(os.path.exists(haplotigs_source))
         haplotigs_fn = os.path.join(self.temp_dn, haplotigs_bn)

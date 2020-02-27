@@ -25,7 +25,7 @@ class CliTest(unittest.TestCase):
         self.assertEqual(result.exit_code, 0)
         self.assertEqual(result.output, "Hello World!\n")
 
-        dbfile = os.path.join(os.path.dirname(__file__), "data", "sample", "test.db")
+        dbfile = os.path.join(os.path.dirname(__file__), "data", "dataset", "test.db")
         result = runner.invoke(lah_cli, ["test"])
         #result = runner.invoke(lah_cli, ["-d", dbfile, "test"])
         self.assertEqual(result.exit_code, 0)
