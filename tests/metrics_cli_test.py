@@ -8,7 +8,7 @@ from lah.metrics_cli import metrics_cli, metrics_asm_cmd, metrics_haplotigs_cmd,
 
 class MetricsCliTest(unittest.TestCase):
     def setUp(self):
-        self.data_dn = os.path.join(os.path.dirname(__file__), "data", "sample")
+        self.data_dn = os.path.join(os.path.dirname(__file__), "data", "dataset")
         self.temp_d = tempfile.TemporaryDirectory()
         self.dbfile = os.path.join(self.temp_d.name, "test.db")
         shutil.copy(os.path.join(self.data_dn, "test.db"), self.dbfile)
@@ -78,12 +78,12 @@ cnt           4\n"""
             print("\n"+result.output)
             raise
 
-        expected_output = """ SEQFILE                                  | METRIC        |   VALUE
-------------------------------------------+---------------+---------
- tests/data/sample/seqfiles/reads.1.fastq | bases         |    36
- tests/data/sample/seqfiles/reads.1.fastq | length median |     7.2
- tests/data/sample/seqfiles/reads.2.fastq | bases         |    36
- tests/data/sample/seqfiles/reads.2.fastq | length median |     7.2\n"""
+        expected_output = """ SEQFILE                                   | METRIC        |   VALUE
+-------------------------------------------+---------------+---------
+ tests/data/dataset/seqfiles/reads.1.fastq | bases         |    36
+ tests/data/dataset/seqfiles/reads.1.fastq | length median |     7.2
+ tests/data/dataset/seqfiles/reads.2.fastq | bases         |    36
+ tests/data/dataset/seqfiles/reads.2.fastq | length median |     7.2\n"""
         self.assertEqual(result.output, expected_output)
 
     def test1_metrics_haplotigs_cmd(self):

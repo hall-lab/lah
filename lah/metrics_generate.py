@@ -2,7 +2,6 @@ import click, numpy, os
 from Bio import SeqIO
 
 from lah.db import LahDb
-from lah.haplotig import Haplotig
 from lah.models import *
 
 @click.command(short_help="generate metrics and save to the DB")
@@ -26,19 +25,15 @@ def metrics_generate_cmd():
 
 def _generate_haplotig_assembly_metrics(session):
     dn = session.query(Metadata).filter_by(name="directory").one().value
-    haplotigs_asm_dn = os.path.join(dn, "assemblies")
-    if not os.path.exists(haplotigs_asm_dn):
-        raise Exception("Cannot find haplotig assemblies directory: {}".format(haplotigs_asm_dn))
-
     rows = [] # metrics
     cnt = 0
     for haplotig in session.query(Haplotig).all():
-        asm_fn = haplotig.asm_fn(haplotigs_asm_dn)
+        asm_fn = haplotig.asm_fn(dn)
         contig_legths = []
         row = [ haplotig.name, str(haplotig.read_cnt) ]
         if os.path.exists(asm_fn):
             reads_cnt = 0
-            for seq in SeqIO.parse( asm_fn, "fasta"):
+            for seq in SeqIO.parse(asm_fn, "fasta"):
                 contig_legths.append(len(seq))
                 # canu specific
                 for attr in seq.description.split(" "):
@@ -73,9 +68,9 @@ def _generate_read_metrics(session):
 
 def _generate_asm_metrics(session):
     directory = session.query(Metadata).filter_by(name="directory").one().value
-    asm_fn = os.path.join(directory, "asm.merged.fasta")
+    merged_fn = Haplotig.merged_fn(directory)
     ctg_lengths = []
-    for seq in SeqIO.parse(asm_fn, "fasta"):
+    for seq in SeqIO.parse(merged_fn, "fasta"):
         ctg_lengths.append( len(seq) )
 
     bases = sum(ctg_lengths)

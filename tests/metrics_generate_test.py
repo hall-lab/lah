@@ -8,7 +8,7 @@ from lah.models import Metric
 
 class MetricsTest(unittest.TestCase):
     def setUp(self):
-        self.data_dn = os.path.join(os.path.dirname(__file__), "data", "sample")
+        self.data_dn = os.path.join(os.path.dirname(__file__), "data", "dataset")
         self.temp_d = tempfile.TemporaryDirectory()
         self.dbfile = os.path.join(self.temp_d.name, "test.db")
         shutil.copy(os.path.join(self.data_dn, "test.db"), self.dbfile)

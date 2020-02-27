@@ -2,7 +2,7 @@ import click, natsort, os, subprocess, sys, tabulate
 
 from lah.db import LahDb
 from lah.haplotig_iters import HaplotigIterator
-from lah.haplotig import *
+from lah.models import *
 
 # haplotig [hap]
 # - ams
@@ -18,8 +18,12 @@ def hap_cli():
     """
     pass
 
+# [asm]
+from lah.haplotig_asm import haplotig_asm_cmd
+hap_cli.add_command(haplotig_asm_cmd, name="asm")
+
 # [seqfile]
-from lah.haplotig_seqfile_cmd import haplotig_seqfile_cmd
+from lah.haplotig_seqfile import haplotig_seqfile_cmd
 hap_cli.add_command(haplotig_seqfile_cmd, name="seqfile")
 
 @click.command(short_help="list haplotigs")
@@ -45,8 +49,7 @@ def hap_reads_cmd(hids):
     directory = session.query(Metadata).filter_by(name="directory").one().value
     haplotigs_bn = session.query(Metadata).filter_by(name="haplotigs_fn").one().value
     haplotigs_headers = session.query(Metadata).filter_by(name="haplotigs_headers").one().value
-    headers = haplotigs_headers.split(",")
-    hi = HaplotigIterator(in_fn=os.path.join(directory, haplotigs_bn), headers=headers)
+    hi = HaplotigIterator(in_fn=os.path.join(directory, haplotigs_bn), headers=haplotigs_headers.split(","))
     reads = []
     for hid in hids:
         haplotig = session.query(Haplotig).filter_by(name=hid).one()
