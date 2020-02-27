@@ -15,6 +15,9 @@ class DatasetTest(unittest.TestCase):
         dataset.add_haplotig_assemblies()
         self.assertEqual( len(glob.glob(os.path.join(dataset.dn, Haplotig.asm_sdn(), "*.fasta"))), 4)
 
+        dataset.add_merged_assemblies()
+        self.assertTrue(os.path.exists(Haplotig.merged_fn(dataset.dn)))
+
 # -- DataTest
 
 if __name__ == '__main__':

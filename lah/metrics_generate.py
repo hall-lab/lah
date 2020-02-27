@@ -33,7 +33,7 @@ def _generate_haplotig_assembly_metrics(session):
         row = [ haplotig.name, str(haplotig.read_cnt) ]
         if os.path.exists(asm_fn):
             reads_cnt = 0
-            for seq in SeqIO.parse( asm_fn, "fasta"):
+            for seq in SeqIO.parse(asm_fn, "fasta"):
                 contig_legths.append(len(seq))
                 # canu specific
                 for attr in seq.description.split(" "):

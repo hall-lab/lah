@@ -47,13 +47,18 @@ class Dataset():
     #-- del
 
     def add_haplotig_assemblies(self):
-        asm_dn = os.path.join(self.dn, Haplotig.asm_sdn())
         db = LahDb(dbfile=self.dbfile)
         db.connect()
         session = db.session()
         for haplotig in session.query(Haplotig):
-            asm_fn = haplotig.asm_fn(self.data_dn)
-            shutil.copy(asm_fn, os.path.join(asm_dn))
+            src = haplotig.asm_fn(self.data_dn)
+            dest = haplotig.asm_fn(self.dn)
+            shutil.copy(src, dest)
         db.disconnect()
+
+    def add_merged_assemblies(self):
+        src = Haplotig.merged_fn(self.data_dn)
+        dest = Haplotig.merged_fn(self.dn)
+        shutil.copy(src, dest)
 
 #-- TestDataset
