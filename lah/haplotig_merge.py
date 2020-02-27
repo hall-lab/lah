@@ -2,10 +2,10 @@ import click, os, yaml
 from Bio import SeqIO
 
 from lah.db import LahDb
-from lah.models import Haplotig
+from lah.models import *
 
 @click.command(short_help="merge haplotig assemblies")
-@click.option("--output", "-o", type=click.STRING, help="Output merged assembly to this files instead of in same directory as dbfile.")
+@click.option("--output", "-o", type=click.STRING, help="Output merged assembly to this files instead to <BASE_DIR>/asm.merged.fasta.")
 def haplotig_merge_cmd(output=None):
     """
     Merge Haplotig haplotigs Fastas
@@ -20,19 +20,22 @@ def haplotig_merge_cmd(output=None):
     print("Merge haplotig assemblies...")
 
     session = LahDb.session()
-    dn = os.path.dirname(LahDb.current().dbfile)
-    merge_fn = os.path.join(dn, "asm.merged.fasta")
+    print("HERE")
+    dn = session.query(Metadata).filter_by(name="directory").one().value
+    print("HERE")
+    merged_fn = Haplotig.merged_fn(dn)
+    print("HERE")
     if output is not None:
-        merge_fn = output
-    print("Output file: {}".format(merge_fn))
-    if os.path.exists(merge_fn):
-        os.remove(merge_fn)
+        merged_fn = output
+    print("Output file: {}".format(merged_fn))
+    if os.path.exists(merged_fn):
+        os.remove(merged_fn)
     metrics = {
         "NOASM": 0,
         "TOTAL": 0,
     }
  
-    with open(merge_fn, "a+") as asm_sq_f:
+    with open(merged_fn, "a+") as asm_sq_f:
         for haplotig in session.query(Haplotig).all():
             asm_fn = haplotig.asm_fn(dn)
             if not os.path.exists(asm_fn) or os.path.getsize(asm_fn) == 0:

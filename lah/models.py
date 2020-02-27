@@ -7,6 +7,14 @@ class Haplotig(Base):
     __tablename__ = 'haplotigs'
 
     @staticmethod
+    def merged_bn():
+        return "merged.fasta"
+
+    @staticmethod
+    def merged_fn(dn):
+        return os.path.join(dn, Haplotig.merged_bn())
+
+    @staticmethod
     def asm_files_sdn():
         return "asm-files"
 

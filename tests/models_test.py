@@ -14,6 +14,8 @@ class ModelsTest(unittest.TestCase):
         session = self.db.session()
         haplotig = session.query(Haplotig).get(3)
         self.assertIsNotNone(haplotig)
+        self.assertEqual(Haplotig.merged_bn(), "merged.fasta")
+        self.assertEqual(Haplotig.merged_fn(self.data_d), os.path.join(self.data_d, "merged.fasta"))
         self.assertEqual(Haplotig.asm_files_sdn(), "asm-files")
         self.assertEqual(Haplotig.asm_sdn(), "assemblies")
         self.assertEqual(haplotig.asm_fn(self.data_d), os.path.join(self.data_d, "assemblies", ".".join([haplotig.name, "contigs", "fasta"])))

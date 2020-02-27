@@ -3,6 +3,7 @@ from click.testing import CliRunner
 
 from lah.db import LahDb
 from lah.cli import cli
+from lah.models import *
 from lah.unbinned_cli import unbinned_cli, unbinned_list_cmd, unbinned_seqfile_cmd
 
 class Dataset():
@@ -44,5 +45,15 @@ class Dataset():
         self.temp_d.cleanup()
 
     #-- del
+
+    def add_haplotig_assemblies(self):
+        asm_dn = os.path.join(self.dn, Haplotig.asm_sdn())
+        db = LahDb(dbfile=self.dbfile)
+        db.connect()
+        session = db.session()
+        for haplotig in session.query(Haplotig):
+            asm_fn = haplotig.asm_fn(self.data_dn)
+            shutil.copy(asm_fn, os.path.join(asm_dn))
+        db.disconnect()
 
 #-- TestDataset

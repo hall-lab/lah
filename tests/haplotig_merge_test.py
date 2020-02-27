@@ -1,25 +1,21 @@
 import filecmp, os, tempfile, unittest
 from click.testing import CliRunner
 
+from tests.dataset import Dataset
 from lah.cli import cli
+from lah.models import Haplotig
 from lah.haplotig_merge import haplotig_merge_cmd
 
 class haplotigMergeTest(unittest.TestCase):
     def setUp(self):
-        self.data_d = os.path.join(os.path.dirname(__file__), "data", "sample")
-        self.dbfile = os.path.join(self.data_d, "test.db")
-        self.expected_output = os.path.join(self.data_d, "asm.merged.fasta")
-
-        self.temp_d = tempfile.TemporaryDirectory()
-        self.temp_dn = self.temp_d.name
-        self.output = os.path.join(self.temp_dn, "output.fasta")
-
-    def tearDown(self):
-        self.temp_d.cleanup()
+        self.dataset = Dataset()
+        self.output = os.path.join(self.dataset.dn, "output.fasta")
+        self.dataset.add_haplotig_assemblies()
 
     def verify_merged_fasta(self):
         self.assertTrue(os.path.exists(self.output))
-        self.assertTrue(filecmp.cmp(self.output, self.expected_output))
+        expected_output = Haplotig.merged_fn(self.dataset.data_dn)
+        self.assertTrue(filecmp.cmp(self.output, expected_output))
 
     def test0_haplotig_merge_cli(self):
         runner = CliRunner()
@@ -27,7 +23,7 @@ class haplotigMergeTest(unittest.TestCase):
         result = runner.invoke(haplotig_merge_cmd, ["--help"])
         self.assertEqual(result.exit_code, 0)
 
-        result = runner.invoke(cli, ["-d", self.dbfile, "haplotig", "merge", "-o", self.output])
+        result = runner.invoke(cli, ["-d", self.dataset.dbfile, "haplotig", "merge", "-o", self.output])
         try:
             self.assertEqual(result.exit_code, 0)
         except:

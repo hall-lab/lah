@@ -40,6 +40,12 @@ class LahDb():
         self.sessionmaker = sessionmaker(bind=engine)
 
     #-- connect
+
+    def disconnect(self):
+        self.sessionmaker = None
+        LahDb.__current = None
+    
+    #-- disconnect
     
     def session(self=None):
         if self is None:

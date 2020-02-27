@@ -68,9 +68,9 @@ def _generate_read_metrics(session):
 
 def _generate_asm_metrics(session):
     directory = session.query(Metadata).filter_by(name="directory").one().value
-    asm_fn = os.path.join(directory, "asm.merged.fasta")
+    merged_fn = Haplotig.merged_fn(directory)
     ctg_lengths = []
-    for seq in SeqIO.parse(asm_fn, "fasta"):
+    for seq in SeqIO.parse(merged_fn, "fasta"):
         ctg_lengths.append( len(seq) )
 
     bases = sum(ctg_lengths)
