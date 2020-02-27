@@ -1,6 +1,7 @@
-import filecmp, io, os, sys, tempfile, unittest
+import filecmp, io, os, sys, unittest
 from click.testing import CliRunner
 
+from tests.dataset import Dataset
 from lah.cli import cli
 from lah.db import LahDb
 from lah.models import *
@@ -9,47 +10,42 @@ from lah.haplotig_seqfile import haplotig_seqfile_cmd, create_seqfile
 
 class HaplotigSeqfileCmdTest(unittest.TestCase):
     def setUp(self):
-        self.data_d = os.path.join(os.path.dirname(__file__), "data", "sample")
-        self.dbfile = os.path.join(self.data_d, "test.db")
-        self.haplotigs_dn = os.path.join(self.data_d, "haplotigs")
-        self.temp_d = tempfile.TemporaryDirectory()
-        self.temp_dn = self.temp_d.name
-        self.temp_dn = "tmp"
-
-        db = LahDb(self.dbfile)
-        db.connect()
-        session = db.session()
-        haplotigs_bn = session.query(Metadata).filter_by(name="haplotigs_fn").one().value
-        self.haplotigs_fn = os.path.join(self.data_d, haplotigs_bn)
-        self.haplotigs_headers = session.query(Metadata).filter_by(name="haplotigs_headers").one().value.split(",")
-        self.haplotig = session.query(Haplotig).get(3)
-        self.source_seqfiles = session.query(Seqfile).all()
-        session.close()
-
-    def tearDown(self):
-        self.temp_d.cleanup()
+        self.dataset = Dataset()
 
     def test0_haplotig_seqfile_attrs(self):
-        haplotig = self.haplotig
+        db = LahDb(self.dataset.dbfile)
+        db.connect()
+        session = db.session()
+        haplotig = session.query(Haplotig).get(3)
         self.assertIsNotNone(haplotig)
         seqfile_bn = haplotig.seqfile_bn()
         self.assertEqual(seqfile_bn, ".".join([haplotig.name, "fastq"]))
-        self.assertEqual(haplotig.seqfile_fn(self.temp_dn), os.path.join(self.temp_dn, "haplotigs", seqfile_bn))
+        self.assertEqual(haplotig.seqfile_fn(self.dataset.dn), os.path.join(self.dataset.dn, "haplotigs", seqfile_bn))
+        session.close()
+        db.disconnect()
 
     def test1_create_seqfile(self):
-        haplotig = self.haplotig
+        db = LahDb(self.dataset.dbfile)
+        db.connect()
+        session = db.session()
+        haplotig = session.query(Haplotig).get(3)
         self.assertIsNotNone(haplotig)
-        output_fn = os.path.join(self.temp_dn, "seqfile.fastq")
+        seqfiles = session.query(Seqfile).all()
+        self.assertEqual(len(seqfiles), 2)
+        headers = session.query(Metadata).filter_by(name="headers").one().value
+        haplotigs_fn = session.query(Metadata).filter_by(name="haplotigs_fn").one().value
+
+        output_fn = os.path.join(self.dataset.dn, "seqfile.fastq")
         with self.assertRaisesRegex(Exception, "No reads loaded for haplotig"):
-            create_seqfile(self.haplotig, sources=self.source_seqfiles, output=output_fn)
+            create_seqfile(haplotig, sources=seqfiles, output=output_fn)
 
         sys.stdout = io.StringIO() # silence stdout
 
-        haplotig_iter = HaplotigIterator(headers=self.haplotigs_headers, in_fn=self.haplotigs_fn)
+        haplotig_iter = HaplotigIterator(headers=headers.split(","), in_fn=haplotigs_fn)
         haplotig_iter.load_haplotig_reads(haplotig)
 
-        create_seqfile(self.haplotig, sources=self.source_seqfiles, output=output_fn)
-        self.assertTrue(filecmp.cmp(output_fn, os.path.join(self.haplotigs_dn, "402_0_1_0.fastq")))
+        create_seqfile(haplotig, sources=seqfiles, output=output_fn)
+        self.assertTrue(filecmp.cmp(output_fn, haplotig.seqfile_fn(self.dataset.data_dn)))
         sys.stdout = sys.__stdout__
 
     def test2_haplotig_seqfile_cmd(self):
@@ -61,14 +57,14 @@ class HaplotigSeqfileCmdTest(unittest.TestCase):
         result = runner.invoke(haplotig_seqfile_cmd, ["--help"])
         self.assertEqual(result.exit_code, 0)
 
-        output_fn = os.path.join(self.temp_dn, "from_cmd.fastq")
-        result = runner.invoke(cli, ["-d", self.dbfile, "haplotig", "seqfile", str(self.haplotig.id), "--output", output_fn])
+        output_fn = os.path.join(self.dataset.dn, "from_cmd.fastq")
+        result = runner.invoke(cli, ["-d", self.dataset.dbfile, "haplotig", "seqfile", "3", "--output", output_fn])
         try:
             self.assertEqual(result.exit_code, 0)
         except:
             print(result.output)
             raise
-        self.assertTrue(filecmp.cmp(output_fn, os.path.join(self.haplotigs_dn, "402_0_1_0.fastq")))
+        self.assertTrue(filecmp.cmp(output_fn, os.path.join(self.dataset.data_dn, "haplotigs", "402_0_1_0.fastq")))
 
 # -- HaplotigSeqfileCmdTest
 
