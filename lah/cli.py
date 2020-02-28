@@ -11,13 +11,15 @@ def cli(dbfile):
     """
     [L]ocal [A]ssembly of [H]aplotypes
     """
-    if dbfile and os.path.exists(dbfile):
-        LahDb(dbfile=dbfile).connect()
+    if dbfile:
+        db = LahDb(dbfile=dbfile)
+        if os.path.exists(dbfile):
+            db.connect()
     pass
 
-# [db]
-from lah.db_cli import db_cli
-cli.add_command(db_cli, name="db")
+# [init]
+from lah.init_cli import init_cmd
+cli.add_command(init_cmd, name="init")
 
 # [haplotig]
 from lah.haplotig_cli import hap_cli

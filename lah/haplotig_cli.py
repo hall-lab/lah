@@ -6,6 +6,7 @@ from lah.models import *
 
 # haplotig [hap]
 # - ams
+# - ingest
 # - list
 # - merge
 # - seqfile
@@ -21,6 +22,10 @@ def hap_cli():
 # [asm]
 from lah.haplotig_asm import haplotig_asm_cmd
 hap_cli.add_command(haplotig_asm_cmd, name="asm")
+
+# [ingest]
+from lah.haplotig_ingest import haplotig_ingest_cmd
+hap_cli.add_command(haplotig_ingest_cmd, name="ingest")
 
 # [seqfile]
 from lah.haplotig_seqfile import haplotig_seqfile_cmd

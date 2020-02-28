@@ -16,12 +16,10 @@ class Dataset():
         shutil.copy(os.path.join(self.data_dn, "haplotigs.tsv"), self.dn)
 
         runner = CliRunner()
-        result = runner.invoke(cli, ["db", "create", self.dbfile])
-        if result.exit_code != 0:
-            print(result.output)
-            raise Exception("Failed to create DB!")
+        db = LahDb(dbfile=self.dbfile)
+        db.create()
 
-        result = runner.invoke(cli, ["-d", self.dbfile, "db", "ingest", "-f", os.path.join(self.dn, "haplotigs.tsv"), "-g", "NA,rid,hid"])
+        result = runner.invoke(cli, ["-d", self.dbfile, "haplotig", "ingest", "-f", os.path.join(self.dn, "haplotigs.tsv"), "-g", "NA,rid,hid"])
         if result.exit_code != 0:
             print(result.output)
             raise Exception("Failed to ingest haplotigs!")
