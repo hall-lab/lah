@@ -28,10 +28,6 @@ class LahDbIngestCliTests(unittest.TestCase):
         haplotigs = session.query(Haplotig).all()
         self.assertTrue(len(haplotigs), 4)
 
-        for sdn in ("asm_sdn", "asm_files_sdn", "seqfile_sdn"):
-            sdn_f = getattr(haplotigs[0], sdn)
-            self.assertTrue( os.path.exists(os.path.join(self.temp_dn, sdn_f())) )
-
         session.close()
 
     def test1_ingest(self):
