@@ -1,0 +1,1 @@
+nucmer -maxmatch -l 100 -c 500 /gscmnt/gc2802/halllab/aregier/jira/BIO-2626/GCA_000001405.15_GRCh38_no_alt_analysis_set.fna chr20.contigs.fasta -prefix chr20
