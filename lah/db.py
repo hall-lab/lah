@@ -60,6 +60,8 @@ class LahDb():
     #-- new_seesion
 
     def create(self):
+        if os.path.exists(self.dbfile):
+            raise Exception("Database file already exists!")
         dburl = self.dburl()
         backend = yoyo.get_backend(dburl)
         migration_d = os.path.join(os.path.dirname(__file__), 'db-migrations')

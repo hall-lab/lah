@@ -4,7 +4,7 @@ from click.testing import CliRunner
 from lah.db import LahDb
 from lah.models import *
 from lah.cli import cli
-from lah.db_ingest import db_ingest_cmd as cmd
+from lah.haplotig_ingest import haplotig_ingest_cmd as cmd
 
 class LahDbIngestCliTests(unittest.TestCase):
     def setUp(self):
@@ -28,10 +28,6 @@ class LahDbIngestCliTests(unittest.TestCase):
         haplotigs = session.query(Haplotig).all()
         self.assertTrue(len(haplotigs), 4)
 
-        for sdn in ("asm_sdn", "asm_files_sdn", "seqfile_sdn"):
-            sdn_f = getattr(haplotigs[0], sdn)
-            self.assertTrue( os.path.exists(os.path.join(self.temp_dn, sdn_f())) )
-
         session.close()
 
     def test1_ingest(self):
@@ -50,7 +46,7 @@ class LahDbIngestCliTests(unittest.TestCase):
         shutil.copyfile(os.path.join(self.data_d, haplotigs_bn), haplotigs_fn)
 
         LahDb(self.dbfile).create()
-        result = runner.invoke(cli, ["-d", self.dbfile, "db", "ingest", "-f", haplotigs_fn, "-g", "NA,rid,hid"])
+        result = runner.invoke(cli, ["-d", self.dbfile, "haplotig", "ingest", "-f", haplotigs_fn, "-g", "NA,rid,hid"])
         try:
             self.assertEqual(result.exit_code, 0)
         except:

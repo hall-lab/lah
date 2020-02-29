@@ -8,7 +8,7 @@ import lah.unbinned
 @click.command(short_help="create and ingest haplotigs into a database")
 @click.option("--haplotigs_fn", "-f", required=True, type=click.STRING, help="File of haplotigs.")
 @click.option("--headers", "-g", required=True, type=click.STRING, help="Headers for haplotigs file. Give as a comma separated list.")
-def db_ingest_cmd(haplotigs_fn, headers):
+def haplotig_ingest_cmd(haplotigs_fn, headers):
     """
     Ingest Haplotigs
     """
@@ -49,14 +49,6 @@ def db_ingest_cmd(haplotigs_fn, headers):
             session = LahDb.session()
     session.commit()
 
-    print("Haplotigs: {}".format(metrics["total"]))
-    print("Reads: {}".format(metrics["reads"]))
-    print("Create directory structure...")
-    os.makedirs( os.path.join(metadata["directory"], Haplotig.asm_files_sdn()), exist_ok=True )
-    os.makedirs( os.path.join(metadata["directory"], Haplotig.asm_sdn()), exist_ok=True )
-    os.makedirs( os.path.join(metadata["directory"], Haplotig.seqfile_sdn()), exist_ok=True )
-    os.makedirs( os.path.join(metadata["directory"], lah.unbinned.subd()), exist_ok=True )
-    print("Create directory structure...")
-    print("Ingest hapltigs ... DONE")
+    print("Haplotigs: {}\nReads: {}\nIngest haplotigs ... DONE".format(metrics["total"], metrics["reads"]))
 
-#-- db_ingest_cmd
+#-- haplotig_ingest_cmd
